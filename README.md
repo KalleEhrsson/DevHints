@@ -1,11 +1,6 @@
 # 🚀 DevHints  
 
 [![Live Site](https://img.shields.io/badge/Live%20Site-DevHints-brightgreen?style=for-the-badge)](https://devhints.netlify.app/)  
-[![Made with HTML](https://img.shields.io/badge/HTML-5-orange?style=for-the-badge&logo=html5)](https://developer.mozilla.org/en-US/docs/Web/HTML) 
-[![Made with CSS](https://img.shields.io/badge/CSS-3-blue?style=for-the-badge&logo=css3&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/CSS) 
-[![Made with JS](https://img.shields.io/badge/JavaScript-ES6-yellow?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
-[![Unity Tips](https://img.shields.io/badge/Unity-Tips-black?style=for-the-badge&logo=unity)](https://unity.com/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](./LICENSE)
 
 ---
 
