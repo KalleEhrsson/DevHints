@@ -20,15 +20,6 @@ Browse insights right in your browser—no setup needed.
 
 ---
 
-##  Project Layout
-
-- `index.html` — the UI that serves up your DevHints  
-- `style.css` — look and feel—kept tidy  
-- `script.js` — light interactivity, like showing/hiding categories  
-- `Usefull_Sites.txt` — your growing stash of dev resources
-
----
-
 ##  Why It’s Worthwhile
 
 -  A quick Unity and C# attributes reference at your fingertips  
