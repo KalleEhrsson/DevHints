@@ -7,23 +7,34 @@
 </head>
 <div id="overlay"></div>
 <body class="dark-theme">
+<div id="scrollProgress"></div>
 
 <header id="appHeader">
     <div id="headerLeft">
         <button id="sidebarToggle" aria-label="Open Menu">☰</button>
+        
+        <!-- Searchbar -->
         <div id="searchInputWrapper">
             <input id="searchInput" placeholder="Search Tips..." type="text" autocomplete="off" spellcheck="false"/>
             <button aria-label="Clear search" id="clearSearch">✕</button>
         </div>
     </div>
-    <button id="themeToggle" aria-label="Toggle Theme">
-        <svg id="themeIcon" viewBox="0 0 24 24" width="28" height="28" xmlns="http://www.w3.org/2000/svg">
-            <path id="themePath" d="" fill="#ccc"/>
-        </svg>
-    </button>
+        
+    <!-- Centered site title -->
+    <div id="siteTitle">DevHints</div>
+
+    <div id="headerRight">
+        <!-- Section badge next to theme toggle -->
+        <div id="sectionBadge">Unity</div>
+        <button id="themeToggle" aria-label="Toggle Theme">
+            <svg id="themeIcon" viewBox="0 0 24 24" width="28" height="28" xmlns="http://www.w3.org/2000/svg">
+                <path id="themePath" d="" fill="#ccc"/>
+            </svg>
+        </button>
+    </div>
 </header>
 
-<!-- SIDEBAR -->
+<!-- Sidebar -->
 <div id="sidebar">
     <div id="sidebarTop">
         <div id="sidebarLinks">

@@ -166,36 +166,50 @@ document.addEventListener('DOMContentLoaded', () => {
     const headerCopy = {
         unity:  {
             title: 'Unity Inspector & Scripting Attributes Cheat Sheet',
-            desc:  'A comprehensive list of built-in and common custom attributes you can use in Unity.'
+            desc:  'A comprehensive list of built-in and common custom attributes you can use in Unity.',
+            short: 'Unity'
         },
         csharp: {
             title: 'C# Tips & Tricks',
-            desc:  'Handy syntax, attributes, and coding patterns for C# developers.'
+            desc:  'Handy syntax, attributes, and coding patterns for C# developers.',
+            short: 'C#'
         },
         other:  {
             title: 'Other Notes',
-            desc:  'Extra references, tips, and resources outside Unity and C#.'
+            desc:  'Extra references, tips, and resources outside Unity and C#.',
+            short: 'Other'
         },
         sites:  {
             title: 'Useful Sites',
-            desc:  'A curated collection of websites and tools to speed up your workflow.'
+            desc:  'A curated collection of websites and tools to speed up your workflow.',
+            short: 'Sites'
         }
     };
 
     function showSection(sectionKey) {
-        // hide all
         document.querySelectorAll('.content-section').forEach(sec => sec.style.display = 'none');
-        // show chosen
+
         const secEl = document.getElementById(sectionKey + 'Section');
         if (secEl) secEl.style.display = 'block';
 
-        // update header
         const copy = headerCopy[sectionKey];
         if (copy) {
             pageTitle.textContent = copy.title;
             pageDesc.textContent  = copy.desc;
         }
+
+        const badge = document.getElementById('sectionBadge');
+        if (badge && copy) {
+            badge.textContent = copy.short; // always short label
+
+            // reset classes
+            badge.className = '';
+            badge.id = 'sectionBadge';
+            badge.classList.add(sectionKey);
+        }
     }
+
+
 
     // Restore active tab from storage (you already store li.textContent)
     const savedActiveText = localStorage.getItem('activeSidebar');
@@ -252,6 +266,58 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    document.querySelectorAll('.copy-attr').forEach(el => {
+        /* Save the clean text once */
+        if (!el.dataset.copy) el.dataset.copy = el.textContent.trim();
+
+        let tip, showTimer, hideTimer;
+
+        function ensureTip() {
+            if (!tip) {
+                tip = document.createElement('div');
+                tip.className = 'attr-tooltip';
+                tip.textContent = 'Click to copy';
+                document.body.appendChild(tip); // attach globally
+            }
+            return tip;
+        }
+
+        function showTipDelayed() {
+            clearTimeout(hideTimer);
+            showTimer = setTimeout(() => {
+                const rect = el.getBoundingClientRect();
+                ensureTip();
+                tip.style.left = rect.left + rect.width / 2 + "px";
+                tip.style.top = (rect.top - 20) + window.scrollY + "px"; // 6px above
+                tip.style.opacity = '1';
+            }, 300);
+        }
+
+        function hideTipDelayed() {
+            clearTimeout(showTimer);
+            hideTimer = setTimeout(() => {
+                if (tip) tip.style.opacity = '0';
+            }, 300);
+        }
+
+        el.addEventListener('mouseenter', showTipDelayed);
+        el.addEventListener('mouseleave', hideTipDelayed);
+
+        /* Copy handler: always use the saved clean text */
+        el.addEventListener('click', () => {
+            const text = el.dataset.copy;  // clean, without tooltip
+            navigator.clipboard.writeText(text).then(() => {
+                ensureTip();
+                clearTimeout(hideTimer);
+                tip.style.opacity = '1';
+                tip.textContent = 'Copied!';
+                setTimeout(() => { if (tip) tip.textContent = 'Click to copy'; }, 800);
+            }).catch(err => console.error('Failed to copy:', err));
+        });
+    });
+
+
+
     window.addEventListener('scroll', function () {
         const btn = document.getElementById('backToTop');
         if (window.scrollY > 100) {
@@ -306,31 +372,37 @@ document.addEventListener('DOMContentLoaded', () => {
             link.style.transition = 'opacity 0.3s ease';
 
             link.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" aria-hidden="true" width="16" height="16">
-                <text x="0" y="14" font-size="16" font-family="Arial, sans-serif" fill="currentColor">?</text></svg>`;
+            <text x="0" y="14" font-size="16" font-family="Arial, sans-serif" fill="currentColor">?</text></svg>`;
 
             code.after(link);
 
-            // Function to show the ?
+            let showTimer, hideTimer;
+
             function showIcon() {
+                clearTimeout(hideTimer);
                 link.style.opacity = '1';
                 link.style.pointerEvents = 'auto';
             }
 
-            // Function to hide the ? with a delay
-            function hideIconWithDelay() {
-                setTimeout(() => {
-                    // Check if neither code nor link is hovered
-                    if (!code.matches(':hover') && !link.matches(':hover')) {
-                        link.style.opacity = '0';
-                        link.style.pointerEvents = 'none';
-                    }
-                }, 500); // delay
+            function hideIcon() {
+                hideTimer = setTimeout(() => {
+                    link.style.opacity = '0';
+                    link.style.pointerEvents = 'none';
+                }, 300); // fade-out delay
             }
 
-            code.addEventListener('mouseenter', showIcon);
-            code.addEventListener('mouseleave', hideIconWithDelay);
+            code.addEventListener('mouseenter', () => {
+                showTimer = setTimeout(showIcon, 300); // fade-in delay
+            });
+
+            code.addEventListener('mouseleave', () => {
+                clearTimeout(showTimer);
+                hideIcon();
+            });
+
+            // Keep visible while hovering the ? link
             link.addEventListener('mouseenter', showIcon);
-            link.addEventListener('mouseleave', hideIconWithDelay);
+            link.addEventListener('mouseleave', hideIcon);
         }
     });
 
@@ -405,7 +477,7 @@ function renderSites() {
 
         a.href = href;
         title.textContent = site.title || domain || href;
-        descEl.textContent = site.description || site.notes || '';
+        descEl.textContent = site.description || '';
 
         thumb.style.background = gradientFromString(domain || href);
         icon.src = faviconFor(domain);
@@ -417,3 +489,17 @@ function renderSites() {
     });
 }
 renderSites();
+
+// Scroll progress line
+window.addEventListener('scroll', () => {
+    const progress = document.getElementById('scrollProgress');
+    const scrolled = window.scrollY;
+    const height = document.documentElement.scrollHeight - window.innerHeight;
+    const percent = (scrolled / height) * 100;
+    
+    // width = scroll position
+    progress.style.width = percent + "%";
+
+    // gradient slides as you scroll
+    progress.style.backgroundPosition = `${percent}% 50%`;
+});

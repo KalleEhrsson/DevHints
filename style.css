@@ -79,6 +79,58 @@ body.no-scroll {
     overflow: hidden;
 }
 
+#scrollProgress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 4px;
+    width: 0;
+    background: linear-gradient(90deg, #2196f3, #4dabf7, #1e88e5);
+    background-size: 200% 100%;
+    border-radius: 0 2px 2px 0;
+    z-index: 2000;
+    transition: width 0.15s linear;
+    
+    /* subtle outer glow */
+    box-shadow:
+            0 0 6px rgba(33,150,243,.6),
+            0 0 12px rgba(77,171,247,.45),
+            0 0 18px rgba(30,136,229,.35);
+}
+
+/* bloom/halo without affecting layout */
+#scrollProgress::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: inherit;
+    border-radius: inherit;
+    filter: blur(8px);
+    opacity: .55;
+    pointer-events: none;
+}
+
+/* Slightly stronger glow in dark theme, softer in light */
+body.dark-theme #scrollProgress::after { opacity: .65; }
+body.light-theme #scrollProgress::after { opacity: .45; }
+
+@keyframes pulseGradient {
+    0%   { background-position: 0 50%; opacity: 0.6; }
+    50%  { background-position: 100% 50%; opacity: 1; }
+    100% { background-position: 0 50%; opacity: 0.6; }
+}
+
+/* Remove default scrollbar */
+html {
+    overflow: scroll;
+    overflow-x: hidden;
+}
+::-webkit-scrollbar {
+    width: 0;  /* Remove scrollbar space */
+    background: transparent;  /* Optional: just make scrollbar invisible */
+}
+
+
 /* HEADER / NAVBAR */
 #appHeader {
     display: flex;
@@ -94,6 +146,43 @@ body.no-scroll {
     width: 100%;
     z-index: 1200;
 }
+
+/* Center title absolutely, independent of left/right width */
+#siteTitle {
+    position: absolute;
+    left: 49.5%;
+    transform: translateX(-50%);
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--text-primary);
+    pointer-events: none; /* so clicks pass through, optional */
+}
+
+/* Right-side group */
+#headerRight {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+/* Section badge styling */
+#sectionBadge {
+    margin-right: 2rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    background: var(--accent);
+    color: #fff;
+    padding: 4px 12px;
+    border-radius: 14px;
+    white-space: nowrap;
+    user-select: none;
+    transition: background 0.3s ease;
+}
+
+#sectionBadge.unity   { background: #4caf50; } /* green */
+#sectionBadge.csharp  { background: #2196f3; } /* blue */
+#sectionBadge.sites   { background: #9c27b0; } /* purple */
+#sectionBadge.other   { background: #757575; } /* gray */
 
 /* Group hamburger + search */
 #headerLeft {
@@ -154,6 +243,7 @@ body.no-scroll {
 }
 
 #themeToggle {
+    margin-right: 4rem;
     position: fixed;
     top: 16px;
     right: 16px;
@@ -479,24 +569,30 @@ th, td {
     color: var(--accent, #4a90e2);
 }
 
-.copy-attr:hover::after {
-    content: "Click to copy";
+.copy-attr:active {
+    color: var(--accent, #4a90e2);
+}
+
+.copy-attr::after {
+    content: none !important;
+}
+
+.attr-tooltip {
     position: absolute;
-    bottom: 100%;
-    left: 50%;
+    bottom: 100%;          /* sit above the attribute */
+    left: 50%;             /* centered on the attribute */
+    transform: translateX(-50%);
     padding: 2px 6px;
     font-size: 0.75em;
     color: #ccc;
     background: #222;
     border-radius: 4px;
     white-space: nowrap;
+    opacity: 0;
     pointer-events: none;
-    opacity: 0.8;
-    transform: none;
-}
-
-.copy-attr:active {
-    color: var(--accent, #4a90e2);
+    transition: opacity 0.25s ease;
+    margin-bottom: 4px;    /* spacing above */
+    z-index: 1500;
 }
 
 .section-header {
