@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<!--suppress ALL -->
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>Unity Inspector &amp; Scripting Attributes Cheat Sheet</title>
+</head>
+<div id="overlay"></div>
+<body class="dark-theme">
+
+<header id="appHeader">
+    <div id="headerLeft">
+        <button id="sidebarToggle" aria-label="Open Menu">☰</button>
+        <div id="searchInputWrapper">
+            <input id="searchInput" placeholder="Search Tips..." type="text" autocomplete="off" spellcheck="false"/>
+            <button aria-label="Clear search" id="clearSearch">✕</button>
+        </div>
+    </div>
+    <button id="themeToggle" aria-label="Toggle Theme">
+        <svg id="themeIcon" viewBox="0 0 24 24" width="28" height="28" xmlns="http://www.w3.org/2000/svg">
+            <path id="themePath" d="" fill="#ccc"/>
+        </svg>
+    </button>
+</header>
+
+<!-- SIDEBAR -->
+<div id="sidebar">
+    <div id="sidebarTop">
+        <div id="sidebarLinks">
+            <!-- Unity Docs -->
+            <a href="https://docs.unity3d.com/Manual/index.html" rel="noopener" target="_blank">
+                <svg class="unity-logo" fill="white" height="60" viewbox="0 0 16 16" width="60" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15 11.2V3.733L8.61 0v2.867l2.503 1.466c.099.067.099.2 0 .234L8.148 6.3c-.099.067-.197.033-.263 0L4.92 4.567c-.099-.034-.099-.2 0-.234l2.504-1.466V0L1 3.733V11.2v-.033.033l2.438-1.433V6.833c0-.1.131-.166.197-.133L6.6 8.433c.099.067.132.134.132.234v3.466c0 .1-.132.167-.198.134L4.031 10.8l-2.438 1.433L7.983 16l6.391-3.733-2.438-1.434L9.434 12.3c-.099.067-.198 0-.198-.133V8.7c0-.1.066-.2.132-.233l2.965-1.734c.099-.066.197 0 .197.134V9.8z"></path>
+                </svg>
+            </a>
+
+            <!--Microsoft Docs -->
+            <a href="https://learn.microsoft.com/en-us/dotnet/csharp/" rel="noopener" target="_blank">
+                <img alt="C# Documentation" class="microsoft-logo" src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg"/>
+            </a>
+        </div>
+        <button id="sidebarClose">✕</button>
+    </div>
+    <ul>
+        <li data-section="unity">Unity</li>
+        <li data-section="csharp">C#</li>
+        <li data-section="other">Other</li>
+        <li data-section="sites">Maybe Useful Sites</li>
+    </ul>
+</div>
+
+<!-- Page Header -->
+<h1 id="pageTitle">Unity Inspector &amp; Scripting Attributes Cheat Sheet</h1>
+<p id="pageDescription">A comprehensive list of built-in and common custom attributes you can use in Unity.</p>
+
+<!-- Unity Section -->
+<div id="unitySection" class="content-section">
+
+    <!-- Field-Level Attributes -->
+    <section>
+        <h2 class="section-header">
+            <span class="toggle-icon">-</span>
+            <span class="section-title">Field-Level Attributes</span>
+        </h2>
+        <div class="section-content expanded">
+            <table>
+                <thead>
+                <tr>
+                    <th>Attribute</th>
+                    <th>Description</th>
+                    <th>Requirements</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        <code class="copy-attr" data-type="field" data-doc-link="https://docs.unity3d.com/ScriptReference/SerializeField.html">[SerializeField]</code>
+
+                    </td>
+                    <td>Serialize a private field so it appears in the Inspector.</td>
+                    <td>Unity core</td>
+                </tr>
+                <tr>
+                    <td>
+                        <code class="copy-attr" data-type="field" data-doc-link="https://docs.unity3d.com/ScriptReference/HideInInspector.html">[HideInInspector]</code>
+                    </td>
+                    <td>Hide a public or serialized field from the Inspector.</td>
+                    <td>Unity core</td>
+                </tr>
+                <tr>
+                    <td>
+                        <code class="copy-attr" data-type="field" data-doc-link="https://docs.unity3d.com/2019.2/Documentation/ScriptReference/NonSerialized.html">[NonSerialized]</code>
+                    </td>
+                    <td>Prevent a public field from being serialized by Unity.</td>
+                    <td>Unity core</td>
+                </tr>
+                <tr>
+                    <td>
+                        <code class="copy-attr" data-type="field" data-doc-link="https://docs.unity3d.com/ScriptReference/Serialization.FormerlySerializedAsAttribute.html">[FormerlySerializedAs("oldName")]</code>
+                    </td>
+                    <td>Remap serialized data from an old field name after renaming.</td>
+                    <td>Unity 2017.3+</td>
+                </tr>
+                <tr>
+                    <td>
+                        <code class="copy-attr" data-type="field" data-doc-link="https://docs.unity3d.com/ScriptReference/HeaderAttribute.html">[Header("Title")]</code>
+                    </td>
+                    <td>Draw a bold header label above this field or group.</td>
+                    <td>Unity core</td>
+                </tr>
+                <tr>
+                    <td>
+                        <code class="copy-attr" data-type="field" data-doc-link="https://docs.unity3d.com/ScriptReference/SpaceAttribute.html">[Space] / [Space(n)]</code>
+                    </td>
+                    <td>Insert vertical space (default 8ppx) before the next field.</td>
+                    <td>Unity core</td>
+                </tr>
+                <tr>
+                    <td>
+                        <code class="copy-attr" data-type="field" data-doc-link="https://docs.unity3d.com/ScriptReference/TooltipAttribute.html">[Tooltip("…")]</code>
+                    </td>
+                    <td>Show hover-popup help text for the field label in the Inspector.</td>
+                    <td>Unity core</td>
+                </tr>
+                <tr>
+                    <td>
+                        <code class="copy-attr" data-type="field" data-doc-link="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/RangeAttribute.html">[Range(min, max)]</code>
+                    </td>
+                    <td>Render a slider to clamp numeric values between <code>min</code> and <code>max</code>.</td>
+                    <td>Unity core</td>
+                </tr>
+                <tr>
+                    <td>
+                        <code class="copy-attr" data-type="field" data-doc-link="https://docs.unity3d.com/ScriptReference/MinAttribute.html">[Min(value)]</code>
+                    </td>
+                    <td>Clamp numeric values to a minimum (no slider).</td>
+                    <td>Unity 2019.3+</td>
+                </tr>
+                <tr>
+                    <td>
+                        <code class="copy-attr" data-type="field">[Max(value)]</code>
+                    </td>
+                    <td>Clamp numeric values to a maximum (no slider).</td>
+                    <td>Unity 2020.1+</td>
+                </tr>
+                <tr>
+                    <td>
+                        <code class="copy-attr" data-type="field" data-doc-link="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/TextAreaAttribute.html">[TextArea(min, max)]</code>
+                    </td>
+                    <td>Render a multi-line text box between <code>min</code> and <code>max</code> lines.</td>
+                    <td>Unity core</td>
+                </tr>
+                <tr>
+                    <td>
+                        <code class="copy-attr" data-type="field" data-doc-link="https://docs.unity3d.com/ScriptReference/MultilineAttribute.html">[Multiline]</code>
+                    </td>
+                    <td>Render a simple multi-line text area.</td>
+                    <td>Unity core</td>
+                </tr>
+                <tr>
+                    <td>
+                        <code class="copy-attr" data-type="field" data-doc-link="https://docs.unity3d.com/ScriptReference/ColorUsageAttribute-ctor.html">[ColorUsage(showAlpha, hdr)]</code>
+                    </td>
+                    <td>For <code>Color</code>, toggle alpha slider and HDR picker.</td>
+                    <td>Unity 2017.1+</td>
+                </tr>
+                <tr>
+                    <td>
+                        <code class="copy-attr" data-type="field" data-doc-link="https://docs.unity3d.com/ScriptReference/DelayedAttribute.html">[Delayed]</code>
+                    </td>
+                    <td>Delay committing changes to string/numeric fields until focus is lost.</td>
+                    <td>Unity 2019.3+</td>
+                </tr>
+                <tr>
+                    <td>
+                        <code class="copy-attr" data-type="field" data-doc-link="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/SerializeReference.html">[SerializeReference]</code>
+                    </td>
+                    <td>Serialize polymorphic references (abstract/interfaces).</td>
+                    <td>Unity 2019.3+</td>
+                </tr>
+                <tr>
+                    <td>
+                        <code class="copy-attr" data-type="field" data-doc-link="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/InspectorNameAttribute.html">[InspectorName("Name")]</code>
+                    </td>
+                    <td>Override the label shown in the Inspector.</td>
+                    <td>Unity 2018.1+</td>
+                </tr>
+                <tr>
+                    <td>
+                        <code class="copy-attr" data-type="field" data-doc-link="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/ContextMenuItemAttribute.html">[ContextMenuItem("Title","Method")]</code>
+                    </td>
+                    <td>Add a small button next to the field that calls <code>Method</code>.</td>
+                    <td>Unity core</td>
+                </tr>
+                <tr>
+                    <td>
+                        <code class="copy-attr" data-type="field" data-doc-link="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/NonReorderableAttribute.html">[NonReorderable]</code>
+                    </td>
+                    <td>Prevent list reordering UI on a <code>List.</code>
+                    </td>
+                    <td>Unity 2020.1+</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Component & Class-Level Attributes -->
+    <section>
+        <h2 class="section-header">
+            <span class="toggle-icon">-</span>
+            <span class="section-title"> Component &amp; Class-Level Attributes</span>
+        </h2>
+        <div class="section-content expanded">
+            <table>
+                <thead>
+                <tr>
+                    <th>Attribute</th>
+                    <th>Description</th>
+                    <th>Requirements</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        <code class="copy-attr" data-type="class" data-doc-link="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/AddComponentMenu.html">[AddComponentMenu("…")]</code>
+                    </td>
+                    <td>Place this component under a custom submenu.</td>
+                    <td>Unity core</td>
+                </tr>
+                <tr>
+                    <td>
+                        <code class="copy-attr" data-type="class" data-doc-link="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/DisallowMultipleComponent.html">[DisallowMultipleComponent]</code>
+                    </td>
+                    <td>Prevent duplicates of this component on one GameObject.</td>
+                    <td>Unity core</td>
+                </tr>
+                <tr>
+                    <td>
+                        <code class="copy-attr" data-type="class" data-doc-link="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/RequireComponent.html">[RequireComponent(typeof(X))]</code>
+                    </td>
+                    <td>Auto-add or enforce component X on the same GameObject.</td>
+                    <td>Unity core</td>
+                </tr>
+                <tr>
+                    <td>
+                        <code class="copy-attr" data-type="class" data-doc-link="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/ExecuteInEditMode.html">[ExecuteInEditMode]</code>
+                    </td>
+                    <td>Run this <code>MonoBehaviour</code> in Edit mode.</td>
+                    <td>Unity core</td>
+                </tr>
+                <tr>
+                    <td>
+                        <code class="copy-attr" data-type="class" data-doc-link="https://docs.unity3d.com/ScriptReference/ExecuteAlways.html">[ExecuteAlways]</code>
+                    </td>
+                    <td>Execute in Editor even when disabled or in prefab mode.</td>
+                    <td>Unity 2018.1+</td>
+                </tr>
+                <tr>
+                    <td>
+                        <code class="copy-attr" data-type="class" data-doc-link="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/SelectionBaseAttribute.html">[SelectionBase]</code>
+                    </td>
+                    <td>Scene-view clicks on children select this GameObject.</td>
+                    <td>Unity core</td>
+                </tr>
+                <tr>
+                    <td>
+                        <code class="copy-attr" data-type="class" data-doc-link="https://docs.unity3d.com/ScriptReference/HelpURLAttribute.html">[HelpURL("url")]</code>
+                    </td>
+                    <td>Add a “?” icon linking to docs.</td>
+                    <td>Unity core</td>
+                </tr>
+                <tr>
+                    <td>
+                        <code class="copy-attr" data-type="class" data-doc-link="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/DefaultExecutionOrder.html">[DefaultExecutionOrder(n)]</code>
+                    </td>
+                    <td>Control script execution order.</td>
+                    <td>Unity 2017.2+</td>
+                </tr>
+                <tr>
+                    <td>
+                        <code class="copy-attr" data-type="class" data-doc-link="https://docs.unity3d.com/Manual/script-serialization.html">[Serializable]</code>
+                    </td>
+                    <td>Allow a class/struct to be serialized by Unity.</td>
+                    <td>Unity core</td>
+                </tr>
+                <tr>
+                    <td>
+                        <code class="copy-attr" data-type="class" data-doc-link="https://docs.unity3d.com/ScriptReference/AssemblyIsEditorAssembly.html">[AssemblyIsEditorAssembly]</code>
+                    </td>
+                    <td>Exclude this assembly from player builds.</td>
+                    <td>Unity core</td>
+                </tr>
+                <tr>
+                    <td>
+                        <code class="copy-attr" data-type="class" data-doc-link="https://docs.unity3d.com/ScriptReference/AssemblyIsEditorAssembly.html">[MovedFrom(...)]</code>
+                    </td>
+                    <td>API updater remaps types/namespaces after moving.</td>
+                    <td>Unity 2019.3+</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Method-Level & Editor Attributes -->
+    <section>
+        <h2 class="section-header">
+            <span class="toggle-icon">-</span>
+            <span class="section-title">Method-Level &amp; Editor Attributes</span>
+        </h2>
+        <div class="section-content expanded">
+            <table>
+                <thead>
+                <tr>
+                    <th>Attribute</th>
+                    <th>Description</th>
+                    <th>Requirements</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        <code class="copy-attr" data-type="method" data-doc-link="https://docs.unity3d.com/ScriptReference/ContextMenu.html">[ContextMenu("Title")]</code>
+                    </td>
+                    <td>Add a right-click menu to invoke this method in the Inspector.</td>
+                    <td>Unity core</td>
+                </tr>
+                <tr>
+                    <td>
+                        <code class="copy-attr" data-type="method" data-doc-link="https://docs.unity3d.com/ScriptReference/MenuItem.html">[MenuItem("MyMenu/Action")]</code>
+                    </td>
+                    <td>Add a top-bar menu item for this static method.</td>
+                    <td>Unity core</td>
+                </tr>
+                <tr>
+                    <td>
+                        <code class="copy-attr" data-type="method" data-doc-link="https://docs.unity3d.com/ScriptReference/InitializeOnLoadMethodAttribute.html">[InitializeOnLoadMethod]</code>
+                    </td>
+                    <td>Editor: run this static method when the Editor loads.</td>
+                    <td>Unity 2017.1+</td>
+                </tr>
+                <tr>
+                    <td>
+                        <code class="copy-attr" data-type="method" data-doc-link="https://docs.unity3d.com/ScriptReference/RuntimeInitializeOnLoadMethodAttribute.html">[RuntimeInitializeOnLoadMethod]</code>
+                    </td>
+                    <td>Run this static method before any scene loads in playmode/builds.</td>
+                    <td>Unity core</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- DOTS & Native / Burst Attributes -->
+    <section>
+        <h2 class="section-header">
+            <span class="toggle-icon">-</span>
+            <span class="section-title">DOTS &amp; Native / Burst Attributes</span>
+        </h2>
+        <div class="section-content expanded">
+            <table>
+                <thead>
+                <tr>
+                    <th>Attribute</th>
+                    <th>Description</th>
+                    <th>Requirements</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        <code class="copy-attr" data-type="dots" data-doc-link="https://docs.unity3d.com/Packages/com.unity.burst@1.8/manual/compilation-burstcompile.html">[BurstCompile]</code>
+                    </td>
+                    <td>Compile a job/function with Burst for high performance.</td>
+                    <td>com.unity.burst 1.0+, Jobs</td>
+                </tr>
+                <tr>
+                    <td>
+                        <code class="copy-attr" data-type="dots" data-doc-link="https://docs.unity3d.com/ScriptReference/Unity.Burst.BurstDiscardAttribute.html">[BurstDiscard]</code>
+                    </td>
+                    <td>Exclude a method from Burst compilation.</td>
+                    <td>com.unity.burst</td>
+                </tr>
+                <tr>
+                    <td>
+                        <code class="copy-attr" data-type="dots" data-doc-link="https://docs.unity3d.com/ScriptReference/Unity.Collections.WriteOnlyAttribute.html">[WriteOnly]</code>
+                    </td>
+                    <td>DOTS: mark a <code>NativeArray</code> as write-only.</td>
+                    <td>com.unity.collections, Jobs</td>
+                </tr>
+                <tr>
+                    <td>
+                        <code class="copy-attr" data-type="dots" data-doc-link="https://docs.unity3d.com/ScriptReference/Unity.Collections.ReadOnlyAttribute.html">[ReadOnly]</code>
+                    </td>
+                    <td>DOTS: mark a <code>NativeArray</code> as read-only.</td>
+                    <td>com.unity.collections, Jobs</td>
+                </tr>
+                <tr>
+                    <td>
+                        <code class="copy-attr" data-type="dots" data-doc-link="https://docs.unity3d.com/ScriptReference/Unity.Collections.DeallocateOnJobCompletionAttribute.html">[DeallocateOnJobCompletion]</code>
+                    </td>
+                    <td>Free a native collection when a job completes.</td>
+                    <td>com.unity.collections, Jobs</td>
+                </tr>
+                <tr>
+                    <td>
+                        <code class="copy-attr" data-type="dots" data-doc-link="https://docs.unity3d.com/ScriptReference/Unity.Collections.NativeDisableParallelForRestrictionAttribute.html">[NativeDisableParallelForRestriction]</code>
+                    </td>
+                    <td>Allow unsafe parallel writes in jobs.</td>
+                    <td>com.unity.collections, Jobs</td>
+                </tr>
+                <tr>
+                    <td>
+                        <code class="copy-attr" data-type="dots" data-doc-link="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestrictionAttribute.html">[NativeDisableUnsafePtrRestriction]</code>
+                    </td>
+                    <td>Skip safety checks on pointers in jobs.</td>
+                    <td>com.unity.collections, Jobs</td>
+                </tr>
+                <tr>
+                    <td>
+                        <code class="copy-attr" data-type="dots" data-doc-link="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/Unity.Collections.LowLevel.Unsafe.NativeContainerAttribute.html">[RequiredByNativeCode]</code>
+                    </td>
+                    <td>Mark code used by Unity’s native engine (avoid stripping).</td>
+                    <td>UnityEngine.Scripting</td>
+                </tr>
+                <tr>
+                    <td>
+                        <code class="copy-attr" data-type="dots" data-doc-link="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/Scripting.PreserveAttribute.html">[Preserve]</code>
+                    </td>
+                    <td>Prevent IL2CPP or managed stripping on this code.</td>
+                    <td>UnityEngine.Scripting</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
+
+<!-- C# -->
+<div id="csharpSection" class="content-section" style="display:none;">
+
+    <!-- C# Language & Interop Attributes -->
+    <section>
+        <h2 class="section-header">
+            <span class="toggle-icon">-</span>
+            <span class="section-title">C# Language &amp; Interop Attributes</span>
+        </h2>
+        <div class="section-content expanded">
+            <table>
+                <thead>
+                <tr>
+                    <th>Attribute</th>
+                    <th>Description</th>
+                    <th>Requirements</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        <code class="copy-attr" data-type="interop" data-doc-link="https://learn.microsoft.com/en-us/dotnet/api/system.serializableattribute?view=net-9.0">[Serializable]</code>
+                    </td>
+                    <td>Allow .NET serialization (used by JsonUtility).</td>
+                    <td>.NET</td>
+                </tr>
+                <tr>
+                    <td>
+                        <code class="copy-attr" data-type="interop" data-doc-link="https://learn.microsoft.com/en-us/dotnet/api/system.obsoleteattribute?view=net-9.0">[Obsolete("msg")]</code>
+                    </td>
+                    <td>Mark code as deprecated with a warning or error.</td>
+                    <td>.NET</td>
+                </tr>
+                <tr>
+                    <td>
+                        <code class="copy-attr" data-type="interop" data-doc-link="https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.conditionalattribute?view=net-9.0&amp;utm_source=chatgpt.com">[Conditional("UNITY_EDITOR")]</code>
+                    </td>
+                    <td>Compile method calls only when symbol is defined.</td>
+                    <td>.NET</td>
+                </tr>
+                <tr>
+                    <td>
+                        <code class="copy-attr" data-type="interop" data-doc-link="https://learn.microsoft.com/en-us/dotnet/api/system.runtime.interopservices.dllimportattribute?view=net-9.0">[DllImport("…")]</code>
+                    </td>
+                    <td>Declare external native functions (P/Invoke).</td>
+                    <td>.NET</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
+
+<!-- Other -->
+<div id="otherSection" class="content-section" style="display:none;">
+
+    <!-- Custom Property Drawers -->
+    <section>
+        <h2 class="section-header">
+            <span class="toggle-icon">-</span>
+            <span class="section-title">Custom Property Drawers</span>
+        </h2>
+        <div class="section-content expanded">
+            <a class="doc-link" href="https://docs.unity3d.com/6000.1/Documentation/ScriptReference/PropertyDrawer.html" rel="noopener" target="_blank">?</a>
+            <p>Define your own <code>PropertyAttribute</code> + <code>PropertyDrawer</code> to create custom Inspector
+                widgets:
+            </p>
+            <pre><code>
+        // 1) Create the attribute
+        public class MyRange : PropertyAttribute
+        {
+            public float min, max;
+            public MyRange(float min, float max)
+            {
+                this.min = min;
+                this.max = max;
+            }
+        }
+        
+        // 2) Create the drawer
+        #if UNITY_EDITOR
+        [CustomPropertyDrawer(typeof(MyRange))]
+        public class MyRangeDrawer : PropertyDrawer
+        {
+            public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+            {
+                var range = (MyRange)attribute;
+                property.floatValue = EditorGUI.Slider(
+                    position,
+                    label,
+                    property.floatValue,
+                    range.min,
+                    range.max
+                );
+            }
+        }
+        #endif
+        
+        // 3) Use it
+        public class Example : MonoBehaviour
+        {
+            [MyRange(0f, 1f)]
+            public float blend;
+        }
+        </code></pre>
+        </div>
+    </section>
+
+    <!-- Editor Formatting Control -->
+    <section>
+        <h2 class="section-header">
+            <span class="toggle-icon">-</span>
+            <span class="section-title">Editor Formatting Control</span>
+        </h2>
+        <div class="section-content expanded">
+            <p>Prevent automatic code formatting in Visual Studio or Rider (with ReSharper) for specific blocks of code:</p>
+            <section>
+                <h2 class="section-header">
+                    <span class="toggle-icon">-</span>
+                    <span class="section-title">ReSharper Formatter Directives</span>
+                </h2>
+                <div class="section-content expanded">
+                    <a class="doc-link" href="https://www.jetbrains.com/help/rider/Code_Formatting_Style.html" rel="noopener" target="_blank">?</a>
+                    <p>These comments tell ReSharper (used in JetBrains Rider or as a Visual Studio plugin) to skip formatting
+                        between
+                        the markers:</p>
+                    <pre><code>// @formatter:off
+var  weirdlyFormatted   =   "leave   me    alone!";
+// @formatter:on</code></pre>
+                    <p><strong>Note:</strong> To use this in Visual Studio, ReSharper must be installed and <em>“Enable formatter
+                        markers”</em> must be enabled in <code>ReSharper → Options → Code Editing → C# → Formatting Style →
+                        General</code>.</p>
+                    <p>Does not work in CSS.</p>
+                </div>
+            </section>
+            <section>
+                <h2 class="section-header">
+                    <span class="toggle-icon">-</span>
+                    <span class="section-title">Visual Studio</span>
+                </h2>
+                <div class="section-content expanded">
+                    <a class="doc-link" href="https://learn.microsoft.com/en-us/visualstudio/ide/reference/options-text-editor-csharp-formatting?view=vs-2022" rel="noopener" target="_blank">?</a>
+                    <p>Visual Studio’s native formatter does not support formatter-off comments. Instead, you can mark areas with
+                        <code>#region</code>
+                        to locate them easily:</p>
+                    <pre><code>#region DoNotFormat
+var  tempHack  =   "manually     preserved";
+// Add comments or notes here
+#endregion</code></pre>
+                </div>
+            </section>
+        </div>
+    </section>
+</div>
+
+<!-- Useful Sites -->
+<div id="sitesSection" class="content-section" style="display:none;">
+    <ul id="siteGrid" class="site-grid"></ul>
+    <template id="siteCardTpl">
+        <li class="site-card">
+            <a class="site-link" target="_blank" rel="noopener">
+                <div class="thumb">
+                    <div class="thumb-overlay"></div>
+                    <img class="thumb-icon" alt="" loading="lazy" decoding="async" />
+                </div>
+                <div class="info">
+                    <div class="title-line">
+                        <h3 class="title"></h3>
+                    </div>
+                    <p class="desc"></p>
+                    <div class="tags"></div>
+                </div>
+            </a>
+        </li>
+    </template>
+</div>
+
+<!-- BACK TO TOP -->
+<button id="backToTop" title="Back to top">↑</button>
+
+<!-- FOOTER -->
+<footer id="footer"><p>Keeps you productive</p></footer>
+<link rel="stylesheet" href="style.css">
+<script src="script.js"></script>
+</body>
+</html>
