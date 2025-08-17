@@ -1,8 +1,6 @@
 # 🚀 DevHints  
 
-[![GitHub stars](https://img.shields.io/github/stars/KalleEhrsson/DevHints?style=flat-square)](https://github.com/KalleEhrsson/DevHints/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/KalleEhrsson/DevHints?style=flat-square)](https://github.com/KalleEhrsson/DevHints/forks)
-[![GitHub issues](https://img.shields.io/github/issues/KalleEhrsson/DevHints?style=flat-square)](https://github.com/KalleEhrsson/DevHints/issues)
+
 ---
 
 A growing collection of **Unity tips, C# tricks, and useful developer resources**.  
