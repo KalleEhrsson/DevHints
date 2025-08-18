@@ -518,12 +518,12 @@ th, td {
     padding: 0.75rem 1rem;
     border-bottom: 1px solid #333;
     vertical-align: top;
-    text-align: left; /* Add this */
+    text-align: left;
 }
 
 .copy-attr {
     background: none;
-    color: var(--text-primary, #eee); /* use your dark mode text color */
+    color: var(--text-primary, #eee);
     border: none;
     padding: 0;
     margin: 0;
@@ -829,4 +829,78 @@ th, td {
     -webkit-box-orient: vertical;
     overflow: hidden;
     min-height: 2.8em;
+
+    /* "Other" tab polish */
+    #otherSection section {
+        margin: 14px 0;
+        border-radius: 14px;
+        background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+        box-shadow: 0 6px 16px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.08);
+        overflow: hidden;
+    }
+
+    #otherSection .section-header {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+        padding: 12px 14px;
+        background: transparent;
+    }
+
+    #otherSection .section-header .section-title {
+        font-weight: 600;
+        letter-spacing: .2px;
+    }
+
+    #otherSection .toggle-icon {
+        width: 22px;
+        height: 22px;
+        line-height: 22px;
+        text-align: center;
+        border-radius: 8px;
+        opacity: .8;
+        user-select: none;
+    }
+
+    #otherSection .section-content {
+        padding: 10px 14px 14px;
+    }
+
+    /* Put the docs ? on the header, right-aligned, subtle */
+    #otherSection .section-header .doc-icon-link,
+    #otherSection .section-header .doc-link {
+        margin-left: auto;
+        opacity: .6;
+        transition: opacity .2s ease, transform .2s ease;
+        transform: translateY(0);
+    }
+    #otherSection .section-header .doc-icon-link:hover,
+    #otherSection .section-header .doc-link:hover {
+        opacity: 1;
+        transform: translateY(-1px);
+    }
+
+    /* Code block aesthetics */
+    #otherSection pre {
+        margin: 10px 0 0;
+        padding: 12px 14px;
+        background: rgba(0,0,0,0.4);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 12px;
+        overflow: auto;
+    }
+    #otherSection pre code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+        font-size: 0.92rem;
+        line-height: 1.4;
+        white-space: pre;
+    }
+
+    /* Small glow on hover for the whole card */
+    #otherSection section:hover {
+        box-shadow: 0 10px 24px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.06);
+        border-color: rgba(255,255,255,0.12);
+    }
+
 }

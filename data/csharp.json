@@ -1,0 +1,43 @@
+{
+  "sections": [
+    {
+      "id": "interop",
+      "title": "C# Language & Interop Attributes",
+      "columns": ["Attribute", "Description", "Requirements"],
+      "rows": [
+        {
+          "code": "[Serializable]",
+          "docLink": "https://learn.microsoft.com/en-us/dotnet/api/system.serializableattribute",
+          "description": "Allow .NET serialization (used by JsonUtility).",
+          "requirements": ".NET",
+          "type": "interop",
+          "copy": "[Serializable]"
+        },
+        {
+          "code": "[Obsolete(\"msg\")]",
+          "docLink": "https://learn.microsoft.com/en-us/dotnet/api/system.obsoleteattribute",
+          "description": "Mark code as deprecated with a warning or error.",
+          "requirements": ".NET",
+          "type": "interop",
+          "copy": "[Obsolete(\"msg\")]"
+        },
+        {
+          "code": "[Conditional(\"UNITY_EDITOR\")]",
+          "docLink": "https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.conditionalattribute",
+          "description": "Compile method calls only when symbol is defined.",
+          "requirements": ".NET",
+          "type": "interop",
+          "copy": "[Conditional(\"UNITY_EDITOR\")]"
+        },
+        {
+          "code": "[DllImport(\"…\")]",
+          "docLink": "https://learn.microsoft.com/en-us/dotnet/api/system.runtime.interopservices.dllimportattribute",
+          "description": "Declare external native functions (P/Invoke).",
+          "requirements": ".NET",
+          "type": "interop",
+          "copy": "[DllImport(\"…\")]"
+        }
+      ]
+    }
+  ]
+}

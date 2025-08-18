@@ -1,0 +1,19 @@
+{
+  "sections": [
+    {
+      "id": "property-drawers",
+      "title": "Custom Property Drawers",
+      "html": "<a class=\"doc-link\" href=\"https://docs.unity3d.com/6000.1/Documentation/ScriptReference/PropertyDrawer.html\" rel=\"noopener\" target=\"_blank\">?</a>\n<p>Define your own <code>PropertyAttribute</code> + <code>PropertyDrawer</code> to create custom Inspector widgets:</p>\n<pre><code>// 1) Create the attribute\npublic class MyRange : PropertyAttribute\n{\n    public float min, max;\n    public MyRange(float min, float max)\n    {\n        this.min = min;\n        this.max = max;\n    }\n}\n\n// 2) Create the drawer\n#if UNITY_EDITOR\n[CustomPropertyDrawer(typeof(MyRange))]\npublic class MyRangeDrawer : PropertyDrawer\n{\n    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)\n    {\n        var range = (MyRange)attribute;\n        property.floatValue = EditorGUI.Slider(\n            position,\n            label,\n            property.floatValue,\n            range.min,\n            range.max\n        );\n    }\n}\n#endif\n\n// 3) Use it\npublic class Example : MonoBehaviour\n{\n    [MyRange(0f, 1f)]\n    public float blend;\n}\n</code></pre>"
+    },
+    {
+      "id": "resharper-formatting",
+      "title": "ReSharper Formatter Directives",
+      "html": "<a class=\"doc-link\" href=\"https://www.jetbrains.com/help/rider/Code_Formatting_Style.html\" rel=\"noopener\" target=\"_blank\">?</a>\n<p>Tell ReSharper (Rider / VS + ReSharper) to skip formatting between markers:</p>\n<pre><code>// @formatter:off\nvar  weirdlyFormatted   =   \"leave   me    alone!\";\n// @formatter:on\n</code></pre>\n<p><strong>Note:</strong> In Visual Studio, enable <em>Enable formatter markers</em> under <code>ReSharper → Options → Code Editing → C# → Formatting Style → General</code>.</p>\n<p>Does not work in CSS.</p>"
+    },
+    {
+      "id": "visual-studio",
+      "title": "Visual Studio",
+      "html": "<a class=\"doc-link\" href=\"https://learn.microsoft.com/en-us/visualstudio/ide/reference/options-text-editor-csharp-formatting?view=vs-2022\" rel=\"noopener\" target=\"_blank\">?</a>\n<p>VS does not support formatter-off comments natively. Use <code>#region</code> to mark areas:</p>\n<pre><code>#region DoNotFormat\nvar  tempHack  =   \"manually     preserved\";\n// Add comments or notes here\n#endregion\n</code></pre>"
+    }
+  ]
+}

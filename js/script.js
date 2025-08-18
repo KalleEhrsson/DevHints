@@ -30,6 +30,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const body = document.body;
 
+    // lock page height to the visible tab
+    function activeSectionEl() {
+        return Array.from(document.querySelectorAll('.content-section'))
+            .find(el => el.style.display !== 'none');
+    }
+
+    function recalcPageHeight() {
+        const header = document.getElementById('appHeader');
+        const footer = document.querySelector('footer');
+        const sec = activeSectionEl();
+        if (!sec) return;
+
+        document.body.style.minHeight = '';
+        document.body.style.height = '';
+
+        const headerH = header ? header.offsetHeight : 0;
+        const footerH = footer ? footer.offsetHeight : 0;
+        const secH = sec.scrollHeight;
+        const needed = Math.max(window.innerHeight, headerH + secH + footerH);
+
+        document.body.style.minHeight = needed + 'px';
+        document.body.style.height = needed + 'px';
+
+        const progress = document.getElementById('scrollProgress');
+        if (progress) {
+            progress.style.width = '0%';
+            progress.style.backgroundPosition = '0% 50%';
+        }
+
+        window.scrollTo(0, 0);
+    }
+
     /* SEARCH */
     input.addEventListener('keyup', function () {
         const filter = input.value.toLowerCase();
@@ -207,9 +239,10 @@ document.addEventListener('DOMContentLoaded', () => {
             badge.id = 'sectionBadge';
             badge.classList.add(sectionKey);
         }
+
+        recalcPageHeight();
+        updateScrollProgress();
     }
-
-
 
     // Restore active tab from storage (you already store li.textContent)
     const savedActiveText = localStorage.getItem('activeSidebar');
@@ -250,81 +283,64 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // Copy to clipboard on attribute click 
-    document.querySelectorAll('.copy-attr').forEach(el => {
-        el.addEventListener('click', () => {
-            const text = el.textContent;
-            navigator.clipboard.writeText(text).then(() => {
-                // Feedback to user
-                const originalText = el.textContent;
-                el.textContent = 'Copied!';
-                setTimeout(() => {
-                    el.textContent = originalText;
-                }, 1000);
-            }).catch(err => {
-                console.error('Failed to copy: ', err);
-            });
-        });
+    document.addEventListener('click', (e) => {
+        const code = e.target.closest('code.copy-attr');
+        if (!code) return;
+
+        const text = code.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+            const original = code.textContent;
+            code.textContent = 'Copied!';
+            setTimeout(() => { code.textContent = original; }, 800);
+        }).catch(console.error);
     });
 
-    document.querySelectorAll('.copy-attr').forEach(el => {
-        /* Save the clean text once */
-        if (!el.dataset.copy) el.dataset.copy = el.textContent.trim();
+    const tooltip = document.createElement('div');
+    tooltip.className = 'attr-tooltip';
+    tooltip.textContent = 'Click to copy';
+    document.body.appendChild(tooltip);
 
-        let tip, showTimer, hideTimer;
+    let tooltipShowTimer;
+    let tooltipHideTimer;
 
-        function ensureTip() {
-            if (!tip) {
-                tip = document.createElement('div');
-                tip.className = 'attr-tooltip';
-                tip.textContent = 'Click to copy';
-                document.body.appendChild(tip); // attach globally
-            }
-            return tip;
-        }
+    document.addEventListener('mouseenter', (e) => {
+        const code = e.target.closest('code.copy-attr');
+        if (!code) return;
 
-        function showTipDelayed() {
-            clearTimeout(hideTimer);
-            showTimer = setTimeout(() => {
-                const rect = el.getBoundingClientRect();
-                ensureTip();
-                tip.style.left = rect.left + rect.width / 2 + "px";
-                tip.style.top = (rect.top - 20) + window.scrollY + "px"; // 6px above
-                tip.style.opacity = '1';
-            }, 300);
-        }
+        clearTimeout(tooltipHideTimer);
 
-        function hideTipDelayed() {
-            clearTimeout(showTimer);
-            hideTimer = setTimeout(() => {
-                if (tip) tip.style.opacity = '0';
-            }, 300);
-        }
+        // delay before showing
+        tooltipShowTimer = setTimeout(() => {
+            const rect = code.getBoundingClientRect();
+            tooltip.style.left = rect.left + rect.width / 2 + 'px';
+            tooltip.style.top  = rect.top + window.scrollY - 20 + 'px';
+            tooltip.style.opacity = '1';
+        }, 300); // 👈 300ms delay
+    }, true);
 
-        el.addEventListener('mouseenter', showTipDelayed);
-        el.addEventListener('mouseleave', hideTipDelayed);
+    document.addEventListener('mouseleave', (e) => {
+        const code = e.target.closest('code.copy-attr');
+        if (!code) return;
 
-        /* Copy handler: always use the saved clean text */
-        el.addEventListener('click', () => {
-            const text = el.dataset.copy;  // clean, without tooltip
-            navigator.clipboard.writeText(text).then(() => {
-                ensureTip();
-                clearTimeout(hideTimer);
-                tip.style.opacity = '1';
-                tip.textContent = 'Copied!';
-                setTimeout(() => { if (tip) tip.textContent = 'Click to copy'; }, 800);
-            }).catch(err => console.error('Failed to copy:', err));
-        });
-    });
+        clearTimeout(tooltipShowTimer);
+        tooltipHideTimer = setTimeout(() => {
+            tooltip.style.opacity = '0';
+        }, 200); // fade-out delay
+    }, true);
 
+    // Update tooltip text on click
+    document.addEventListener('click', (e) => {
+        const code = e.target.closest('code.copy-attr');
+        if (!code) return;
 
-
-    window.addEventListener('scroll', function () {
-        const btn = document.getElementById('backToTop');
-        if (window.scrollY > 100) {
-            btn.classList.add('show');
-        } else {
-            btn.classList.remove('show');
-        }
+        const text = code.dataset.copy || code.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+            // Hide immediately (no "Copied!" linger)
+            const oldTransition = tooltip.style.transition;
+            tooltip.style.transition = 'none';
+            tooltip.style.opacity = '0';
+            requestAnimationFrame(() => { tooltip.style.transition = oldTransition; });
+        }).catch(console.error);
     });
 
     // Back to top 
@@ -356,12 +372,22 @@ document.addEventListener('DOMContentLoaded', () => {
         icon.addEventListener('click', toggle);
     });
 
-    document.querySelectorAll('.copy-attr').forEach(code => {
-        const docLink = code.dataset.docLink;
+    // Show documentation '?' icon on hover
+    let docShowTimer;
 
-        if (docLink) {
-            const link = document.createElement('a');
-            link.href = docLink;
+    document.addEventListener('mouseenter', (e) => {
+        const code = e.target.closest('code.copy-attr');
+        if (!code) return;
+
+        const url = code.dataset.docLink;
+        if (!url) return;
+
+        let link = code.nextElementSibling;
+        const needNew = !(link && link.classList && link.classList.contains('doc-icon-link'));
+
+        if (needNew) {
+            link = document.createElement('a');
+            link.href = url;
             link.target = '_blank';
             link.rel = 'noopener';
             link.className = 'doc-icon-link';
@@ -370,40 +396,72 @@ document.addEventListener('DOMContentLoaded', () => {
             link.style.opacity = '0';
             link.style.pointerEvents = 'none';
             link.style.transition = 'opacity 0.3s ease';
-
             link.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" aria-hidden="true" width="16" height="16">
-            <text x="0" y="14" font-size="16" font-family="Arial, sans-serif" fill="currentColor">?</text></svg>`;
-
+          <text x="0" y="14" font-size="16" font-family="Arial, sans-serif" fill="currentColor">?</text>
+        </svg>`;
             code.after(link);
 
-            let showTimer, hideTimer;
-
-            function showIcon() {
-                clearTimeout(hideTimer);
+            /* Keep visible while hovering the link */
+            link.addEventListener('mouseenter', () => {
+                clearTimeout(docShowTimer);
                 link.style.opacity = '1';
                 link.style.pointerEvents = 'auto';
-            }
+            });
+            link.addEventListener('mouseleave', () => {
+                link.style.opacity = '0';
+                link.style.pointerEvents = 'none';
+            });
+        }
 
-            function hideIcon() {
-                hideTimer = setTimeout(() => {
+        // Delay before showing
+        clearTimeout(docShowTimer);
+        docShowTimer = setTimeout(() => {
+            link.style.opacity = '1';
+            link.style.pointerEvents = 'auto';
+        }, 300); // 300ms delay
+    }, true);
+
+    document.addEventListener('mouseleave', (e) => {
+        const code = e.target.closest('code.copy-attr');
+        if (!code) return;
+        const link = code.nextElementSibling;
+        if (link && link.classList.contains('doc-icon-link')) {
+            clearTimeout(docShowTimer); // cancel pending show
+            setTimeout(() => {
+                if (!link.matches(':hover')) {
                     link.style.opacity = '0';
                     link.style.pointerEvents = 'none';
-                }, 300); // fade-out delay
-            }
-
-            code.addEventListener('mouseenter', () => {
-                showTimer = setTimeout(showIcon, 300); // fade-in delay
-            });
-
-            code.addEventListener('mouseleave', () => {
-                clearTimeout(showTimer);
-                hideIcon();
-            });
-
-            // Keep visible while hovering the ? link
-            link.addEventListener('mouseenter', showIcon);
-            link.addEventListener('mouseleave', hideIcon);
+                }
+            }, 300); // fade-out delay
         }
+    }, true);
+
+    // Hide the ? immediately when clicked
+    document.addEventListener('click', (e) => {
+        const link = e.target.closest('a.doc-icon-link');
+        if (!link) return;
+        
+        // kill transition so it disappears instantly
+        const oldTransition = link.style.transition;
+        link.style.transition = 'none';
+        link.style.opacity = '0';
+        link.style.pointerEvents = 'none';
+        
+        // restore transition for future hovers
+        requestAnimationFrame(() => { link.style.transition = oldTransition; });
+    });
+
+    // Also hide immediately when tab regains focus
+    window.addEventListener('focus', () => {
+        document.querySelectorAll('a.doc-icon-link').forEach(link => {
+            if (!link.matches(':hover')) {
+                const oldTransition = link.style.transition;
+                link.style.transition = 'none';
+                link.style.opacity = '0';
+                link.style.pointerEvents = 'none';
+                requestAnimationFrame(() => { link.style.transition = oldTransition; });
+            }
+        });
     });
 
     // Theme Toggle 
@@ -426,6 +484,32 @@ document.addEventListener('DOMContentLoaded', () => {
         const isLight = body.classList.contains('light-theme');
         setTheme(isLight ? 'dark' : 'light');
     });
+
+    window.addEventListener('resize', recalcPageHeight);
+
+    /* Make "Other" tab pretty: move doc link into header and mark as card */
+    function enhanceOther() {
+        const mount = document.getElementById('otherSection');
+        if (!mount) return;
+
+        mount.querySelectorAll('section').forEach(sec => {
+            const header = sec.querySelector('.section-header');
+            const content = sec.querySelector('.section-content');
+            if (!header || !content) return;
+
+            // find any ? link inside content
+            const doc = content.querySelector('.doc-link, .doc-icon-link');
+            if (doc && !header.contains(doc)) {
+                // normalize class so CSS hits
+                doc.classList.remove('doc-link');
+                doc.classList.add('doc-icon-link');
+                doc.setAttribute('aria-label', 'Docs');
+                header.appendChild(doc);
+            }
+        });
+    }
+
+    document.getElementById('otherSection')?.addEventListener('other:rendered', enhanceOther);
 });
 
 // Flash cards for Useful Sites 
@@ -491,15 +575,19 @@ function renderSites() {
 renderSites();
 
 // Scroll progress line
-window.addEventListener('scroll', () => {
+function updateScrollProgress() {
     const progress = document.getElementById('scrollProgress');
-    const scrolled = window.scrollY;
-    const height = document.documentElement.scrollHeight - window.innerHeight;
-    const percent = (scrolled / height) * 100;
-    
-    // width = scroll position
-    progress.style.width = percent + "%";
+    if (!progress) return;
 
-    // gradient slides as you scroll
-    progress.style.backgroundPosition = `${percent}% 50%`;
-});
+    const doc = document.scrollingElement || document.documentElement;
+    const max = Math.max(1, doc.scrollHeight - doc.clientHeight);
+    let pct = (doc.scrollTop / max) * 100;
+
+    // snap to 100% at the very bottom
+    if (doc.scrollTop >= max - 1) pct = 100;
+
+    progress.style.width = pct + '%';
+    progress.style.backgroundPosition = `${pct}% 50%`;
+}
+
+window.addEventListener('scroll', updateScrollProgress);
