@@ -23,6 +23,9 @@ body.dark-theme {
     --search-border: #444;
     --search-placeholder: #888;
 
+    --border: #444;
+    --chip-selected: #2a2a2a;
+
     --sidebar-bg: #2c2c2c;
     --sidebar-hover: #333;
     --sidebar-active: #4a90e2;
@@ -56,6 +59,9 @@ body.light-theme {
     --search-text: #222;
     --search-border: #c3d0e0;
     --search-placeholder: #666;
+
+    --border: #ccc;
+    --chip-selected: #e0e0e0;
 
     --sidebar-bg: #f9f9f9;
     --sidebar-hover: #ddd;
@@ -241,6 +247,12 @@ html {
     cursor: pointer;
     display: none;
 }
+
+#tagBar { display:flex; align-items:center; gap:.5rem; margin:.5rem 0 0; flex-wrap:wrap; }
+#tagMode { font:inherit; padding:.25rem .5rem; border-radius:.5rem; border:1px solid var(--border, #444); background:transparent; cursor:pointer; }
+.tag-chip { font:inherit; padding:.15rem .5rem; border-radius:999px; border:1px solid var(--border, #444); background:transparent; cursor:pointer; }
+.tag-chip.selected { background: var(--chip-selected, #2a2a2a); }
+
 
 #themeToggle {
     margin-right: 4rem;
@@ -850,7 +862,7 @@ th, td {
 
     #otherSection .section-header .section-title {
         font-weight: 600;
-        letter-spacing: .2px;
+        letter-spacing: 0;
     }
 
     #otherSection .toggle-icon {

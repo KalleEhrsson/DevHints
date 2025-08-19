@@ -1,5 +1,4 @@
-/* Multi‑section JSON renderer
-   Renders any number of { mountId, jsonPath, eventName } entries */
+/* Multi‑section JSON renderer */
 
 /* Escape plain text */
 function escHtml(s) {
@@ -7,7 +6,8 @@ function escHtml(s) {
     d.textContent = s != null ? String(s) : '';
     return d.innerHTML;
 }
-/** Row coming from JSON */
+
+/* Row model */
 /**
  * @typedef {Object} Row
  * @property {string=} code
@@ -18,20 +18,18 @@ function escHtml(s) {
  * @property {string=} requirements
  */
 
-/** @param {Row} row */
+/* Attribute row */
 function renderRow(row) {
     const r = (row && typeof row === 'object') ? row : {};
-
     const code = escHtml(r.code || '');
     const type = escHtml(r.type || '');
-
     const docLink = typeof r.docLink === 'string' ? r.docLink : '';
-    const descriptionHtml = Object.prototype.hasOwnProperty.call(r, 'descriptionHtml') ? (r.descriptionHtml || '') : '';
+    const hasHtml = Object.prototype.hasOwnProperty.call(r, 'descriptionHtml');
+    const descriptionHtml = hasHtml ? (r.descriptionHtml || '') : '';
     const descriptionText = escHtml(r.description || '');
     const requirements = escHtml(r.requirements || '');
-
-    const docAttr = docLink ? ' data-doc-link="' + escHtml(docLink) + '"' : '';
     const descCell = descriptionHtml || descriptionText;
+    const docAttr = docLink ? ' data-doc-link="' + escHtml(docLink) + '"' : '';
 
     let out = '';
     out += '<tr>';
@@ -42,7 +40,8 @@ function renderRow(row) {
     return out;
 }
 
-/* Build one <section> table */
+
+/* Attribute table section */
 function renderAttributeTable(section) {
     const s = (section && typeof section === 'object') ? section : {};
     const title = escHtml(s.title || '');
@@ -60,7 +59,7 @@ function renderAttributeTable(section) {
         out += '</section>';
         return out;
     }
-    
+
     const columns = Array.isArray(s.columns) ? s.columns : ['Attribute','Description','Requirements'];
     const rows = Array.isArray(s.rows) ? s.rows : [];
 
@@ -85,7 +84,58 @@ function renderAttributeTable(section) {
     return out;
 }
 
-/* Pre-seed the doc-link icons so layout doesn’t jump on hover */
+/* Utilities for Sites */
+function normalizeUrl(u) {
+    try { return /^https?:\/\//i.test(u) ? u : `https://${u}`; }
+    catch { return u; }
+}
+function domainOf(url) {
+    try { return new URL(url).hostname; } catch { return ""; }
+}
+function faviconFor(domain) {
+    return `https://icons.duckduckgo.com/ip3/${domain}.ico`;
+}
+function gradientFromString(str) {
+    let h = 0;
+    for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) % 360;
+    const c1 = `hsl(${h} 55% 22%)`, c2 = `hsl(${h} 55% 12%)`;
+    return `linear-gradient(180deg, ${c1}, ${c2})`;
+}
+
+/* Render Sites into the Sites section using the template in index.html */
+function renderSitesIntoMount(mount, sites) {
+    const grid = mount.querySelector('#siteGrid');
+    const tpl  = mount.querySelector('#siteCardTpl');
+    if (!grid || !tpl) return;
+
+    grid.innerHTML = '';
+
+    sites.forEach(site => {
+        const node   = tpl.content.firstElementChild.cloneNode(true);
+        const a      = node.querySelector('.site-link');
+        const thumb  = node.querySelector('.thumb');
+        const icon   = node.querySelector('.thumb-icon');
+        const title  = node.querySelector('.title');
+        const descEl = node.querySelector('.desc');
+
+        const href   = normalizeUrl(site.url || '');
+        const domain = domainOf(href);
+
+        a.href = href;
+        title.textContent = site.title || domain || href;
+        descEl.textContent = site.description || '';
+
+        thumb.style.background = gradientFromString(domain || href);
+        icon.src = faviconFor(domain);
+        icon.alt = domain || 'favicon';
+        icon.addEventListener('load', () => icon.classList.add('loaded'));
+        icon.addEventListener('error', () => icon.remove());
+
+        grid.appendChild(node);
+    });
+}
+
+/* Pre-seed doc-link icons to avoid layout shifts */
 function preseedDocLinks(mount) {
     const codes = mount.querySelectorAll('code.copy-attr[data-doc-link]');
     codes.forEach(code => {
@@ -119,7 +169,7 @@ function preseedDocLinks(mount) {
     });
 }
 
-/* Render one JSON into one mount */
+/* Render dispatcher that handles both shapes: {sections:[...]} and {sites:[...]} */
 async function renderJsonInto(mountId, jsonPath, eventName) {
     const mount = document.getElementById(mountId);
     if (!mount) return;
@@ -134,6 +184,24 @@ async function renderJsonInto(mountId, jsonPath, eventName) {
         return;
     }
 
+    /* Sites shape */
+    if (data && Array.isArray(data.sites)) {
+        // keep outer structure; the template lives in index.html
+        renderSitesIntoMount(mount, data.sites);
+
+        const evName = eventName || 'sites:rendered';
+        mount.dispatchEvent(new CustomEvent(evName, {
+            bubbles: true,
+            detail: {
+                mountId,
+                jsonPath,
+                sites: data.sites.length
+            }
+        }));
+        return;
+    }
+
+    /* Attribute sections shape */
     const sects = (data && Array.isArray(data.sections)) ? data.sections : [];
     mount.innerHTML = sects.map(s => renderAttributeTable(s)).join('');
 
@@ -151,7 +219,7 @@ async function renderJsonInto(mountId, jsonPath, eventName) {
     }));
 }
 
-/* Render all configured sources */
+/* Render multiple sources */
 async function renderAll(sources) {
     if (!Array.isArray(sources)) return;
     for (const s of sources) {
@@ -159,17 +227,18 @@ async function renderAll(sources) {
     }
 }
 
-/* Configure your mounts and JSON paths here */
+/* Configure mounts and JSON paths */
 const dataSources = [
     { mountId: 'unitySection',  jsonPath: '/data/unity.json',  eventName: 'unity:rendered'  },
     { mountId: 'csharpSection', jsonPath: '/data/csharp.json', eventName: 'csharp:rendered' },
-    { mountId: 'otherSection',  jsonPath: '/data/other.json',  eventName: 'other:rendered' }
+    { mountId: 'otherSection',  jsonPath: '/data/other.json',  eventName: 'other:rendered'  },
+    { mountId: 'sitesSection',  jsonPath: '/data/sites.json',  eventName: 'sites:rendered'  }
 ];
 
-/* Kick off after DOM is ready */
+/* Kick off after DOM ready */
 document.addEventListener('DOMContentLoaded', () => {
     renderAll(dataSources);
 });
 
-/* Optional export for other scripts */
+/* Optional export */
 window.DevHintsDataRender = {};

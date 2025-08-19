@@ -11,7 +11,8 @@
           "description": "Serialize a private field so it appears in the Inspector.",
           "requirements": "Unity core",
           "type": "field",
-          "copy": "[SerializeField]"
+          "copy": "[SerializeField]",
+          "tags": ["inspector","serialization"]
         },
         {
           "code": "[HideInInspector]",
@@ -19,7 +20,8 @@
           "description": "Hide a public or serialized field from the Inspector.",
           "requirements": "Unity core",
           "type": "field",
-          "copy": "[HideInInspector]"
+          "copy": "[HideInInspector]",
+          "tags": ["inspector","ui"]
         },
         {
           "code": "[NonSerialized]",
@@ -27,7 +29,8 @@
           "description": "Prevent a public field from being serialized by Unity.",
           "requirements": "Unity core",
           "type": "field",
-          "copy": "[NonSerialized]"
+          "copy": "[NonSerialized]",
+          "tags": ["inspector","serialization"]
         },
         {
           "code": "[FormerlySerializedAs(\"oldName\")]",
@@ -35,7 +38,8 @@
           "description": "Remap serialized data from an old field name after renaming.",
           "requirements": "Unity 2017.3+",
           "type": "field",
-          "copy": "[FormerlySerializedAs(\"oldName\")]"
+          "copy": "[FormerlySerializedAs(\"oldName\")]",
+          "tags": ["migration","serialization"]
         },
         {
           "code": "[Header(\"Title\")]",
@@ -43,7 +47,8 @@
           "description": "Draw a bold header label above this field or group.",
           "requirements": "Unity core",
           "type": "field",
-          "copy": "[Header(\"Title\")]"
+          "copy": "[Header(\"Title\")]",
+          "tags": ["inspector","ui"]
         },
         {
           "code": "[Space] / [Space(n)]",
@@ -51,7 +56,8 @@
           "description": "Insert vertical space (default 8ppx) before the next field.",
           "requirements": "Unity core",
           "type": "field",
-          "copy": "[Space] / [Space(n)]"
+          "copy": "[Space] / [Space(n)]",
+          "tags": ["inspector","ui"]
         },
         {
           "code": "[Tooltip(\"…\")]",
@@ -59,15 +65,17 @@
           "description": "Show hover-popup help text for the field label in the Inspector.",
           "requirements": "Unity core",
           "type": "field",
-          "copy": "[Tooltip(\"…\")]"
+          "copy": "[Tooltip(\"…\")]",
+          "tags": ["inspector","ui"]
         },
         {
           "code": "[Range(min, max)]",
           "docLink": "https://docs.unity3d.com/6000.1/Documentation/ScriptReference/RangeAttribute.html",
-          "description": "Render a slider to clamp numeric values between <code>min</code> and <code>max</code>.",
+          "descriptionHtml": "Render a slider to clamp numeric values between <code>min</code> and <code>max</code>.",
           "requirements": "Unity core",
           "type": "field",
-          "copy": "[Range(min, max)]"
+          "copy": "[Range(min, max)]",
+          "tags": ["inspector","validation"]
         },
         {
           "code": "[Min(value)]",
@@ -75,30 +83,34 @@
           "description": "Clamp numeric values to a minimum (no slider).",
           "requirements": "Unity 2019.3+",
           "type": "field",
-          "copy": "[Min(value)]"
+          "copy": "[Min(value)]",
+          "tags": ["inspector","validation"]
         },
         {
           "code": "[Max(value)]",
           "description": "Clamp numeric values to a maximum (no slider).",
           "requirements": "Unity 2020.1+",
           "type": "field",
-          "copy": "[Max(value)]"
+          "copy": "[Max(value)]",
+          "tags": ["inspector","validation"]
         },
         {
           "code": "[TextArea(min, max)]",
           "docLink": "https://docs.unity3d.com/6000.1/Documentation/ScriptReference/TextAreaAttribute.html",
-          "description": "Render a multi-line text box between <code>min</code> and <code>max</code> lines.",
+          "descriptionHtml": "Render a multi-line text box between <code>min</code> and <code>max</code> lines.",
           "requirements": "Unity core",
           "type": "field",
-          "copy": "[TextArea(min, max)]"
+          "copy": "[TextArea(min, max)]",
+          "tags": ["inspector","ui"]
         },
         {
           "code": "[Multiline]",
           "docLink": "https://docs.unity3d.com/ScriptReference/MultilineAttribute.html",
-          "description": "For <code>Color</code>, toggle alpha slider and HDR picker.",
+          "descriptionHtml": "For <code>Color</code>, toggle alpha slider and HDR picker.",
           "requirements": "Unity 2017.1+",
           "type": "field",
-          "copy": "[Multiline]"
+          "copy": "[Multiline]",
+          "tags": ["inspector","ui"]
         },
         {
           "code": "[Delayed]",
@@ -106,7 +118,8 @@
           "description": "Delay committing changes to string/numeric fields until focus is lost.",
           "requirements": "Unity 2019.3+",
           "type": "field",
-          "copy": "[Delayed]"
+          "copy": "[Delayed]",
+          "tags": ["inspector","ui"]
         },
         {
           "code": "[SerializeReference]",
@@ -114,7 +127,8 @@
           "description": "Serialize polymorphic references (abstract/interfaces).",
           "requirements": "Unity 2019.3+",
           "type": "field",
-          "copy": "[SerializeReference]"
+          "copy": "[SerializeReference]",
+          "tags": ["serialization"]
         },
         {
           "code": "[InspectorName(\"Name\")]",
@@ -122,29 +136,32 @@
           "description": "Override the label shown in the Inspector.",
           "requirements": "Unity 2018.1+",
           "type": "field",
-          "copy": "[InspectorName(\"Name\")]"
+          "copy": "[InspectorName(\"Name\")]",
+          "tags": ["inspector","ui"]
         },
         {
           "code": "[ContextMenuItem(\"Title\",\"Method\")]",
           "docLink": "https://docs.unity3d.com/6000.1/Documentation/ScriptReference/ContextMenuItemAttribute.html",
-          "description": "Add a small button next to the field that calls <code>Method</code>.",
+          "descriptionHtml": "Add a small button next to the field that calls <code>Method</code>.",
           "requirements": "Unity core",
           "type": "field",
-          "copy": "[ContextMenuItem(\"Title\",\"Method\")]"
+          "copy": "[ContextMenuItem(\"Title\",\"Method\")]",
+          "tags": ["inspector","ui"]
         },
         {
           "code": "[NonReorderable]",
           "docLink": "https://docs.unity3d.com/6000.1/Documentation/ScriptReference/NonReorderableAttribute.html",
-          "description": "Prevent list reordering UI on a <code>List.",
+          "descriptionHtml": "Prevent list reordering UI on a <code>List</code>.",
           "requirements": "Unity 2020.1+",
           "type": "field",
-          "copy": "[NonReorderable]"
+          "copy": "[NonReorderable]",
+          "tags": ["inspector","ui"]
         }
       ]
     },
     {
       "id": "class",
-      "title": "Component &amp; Class-Level Attributes",
+      "title": "Component & Class-Level Attributes",
       "columns": ["Attribute", "Description", "Requirements"],
       "rows": [
         {
@@ -153,7 +170,8 @@
           "description": "Place this component under a custom submenu.",
           "requirements": "Unity core",
           "type": "class",
-          "copy": "[AddComponentMenu(\"…\")]"
+          "copy": "[AddComponentMenu(\"…\")]",
+          "tags": ["component","editor"]
         },
         {
           "code": "[DisallowMultipleComponent]",
@@ -161,7 +179,8 @@
           "description": "Prevent duplicates of this component on one GameObject.",
           "requirements": "Unity core",
           "type": "class",
-          "copy": "[[DisallowMultipleComponent]"
+          "copy": "[[DisallowMultipleComponent]",
+          "tags": ["component","validation"]
         },
         {
           "code": "[RequireComponent(typeof(X))]",
@@ -169,15 +188,17 @@
           "description": "Auto-add or enforce component X on the same GameObject.",
           "requirements": "Unity core",
           "type": "class",
-          "copy": "[RequireComponent(typeof(X))]"
+          "copy": "[RequireComponent(typeof(X))]",
+          "tags": ["component","validation"]
         },
         {
           "code": "[ExecuteInEditMode]",
           "docLink": "https://docs.unity3d.com/ScriptReference/DisallowMultipleComponent.html",
-          "description": "Run this <code>MonoBehaviour</code> in Edit mode.",
+          "descriptionHtml": "Run this <code>MonoBehaviour</code> in Edit mode.",
           "requirements": "Unity core",
           "type": "class",
-          "copy": "[[ExecuteInEditMode]"
+          "copy": "[[ExecuteInEditMode]",
+          "tags": ["component","editor"]
         },
         {
           "code": "[ExecuteAlways]",
@@ -185,7 +206,8 @@
           "description": "Execute in Editor even when disabled or in prefab mode.",
           "requirements": "Unity 2018.1+",
           "type": "class",
-          "copy": "[ExecuteAlways]"
+          "copy": "[ExecuteAlways]",
+          "tags": ["component","editor"]
         },
         {
           "code": "[SelectionBase]",
@@ -193,7 +215,8 @@
           "description": "Scene-view clicks on children select this GameObject",
           "requirements": "Unity core",
           "type": "class",
-          "copy": "[SelectionBase]"
+          "copy": "[SelectionBase]",
+          "tags": ["component","editor"]
         },
         {
           "code": "[HelpURL(\"url\")]",
@@ -201,7 +224,8 @@
           "description": "Add a “?” icon linking to a url.",
           "requirements": "Unity core",
           "type": "class",
-          "copy": "[HelpURL(\"url\")]"
+          "copy": "[HelpURL(\"url\")]",
+          "tags": ["component","editor"]
         },
         {
           "code": "[DefaultExecutionOrder(n)]",
@@ -209,7 +233,8 @@
           "description": "Control script execution order.",
           "requirements": "Unity 2017.2+",
           "type": "class",
-          "copy": "[DefaultExecutionOrder(n)]"
+          "copy": "[DefaultExecutionOrder(n)]",
+          "tags": ["component","editor"]
         },
         {
           "code": "[AssemblyIsEditorAssembly]",
@@ -217,7 +242,8 @@
           "description": "Exclude this assembly from player builds.",
           "requirements": "Unity core",
           "type": "class",
-          "copy": "[AssemblyIsEditorAssembly]"
+          "copy": "[AssemblyIsEditorAssembly]",
+          "tags": ["build","editor"]
         },
         {
           "code": "[MovedFrom(...)]",
@@ -225,13 +251,14 @@
           "description": "API updater remaps types/namespaces after moving.",
           "requirements": "Unity 2019.3+",
           "type": "class",
-          "copy": "[MovedFrom(...)]"
+          "copy": "[MovedFrom(...)]",
+          "tags": ["migration"]
         }
       ]
     },
     {
       "id": "method",
-      "title": "Method-Level &amp; Editor Attributes",
+      "title": "Method-Level & Editor Attributes",
       "columns": ["Attribute", "Description", "Requirements"],
       "rows": [
         {
@@ -240,7 +267,8 @@
           "description": "Add a right-click menu to invoke this method in the Inspector.",
           "requirements": "Unity core",
           "type": "method",
-          "copy": "[ContextMenu(\"Title\")]"
+          "copy": "[ContextMenu(\"Title\")]",
+          "tags": ["method","editor"]
         },
         {
           "code": "[MenuItem(\"MyMenu/Action\")]",
@@ -248,7 +276,8 @@
           "description": "Add a top-bar menu item for this static method.",
           "requirements": "Unity core",
           "type": "method",
-          "copy": "[MenuItem(\"MyMenu/Action\")]"
+          "copy": "[MenuItem(\"MyMenu/Action\")]",
+          "tags": ["method","editor"]
         },
         {
           "code": "[InitializeOnLoadMethod]",
@@ -256,7 +285,8 @@
           "description": "Editor: run this static method when the Editor loads.",
           "requirements": "Unity 2017.1+",
           "type": "method",
-          "copy": "[InitializeOnLoadMethod]"
+          "copy": "[InitializeOnLoadMethod]",
+          "tags": ["method","editor"]
         },
         {
           "code": "[RuntimeInitializeOnLoadMethod]",
@@ -264,13 +294,14 @@
           "description": "Run this static method before any scene loads in playmode/builds.",
           "requirements": "Unity core",
           "type": "method",
-          "copy": "[RuntimeInitializeOnLoadMethod]"
+          "copy": "[RuntimeInitializeOnLoadMethod]",
+          "tags": ["method","runtime"]
         }
       ]
     },
     {
       "id": "dots",
-      "title": "DOTS &amp; Native / Burst Attributes",
+      "title": "DOTS & Native / Burst Attributes",
       "columns": ["Attribute", "Description", "Requirements"],
       "rows": [
         {
@@ -279,7 +310,8 @@
           "description": "Compile a job/function with Burst for high performance.",
           "requirements": "com.unity.burst 1.0+, Jobs",
           "type": "dots",
-          "copy": "[BurstCompile]"
+          "copy": "[BurstCompile]",
+          "tags": ["dots","performance"]
         },
         {
           "code": "[BurstDiscard]",
@@ -287,23 +319,26 @@
           "description": "Exclude a method from Burst compilation.",
           "requirements": "com.unity.burst",
           "type": "dots",
-          "copy": "[BurstDiscard]"
+          "copy": "[BurstDiscard]",
+          "tags": ["dots","performance"]
         },
         {
           "code": "[WriteOnly]",
           "docLink": "https://docs.unity3d.com/ScriptReference/Unity.Collections.WriteOnlyAttribute.html",
-          "description": "DOTS: mark a <code>NativeArray</code> as write-only.",
+          "descriptionHtml": "DOTS: mark a <code>NativeArray</code> as write-only.",
           "requirements": "com.unity.collections, Jobs",
           "type": "dots",
-          "copy": "[WriteOnly]"
+          "copy": "[WriteOnly]",
+          "tags": ["dots","safety"]
         },
         {
-          "code": "[[ReadOnly]",
+          "code": "[ReadOnly]",
           "docLink": "https://docs.unity3d.com/ScriptReference/Unity.Collections.ReadOnlyAttribute.html",
-          "description": ">DOTS: mark a <code>NativeArray</code> as read-only.",
+          "descriptionHtml": "DOTS: mark a <code>NativeArray</code> as read-only.",
           "requirements": "com.unity.collections, Jobs",
           "type": "dots",
-          "copy": "[ReadOnly]"
+          "copy": "[ReadOnly]",
+          "tags": ["dots","safety"]
         },
         {
           "code": "[DeallocateOnJobCompletion]",
@@ -311,7 +346,8 @@
           "description": "Free a native collection when a job completes.",
           "requirements": "com.unity.collections, Jobs",
           "type": "dots",
-          "copy": "[DeallocateOnJobCompletion]"
+          "copy": "[DeallocateOnJobCompletion]",
+          "tags": ["dots","safety"]
         },
         {
           "code": "[NativeDisableParallelForRestriction]",
@@ -319,7 +355,8 @@
           "description": "Allow unsafe parallel writes in jobs.",
           "requirements": "com.unity.collections, Jobs",
           "type": "dots",
-          "copy": "[NativeDisableParallelForRestriction]"
+          "copy": "[NativeDisableParallelForRestriction]",
+          "tags": ["dots","safety"]
         },
         {
           "code": "[NativeDisableUnsafePtrRestriction]",
@@ -327,7 +364,8 @@
           "description": "Skip safety checks on pointers in jobs.",
           "requirements": "com.unity.collections, Jobs",
           "type": "dots",
-          "copy": "[NativeDisableUnsafePtrRestriction]"
+          "copy": "[NativeDisableUnsafePtrRestriction]",
+          "tags": ["dots","safety"]
         },
         {
           "code": "[Preserve]",
@@ -335,7 +373,8 @@
           "description": "Prevent IL2CPP or managed stripping on this code.",
           "requirements": "UnityEngine.Scripting",
           "type": "dots",
-          "copy": "[Preserve]"
+          "copy": "[Preserve]",
+          "tags": ["build"]
         }
       ]
     }

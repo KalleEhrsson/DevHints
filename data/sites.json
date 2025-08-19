@@ -1,2 +1,59 @@
 {
+  "sites": [
+    {
+      "title": "CSS Loaders",
+      "url": "https://uiball.com/ldrs/",
+      "description": "Copy loading spinners in pure CSS."
+    },
+    {
+      "title": "UI Colors",
+      "url": "https://uicolors.app/",
+      "description": "Generate and export Tailwind color palettes."
+    },
+    {
+      "title": "ReactBits",
+      "url": "https://www.reactbits.dev/",
+      "description": "Grab ready React components and patterns."
+    },
+    {
+      "title": "Thiings 3D",
+      "url": "https://www.thiings.co/things",
+      "description": "Download transparent 3D PNG renders."
+    },
+    {
+      "title": "Text Behind Image",
+      "url": "https://textbehindimage.com/",
+      "description": "Create masked headlines behind images."
+    },
+    {
+      "title": "Hugeicons",
+      "url": "https://hugeicons.com/icons?style=Stroke&type=Rounded",
+      "description": "Pro icon set with rounded stroke."
+    },
+    {
+      "title": "Remove Photos",
+      "url": "https://remove.photos/",
+      "description": "Remove objects and blemishes online."
+    },
+    {
+      "title": "Napkin AI",
+      "url": "https://app.napkin.ai/page/create",
+      "description": "Turn text prompts into images."
+    },
+    {
+      "title": "Cheatography",
+      "url": "https://cheatography.com/",
+      "description": "Search and download cheat sheets."
+    },
+    {
+      "title": "Stirling PDF",
+      "url": "https://stirlingpdf.io/",
+      "description": "Edit, split, and merge PDFs in the browser."
+    },
+    {
+      "title": "Snazzy Maps",
+      "url": "https://snazzymaps.com/",
+      "description": "Customize Google Maps styles."
+    }
+  ]
 }

@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const defaultWidth = 100; // starting width in px
     const focusWidth = 200;   // width when focused with no text
     const maxWidth = 600;     // max growth width in px
+    
 
     /* PAGE TITLE */
     const pageTitle = document.getElementById("pageTitle");
@@ -36,6 +37,47 @@ document.addEventListener('DOMContentLoaded', () => {
             .find(el => el.style.display !== 'none');
     }
 
+    /* Persisted collapse state helpers */
+    function slugify(s) {
+        return (s || '')
+            .toLowerCase()
+            .replace(/\W+/g, '-')
+            .replace(/^-+|-+$/g, '');
+    }
+
+    function sectionScopeFor(node) {
+        const mount = node.closest('.content-section');
+        if (!mount) return 'app';
+        return (mount.id || 'app').replace(/Section$/, '');
+    }
+
+    function keyForHeader(header) {
+        const title = header.querySelector('.section-title')?.textContent.trim() || 'section';
+        return 'collapse:' + sectionScopeFor(header) + ':' + slugify(title);
+    }
+
+    function saveCollapseState(header, expanded) {
+        try { localStorage.setItem(keyForHeader(header), expanded ? '1' : '0'); } catch {}
+    }
+
+    function restoreAllCollapseStates() {
+        document.querySelectorAll('.content-section').forEach(mount => {
+            mount.querySelectorAll('.section-header').forEach(header => {
+                const content = header.nextElementSibling;
+                const icon    = header.querySelector('.toggle-icon');
+                if (!content) return;
+
+                const key     = keyForHeader(header);
+                const stored  = localStorage.getItem(key);
+                const expand  = stored === null ? true : stored === '1';
+
+                content.classList.toggle('expanded', expand);
+                if (icon) icon.textContent = expand ? '-' : '+';
+            });
+        });
+        if (typeof recalcPageHeight === 'function') recalcPageHeight();
+    }
+
     function recalcPageHeight() {
         const header = document.getElementById('appHeader');
         const footer = document.querySelector('footer');
@@ -61,37 +103,70 @@ document.addEventListener('DOMContentLoaded', () => {
 
         window.scrollTo(0, 0);
     }
-
+    
     /* SEARCH */
-    input.addEventListener('keyup', function () {
-        const filter = input.value.toLowerCase();
-        const sections = document.querySelectorAll('section');
-        let anyRowVisibleOverall = false;
+    function applySearch() {
+        const q = input.value.trim().toLowerCase();
+        const sec = activeSectionEl();
+        if (!sec) return;
 
-        sections.forEach(section => {
-            const table = section.querySelector('table');
+        const groups = sec.querySelectorAll('section');
+        let anyVisibleOverall = false;
+
+        groups.forEach(group => {
+            const table = group.querySelector('table');
+
             if (table) {
-                const rows = table.querySelectorAll('tbody tr');
                 let anyRowVisible = false;
-                rows.forEach(row => {
-                    const text = row.textContent.toLowerCase();
-                    row.style.display = (filter === '' || text.includes(filter)) ? '' : 'none';
-                    if (row.style.display === '') anyRowVisible = true;
+                table.querySelectorAll('tbody tr').forEach(row => {
+                    const show = !q || row.textContent.toLowerCase().includes(q);
+                    row.style.display = show ? '' : 'none';
+                    if (show) anyRowVisible = true;
                 });
-                section.style.display = anyRowVisible ? '' : 'none';
-                if (anyRowVisible) anyRowVisibleOverall = true;
+                group.style.display = anyRowVisible ? '' : 'none';
+                if (anyRowVisible) anyVisibleOverall = true;
             } else {
-                const text = section.textContent.toLowerCase();
-                section.style.display = (filter === '' || text.includes(filter)) ? '' : 'none';
-                if (filter === '' || text.includes(filter)) anyRowVisibleOverall = true;
+                const show = !q || group.textContent.toLowerCase().includes(q);
+                group.style.display = show ? '' : 'none';
+                if (show) anyVisibleOverall = true;
             }
         });
 
-        footer.textContent = (filter !== '' && !anyRowVisibleOverall)
+        footer.textContent = (q && !anyVisibleOverall)
             ? 'No results found related to your search.'
             : originalFooterText;
+    }
+
+    /* Clear + unfocus */
+    function doClear() {
+        input.value = '';
+        clearButton.style.display = 'none';
+        if (typeof applySearch === 'function') applySearch();
+        setTimeout(() => { input.blur(); }, 0);
+    }
+
+    // Wire search input
+    input.addEventListener('keyup', applySearch);
+
+    // Show hide the X and auto reset when empty
+    input.addEventListener('input', () => {
+        clearButton.style.display = input.value ? 'block' : 'none';
+        if (!input.value) applySearch();
     });
 
+    clearButton.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        doClear();
+    });
+
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') doClear();
+    });
+
+    input.addEventListener('input', () => {
+        clearButton.style.display = input.value ? 'block' : 'none';
+    });
+    
     // Expand on input
     searchInput.addEventListener('input', () => {
         if (searchInput.value.length > 0) {
@@ -127,19 +202,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     input.addEventListener('input', () => clearButton.style.display = input.value ? 'block' : 'none');
-
-    // Prevent input blur when pressing X
-    clearButton.addEventListener('mousedown', (e) => {
-        e.preventDefault(); // Keeps focus on the input
-    });
-
-    // Clear search input and reset filter
-    clearButton.addEventListener('click', () => {
-        input.value = '';
-        clearButton.style.display = 'none';
-        input.dispatchEvent(new Event('keyup')); // trigger filter reset
-        input.blur();
-    });
 
     // Load saved active item from localStorage
     const savedActive = localStorage.getItem('activeSidebar');
@@ -208,7 +270,7 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         other:  {
             title: 'Other Notes',
-            desc:  'Extra references, tips, and resources outside Unity and C#.',
+            desc:  'Misc bits worth remembering.',
             short: 'Other'
         },
         sites:  {
@@ -232,7 +294,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const badge = document.getElementById('sectionBadge');
         if (badge && copy) {
-            badge.textContent = copy.short; // always short label
+            badge.textContent = copy.short;
 
             // reset classes
             badge.className = '';
@@ -315,7 +377,7 @@ document.addEventListener('DOMContentLoaded', () => {
             tooltip.style.left = rect.left + rect.width / 2 + 'px';
             tooltip.style.top  = rect.top + window.scrollY - 20 + 'px';
             tooltip.style.opacity = '1';
-        }, 300); // 👈 300ms delay
+        }, 300); 
     }, true);
 
     document.addEventListener('mouseleave', (e) => {
@@ -352,25 +414,26 @@ document.addEventListener('DOMContentLoaded', () => {
         window.scrollTo({top: 0, behavior: 'smooth'})
     );
 
-    // Expand/Collapse sections on header click
-    document.querySelectorAll('.section-header').forEach(header => {
-        const title = header.querySelector('.section-title');
-        const icon = header.querySelector('.toggle-icon');
-        const content = header.nextElementSibling;
+    
+    
+    /* Expand or collapse sections and persist the state */
+    document.addEventListener('click', (e) => {
+        const target = e.target.closest('.section-header .section-title, .section-header .toggle-icon');
+        if (!target) return;
 
-        function toggle() {
-            if (content.classList.contains('expanded')) {
-                content.classList.remove('expanded');
-                icon.textContent = '+';
-            } else {
-                content.classList.add('expanded');
-                icon.textContent = '-';
-            }
-        }
+        const header  = target.closest('.section-header');
+        const content = header?.nextElementSibling;
+        const icon    = header?.querySelector('.toggle-icon');
+        if (!content) return;
 
-        title.addEventListener('click', toggle);
-        icon.addEventListener('click', toggle);
+        const expanded = content.classList.toggle('expanded');
+        if (icon) icon.textContent = expanded ? '-' : '+';
+
+        saveCollapseState(header, expanded);
+
+        if (typeof recalcPageHeight === 'function') recalcPageHeight();
     });
+
 
     // Show documentation '?' icon on hover
     let docShowTimer;
@@ -510,69 +573,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     document.getElementById('otherSection')?.addEventListener('other:rendered', enhanceOther);
+
+    /* Reapply saved collapse states after JSON renders */
+    document.getElementById('unitySection') ?.addEventListener('unity:rendered',  restoreAllCollapseStates);
+    document.getElementById('csharpSection')?.addEventListener('csharp:rendered', restoreAllCollapseStates);
+    document.getElementById('otherSection') ?.addEventListener('other:rendered',  restoreAllCollapseStates);
+
+    /* Initial restore */
+    restoreAllCollapseStates();
 });
-
-// Flash cards for Useful Sites 
-const sites = [
-    { title: "CSS Loaders", url: "https://uiball.com/ldrs/", description: "Copy loading spinners in pure CSS." },
-    { title: "UI Colors", url: "https://uicolors.app/", description: "Generate and export Tailwind color palettes." },
-    { title: "ReactBits", url: "https://www.reactbits.dev/", description: "Grab ready React components and patterns." },
-    { title: "Thiings 3D", url: "https://www.thiings.co/things", description: "Download transparent 3D PNG renders." },
-    { title: "Text Behind Image", url: "https://textbehindimage.com/", description: "Create masked headlines behind images." },
-    { title: "Hugeicons", url: "https://hugeicons.com/icons?style=Stroke&type=Rounded", description: "Pro icon set with rounded stroke." },
-    { title: "Remove Photos", url: "https://remove.photos/", description: "Remove objects and blemishes online." },
-    { title: "Napkin AI", url: "https://app.napkin.ai/page/create", description: "Turn text prompts into images." },
-    { title: "Cheatography", url: "https://cheatography.com/", description: "Search and download cheat sheets." },
-    { title: "Stirling PDF", url: "https://stirlingpdf.io/", description: "Edit, split, and merge PDFs in the browser." },
-    { title: "Snazzy Maps", url: "https://snazzymaps.com/", description: "Customize Google Maps styles." }
-];
-
-// Useful Sites rendering with favicons
-function normalizeUrl(u) {
-    return /^https?:\/\//i.test(u) ? u : `https://${u}`;
-}
-function domainOf(url) {
-    try { return new URL(url).hostname; } catch { return ""; }
-}
-function faviconFor(domain) {
-    return `https://icons.duckduckgo.com/ip3/${domain}.ico`;
-}
-function gradientFromString(str) {
-    let h = 0; for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) % 360;
-    const c1 = `hsl(${h} 55% 22%)`, c2 = `hsl(${h} 55% 12%)`;
-    return `linear-gradient(180deg, ${c1}, ${c2})`;
-}
-
-function renderSites() {
-    const grid = document.getElementById('siteGrid');
-    const tpl  = document.getElementById('siteCardTpl');
-    grid.innerHTML = '';
-
-    sites.forEach(site => {
-        const node   = tpl.content.firstElementChild.cloneNode(true);
-        const a      = node.querySelector('.site-link');
-        const thumb  = node.querySelector('.thumb');
-        const icon   = node.querySelector('.thumb-icon');
-        const title  = node.querySelector('.title');
-        const descEl = node.querySelector('.desc');
-
-        const href   = normalizeUrl(site.url);
-        const domain = domainOf(href);
-
-        a.href = href;
-        title.textContent = site.title || domain || href;
-        descEl.textContent = site.description || '';
-
-        thumb.style.background = gradientFromString(domain || href);
-        icon.src = faviconFor(domain);
-        icon.alt = domain || 'favicon';
-        icon.addEventListener('load', () => icon.classList.add('loaded'));
-        icon.addEventListener('error', () => icon.remove());
-
-        grid.appendChild(node);
-    });
-}
-renderSites();
 
 // Scroll progress line
 function updateScrollProgress() {
