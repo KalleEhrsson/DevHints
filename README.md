@@ -10,7 +10,7 @@ Think of it as a personal but shareable cheat-sheet that keeps evolving as I lea
 
 ## 🌐 Live Preview
 👉 Visit [DevHints](https://devhints.netlify.app/)  online
-Browse insights right in your browser—no setup needed.
+Browse insights right in your browser.
 
 ---
 
