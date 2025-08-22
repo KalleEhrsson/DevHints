@@ -7,6 +7,17 @@ function escHtml(s) {
     return d.innerHTML;
 }
 
+/* Allow <code> tags in alt/caption text */
+function allowCodeTags(s) {
+    const raw = s != null ? String(s) : "";
+    const escaped = escHtml(raw);
+
+    // Only re-enable <code>…</code>
+    return escaped
+        .replaceAll("&lt;code&gt;", "<code>")
+        .replaceAll("&lt;/code&gt;", "</code>");
+}
+
 /* Row model */
 /**
  * @typedef {Object} Row
@@ -16,28 +27,72 @@ function escHtml(s) {
  * @property {string=} description
  * @property {string=} descriptionHtml
  * @property {string=} requirements
+ * @property {string=} exampleImg
+ * @property {string=} exampleAlt
+ * @property {string=} exampleNote
+ */
+
+/**
+ * @typedef {Object} Section
+ * @property {string=} id
+ * @property {string=} title
+ * @property {string=} html // when present, section renders custom HTML instead of a table
+ * @property {string[]=} columns
+ * @property {Row[]=} rows
+ * @property {boolean=} exampleOpen 
  */
 
 /* Attribute row */
+/** @param {Row} row */
 function renderRow(row) {
     const r = (row && typeof row === 'object') ? row : {};
-    const code = escHtml(r.code || '');
-    const type = escHtml(r.type || '');
-    const docLink = typeof r.docLink === 'string' ? r.docLink : '';
-    const hasHtml = Object.prototype.hasOwnProperty.call(r, 'descriptionHtml');
-    const descriptionHtml = hasHtml ? (r.descriptionHtml || '') : '';
-    const descriptionText = escHtml(r.description || '');
-    const requirements = escHtml(r.requirements || '');
+    const code = escHtml(r.code || "");
+    const type = escHtml(r.type || "");
+    const docLink = typeof r.docLink === "string" ? r.docLink : "";
+    const hasHtml = Object.prototype.hasOwnProperty.call(r, "descriptionHtml");
+    const descriptionHtml = hasHtml ? (r.descriptionHtml || "") : "";
+    const descriptionText = escHtml(r.description || "");
+    const requirements = escHtml(r.requirements || "");
     const descCell = descriptionHtml || descriptionText;
-    const docAttr = docLink ? ' data-doc-link="' + escHtml(docLink) + '"' : '';
+    const docAttr = docLink ? ' data-doc-link="' + escHtml(docLink) + '"' : "";
 
-    let out = '';
-    out += '<tr>';
-    out +=   '<td><code class="copy-attr" data-type="' + type + '"' + docAttr + '>' + code + '</code></td>';
-    out +=   '<td>' + descCell + '</td>';
-    out +=   '<td>' + requirements + '</td>';
-    out += '</tr>';
-    return out;
+    const exampleImg  = (typeof r.exampleImg === "string" && r.exampleImg.trim()) ? r.exampleImg.trim() : "";
+    const exampleAlt  = allowCodeTags(r.exampleAlt || "");
+    const exampleNote = allowCodeTags(r.exampleNote || "");
+    const longCaptionHtml =
+        (r.exampleLongHtml && r.exampleLongHtml.trim())
+            ? r.exampleLongHtml
+            : (exampleNote || exampleAlt || descriptionHtml || descriptionText);
+
+    let descWithIcon = descCell;
+    if (exampleImg) {
+        const src = "/examples/" + exampleImg;
+        descWithIcon = `
+      <button type="button" class="example-icon" data-src="${src}" aria-label="Open example">
+        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+      </button>
+      <span class="desc-text">${descCell}</span>
+      <span class="example-cap" hidden>${longCaptionHtml}</span>`;
+    }
+
+    return `
+  <tr>
+    <td><code class="copy-attr" data-type="${type}"${docAttr}>${code}</code></td>
+    <td class="desc-td">
+      ${exampleImg ? `
+        <button type="button" class="example-icon" data-src="/examples/${exampleImg}" aria-label="Open example">
+          <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+        </button>` : ``}
+      <span class="desc-text">${descCell}</span>
+      ${exampleImg ? `<span class="example-cap" hidden>${longCaptionHtml}</span>` : ``}
+    </td>
+    <td>${requirements}</td>
+  </tr>`;
 }
 
 
@@ -236,8 +291,12 @@ const dataSources = [
 ];
 
 /* Kick off after DOM ready */
-document.addEventListener('DOMContentLoaded', () => {
-    renderAll(dataSources);
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        await renderAll(dataSources);
+    } catch (e) {
+        console.error(e);
+    }
 });
 
 /* Optional export */

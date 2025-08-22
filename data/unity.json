@@ -75,7 +75,11 @@
           "requirements": "Unity core",
           "type": "field",
           "copy": "[Range(min, max)]",
-          "tags": ["inspector","validation"]
+          "tags": ["inspector","validation"],
+
+          "exampleImg": "range.webp",
+          "exampleAlt": "Inspector slider created by <code>[Range]</code> on a float field",
+          "exampleNote": "Default slider styling in the built-in Inspector"
         },
         {
           "code": "[Min(value)]",

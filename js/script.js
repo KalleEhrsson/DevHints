@@ -581,7 +581,87 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* Initial restore */
     restoreAllCollapseStates();
-});
+
+    /* Toggle example */
+    document.addEventListener('toggle', (e) => {
+        const d = e.target;
+        if (!(d instanceof HTMLDetailsElement)) return;
+        if (!d.classList.contains('example')) return;
+        const sum = d.querySelector('.example-summary');
+        if (sum) sum.title = d.open ? 'Hide example' : 'Show example';
+    });
+
+    /* Lightbox: click example image to zoom */
+    const lb = document.getElementById('lightbox');
+    const lbImg = document.getElementById('lb-img');
+    const lbCap = document.getElementById('lb-cap');
+
+    function openLightbox(src, altText, captionHtml) {
+        if (!src) return;
+        lbImg.src = src;
+        lbImg.alt = altText || '';
+        lbCap.innerHTML = captionHtml || '';
+        lb.classList.add('show');
+        requestAnimationFrame(() => lb.classList.add('reveal'));
+        document.body.classList.add('no-scroll');
+    }
+
+    function closeLightbox() {
+        lb.classList.remove('reveal');
+        setTimeout(() => {
+            lb.classList.remove('show');
+            lbImg.removeAttribute('src');
+            lbCap.innerHTML = ''; 
+            document.body.classList.remove('no-scroll');
+        }, 180);
+    }
+
+    /* Delegate clicks from any example image */
+    document.addEventListener('click', (e) => {
+        const img = e.target.closest('details.example img');
+        if (!img) return;
+
+        e.preventDefault();
+
+        // Prefer the <a href> if you wrapped the img, otherwise img src
+        const a = img.closest('a');
+        const src = a ? a.getAttribute('href') : img.getAttribute('src');
+        const altText = img.getAttribute('alt') || '';
+
+        // Pull visible caption from the same figure: exampleNote <figcaption> or exampleAlt .example-alt
+        const fig = img.closest('figure');
+        const capNode = fig?.querySelector('figcaption') || fig?.querySelector('.example-alt');
+        const capHtml = capNode ? capNode.innerHTML : '';
+
+        openLightbox(src, altText, capHtml);
+    });
+
+    /* Close on overlay click (but not when clicking the image/caption box) */
+    lb.addEventListener('click', (e) => {
+        if (!e.target.closest('.lb-wrap')) closeLightbox();
+    });
+
+    /* Close on Esc */
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && lb.classList.contains('show')) closeLightbox();
+    });
+
+    /* Open lightbox from magnifying glass */
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('.example-icon');
+        if (!btn) return;
+
+        const td = btn.closest('td');
+        const capNode = td?.querySelector('.example-cap');
+        const src = btn.getAttribute('data-src');
+        const capHtml = capNode ? capNode.innerHTML : '';
+
+        e.preventDefault();
+        if (typeof openLightbox === 'function') openLightbox(src, '', capHtml);
+    });
+
+
+}); // DOMContentUnloaded
 
 // Scroll progress line
 function updateScrollProgress() {
