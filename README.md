@@ -6,6 +6,18 @@ Think of it as a personal but shareable cheat-sheet that keeps evolving as I lea
 
 ---
 
+## 📑 Table of Contents
+- [🌐 Live Preview](#-live-preview)  
+- [🧑‍💻 Features](#-features)  
+- [📂 Current Sections](#-current-sections)  
+- [🚧 Roadmap](#-roadmap/ideas)  
+- [🛠️ Getting Started](#-getting-started)  
+- [🌟 Why I Built This](#-why-i-built-this)  
+- [🤝 Contributing](#-contributing)  
+- [📜 License](#-license)  
+
+---
+
 ## 🌐 Live Preview
 👉 Visit [DevHints](https://devhints.netlify.app/)  online
 Browse insights right in your browser.
@@ -32,9 +44,18 @@ Browse insights right in your browser.
 
 ## 🚧 Roadmap / Ideas
 
-- Add a tag filter system  
-- Include screenshots or code snippets for clarity
-- Add **search across all sections** 
+### 🔹 Short-term
+- Add a **tag filter system**  
+- Include **screenshots/code snippets** for clarity  
+- Improve **mobile layout** and responsiveness  
+- Add **search across all sections**
+
+### 🔹 Long-term
+- Implement **search suggestions/autocomplete**  
+- Add **favorites system** (save/star tips locally)  
+- Enable **offline mode (PWA)** for browsing without internet  
+- Support **multiple languages** (start with English + Swedish)  
+- Add **versioning** for Unity/C# tips (e.g., Unity 6 vs Unity 5)  
 
 ---
 
