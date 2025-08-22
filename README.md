@@ -25,10 +25,7 @@ Browse insights right in your browser.
 
 ## 🚧 Roadmap / Ideas
 
-- Categorize tips (Unity, C#, Tools, etc.)  
-- Add a search or filter system  
-- Dark mode toggle  
-- Host the site online for easier access  
+- Add a tag filter system  
 - Include screenshots or code snippets for clarity  
 
 ---
