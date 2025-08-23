@@ -103,7 +103,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         window.scrollTo(0, 0);
     }
-    
+
+    /* safe closest helper in case it was not added earlier */
+    const $closest = window.$closest || function (t, sel) {
+        const el = (t && t.nodeType === 1) ? t : t?.parentElement;
+        return el ? el.closest(sel) : null;
+    };
+
     /* SEARCH */
     function applySearch() {
         const q = input.value.trim().toLowerCase();
@@ -346,7 +352,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Copy to clipboard on attribute click 
     document.addEventListener('click', (e) => {
-        const code = e.target.closest('code.copy-attr');
+        const code = $closest(e.target,'code.copy-attr');
         if (!code) return;
 
         const text = code.textContent;
@@ -366,7 +372,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let tooltipHideTimer;
 
     document.addEventListener('mouseenter', (e) => {
-        const code = e.target.closest('code.copy-attr');
+        const code = $closest(e.target,'code.copy-attr');
         if (!code) return;
 
         clearTimeout(tooltipHideTimer);
@@ -381,7 +387,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, true);
 
     document.addEventListener('mouseleave', (e) => {
-        const code = e.target.closest('code.copy-attr');
+        const code = $closest(e.target,'code.copy-attr');
         if (!code) return;
 
         clearTimeout(tooltipShowTimer);
@@ -392,7 +398,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Update tooltip text on click
     document.addEventListener('click', (e) => {
-        const code = e.target.closest('code.copy-attr');
+        const code = $closest(e.target,'code.copy-attr');
         if (!code) return;
 
         const text = code.dataset.copy || code.textContent;
@@ -418,7 +424,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     /* Expand or collapse sections and persist the state */
     document.addEventListener('click', (e) => {
-        const target = e.target.closest('.section-header .section-title, .section-header .toggle-icon');
+        const target = $closest(e.target,'.section-header .section-title, .section-header .toggle-icon');
         if (!target) return;
 
         const header  = target.closest('.section-header');
@@ -439,7 +445,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let docShowTimer;
 
     document.addEventListener('mouseenter', (e) => {
-        const code = e.target.closest('code.copy-attr');
+        const code = $closest(e.target,'code.copy-attr');
         if (!code) return;
 
         const url = code.dataset.docLink;
@@ -485,7 +491,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, true);
 
     document.addEventListener('mouseleave', (e) => {
-        const code = e.target.closest('code.copy-attr');
+        const code = $closest(e.target,'code.copy-attr');
         if (!code) return;
         const link = code.nextElementSibling;
         if (link && link.classList.contains('doc-icon-link')) {
@@ -501,7 +507,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Hide the ? immediately when clicked
     document.addEventListener('click', (e) => {
-        const link = e.target.closest('a.doc-icon-link');
+        const link = $closest(e.target,'a.doc-icon-link');
         if (!link) return;
         
         // kill transition so it disappears instantly
@@ -582,7 +588,14 @@ document.addEventListener('DOMContentLoaded', () => {
     /* Initial restore */
     restoreAllCollapseStates();
 
-    /* Toggle example */
+
+
+    /* Initial restore */
+    restoreAllCollapseStates();
+
+   
+
+    /* Toggle example summaries for inline details examples */
     document.addEventListener('toggle', (e) => {
         const d = e.target;
         if (!(d instanceof HTMLDetailsElement)) return;
@@ -591,77 +604,216 @@ document.addEventListener('DOMContentLoaded', () => {
         if (sum) sum.title = d.open ? 'Hide example' : 'Show example';
     });
 
-    /* Lightbox: click example image to zoom */
-    const lb = document.getElementById('lightbox');
-    const lbImg = document.getElementById('lb-img');
-    const lbCap = document.getElementById('lb-cap');
+    /* ---------- Lightbox: ensure DOM + safe open/close ---------- */
+    let lb, lbWrap, lbImg, lbCap;
+    let __scrollY = 0;
 
-    function openLightbox(src, altText, captionHtml) {
-        if (!src) return;
-        lbImg.src = src;
-        lbImg.alt = altText || '';
+    function ensureLightbox() {
+        lb = document.getElementById('lightbox');
+        if (!lb) {
+            lb = document.createElement('div');
+            lb.id = 'lightbox';
+            lb.innerHTML = `
+      <div class="lb-wrap">
+        <img id="lb-img" alt="" />
+        <div id="lb-cap"></div>
+      </div>`;
+            document.body.appendChild(lb);
+        }
+        lbWrap = lb.querySelector('.lb-wrap');
+        lbImg  = document.getElementById('lb-img');
+        lbCap  = document.getElementById('lb-cap');
+
+        // Base CSS safety so hidden overlay never blocks hover
+        lb.style.position = 'fixed';
+        lb.style.inset = '0';
+        lb.style.display = 'flex';
+        lb.style.alignItems = 'center';
+        lb.style.justifyContent = 'center';
+        lb.style.zIndex = '9998';
+        lb.style.opacity = '0';
+        lb.style.pointerEvents = 'none';
+        lb.style.transition = 'opacity .18s ease';
+
+        // If you don’t style in CSS, give the wrap a sane default
+        lbWrap.style.background = 'rgba(0,0,0,.7)';
+        lbWrap.style.borderRadius = '16px';
+        lbWrap.style.padding = '16px';
+        lbWrap.style.maxWidth = 'min(96vw, 1400px)';
+        lbWrap.style.maxHeight = '90vh';
+        lbWrap.style.overflow = 'auto';
+    }
+
+    function openLightbox(src, _alt, captionHtml) {
+        // legacy single-image wrapper
+        openLightboxImages([src], captionHtml || '');
+    }
+
+    function openLightboxImages(imgList, captionHtml) {
+        ensureLightbox();
+        if (!Array.isArray(imgList) || !imgList.length) return;
+
+        lb.classList.add('gallery');
+
+        // Clear any previous gallery, build a new one
+        lb.querySelector('.lb-gallery')?.remove();
+        const gallery = document.createElement('div');
+        gallery.className = 'lb-gallery';
+        gallery.innerHTML = imgList.map(src => `<img src="${src}" alt="">`).join('');
+        lbWrap.insertBefore(gallery, lbCap);
+
+        // Hide the legacy single <img>, set caption once
+        lbImg.style.display = 'none';
         lbCap.innerHTML = captionHtml || '';
-        lb.classList.add('show');
-        requestAnimationFrame(() => lb.classList.add('reveal'));
+
+        // Freeze page scroll
+        __scrollY = window.scrollY || document.documentElement.scrollTop || 0;
+        document.documentElement.style.top = `-${__scrollY}px`;
+        document.documentElement.classList.add('no-scroll');
         document.body.classList.add('no-scroll');
+
+        // Show overlay
+        lb.style.opacity = '1';
+        lb.style.pointerEvents = 'auto';
     }
 
     function closeLightbox() {
-        lb.classList.remove('reveal');
-        setTimeout(() => {
-            lb.classList.remove('show');
+        if (!lb) return;
+        lb.style.opacity = '0';
+        lb.style.pointerEvents = 'none';
+        lb.classList.remove('gallery');
+
+        // Clean DOM + restore
+        lb.querySelector('.lb-gallery')?.remove();
+        if (lbImg) {
+            lbImg.style.display = '';
             lbImg.removeAttribute('src');
-            lbCap.innerHTML = ''; 
-            document.body.classList.remove('no-scroll');
-        }, 180);
+        }
+        if (lbCap) lbCap.innerHTML = '';
+
+        // Unfreeze scroll
+        document.documentElement.classList.remove('no-scroll');
+        document.body.classList.remove('no-scroll');
+        document.documentElement.style.top = '';
+        window.scrollTo(0, __scrollY);
     }
 
-    /* Delegate clicks from any example image */
-    document.addEventListener('click', (e) => {
-        const img = e.target.closest('details.example img');
-        if (!img) return;
+// Create the lightbox immediately so refs exist
+    ensureLightbox();
 
-        e.preventDefault();
-
-        // Prefer the <a href> if you wrapped the img, otherwise img src
-        const a = img.closest('a');
-        const src = a ? a.getAttribute('href') : img.getAttribute('src');
-        const altText = img.getAttribute('alt') || '';
-
-        // Pull visible caption from the same figure: exampleNote <figcaption> or exampleAlt .example-alt
-        const fig = img.closest('figure');
-        const capNode = fig?.querySelector('figcaption') || fig?.querySelector('.example-alt');
-        const capHtml = capNode ? capNode.innerHTML : '';
-
-        openLightbox(src, altText, capHtml);
-    });
-
-    /* Close on overlay click (but not when clicking the image/caption box) */
+// Backdrop click + Esc to close
     lb.addEventListener('click', (e) => {
         if (!e.target.closest('.lb-wrap')) closeLightbox();
     });
-
-    /* Close on Esc */
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && lb.classList.contains('show')) closeLightbox();
+        if (e.key === 'Escape' && lb.style.pointerEvents === 'auto') closeLightbox();
     });
 
-    /* Open lightbox from magnifying glass */
+// Expose for console testing
+    window.openLightbox = openLightbox;
+    window.openLightboxImages = openLightboxImages;
+    window.closeLightbox = closeLightbox;
+
+
+    /* Click any inline example image inside details.example to zoom */
     document.addEventListener('click', (e) => {
-        const btn = e.target.closest('.example-icon');
-        if (!btn) return;
-
-        const td = btn.closest('td');
-        const capNode = td?.querySelector('.example-cap');
-        const src = btn.getAttribute('data-src');
-        const capHtml = capNode ? capNode.innerHTML : '';
-
+        const img = $closest(e.target, 'details.example img');
+        if (!img) return;
         e.preventDefault();
-        if (typeof openLightbox === 'function') openLightbox(src, '', capHtml);
+        const a = img.closest('a');
+        const src = a ? a.getAttribute('href') : img.getAttribute('src');
+        const fig = img.closest('figure');
+        const capNode = fig?.querySelector('figcaption') || fig?.querySelector('.example-alt');
+        const capHtml = capNode ? capNode.innerHTML : '';
+        openLightboxImages([src], capHtml);
+    });
+
+    /* Close lightbox on backdrop click and Esc */
+    lb.addEventListener('click', (e) => { if (!$closest(e.target, '.lb-wrap')) closeLightbox(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && lb.classList.contains('show')) closeLightbox(); });
+
+    /* Single floating magnifier that appears on rows with examples */
+    const hoverMag = document.createElement('button');
+    hoverMag.id = 'hoverMag';
+    hoverMag.type = 'button';
+    hoverMag.setAttribute('aria-label', 'Open example');
+    hoverMag.innerHTML = `
+  <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" aria-hidden="true">
+    <circle cx="11" cy="11" r="8"></circle>
+    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+  </svg>`;
+    document.body.appendChild(hoverMag);
+
+    let lastExampleTd  = null;        // last known valid example cell (sticky while over button)
+    let hideTimer = null;
+
+    function positionHoverMag(td) {
+        const r = td.getBoundingClientRect();
+        hoverMag.style.left = (r.left + window.scrollX) + 'px';
+        hoverMag.style.top  = (r.top + r.height / 2 + window.scrollY) + 'px';
+    }
+
+    function isOverMag(el) {
+        return el === hoverMag || hoverMag.contains(el);
+    }
+
+    /* Track hover over any desc cell that has an example.
+       Do NOT lose the lastExampleTd when moving onto the button. */
+    document.addEventListener('mousemove', (e) => {
+        const overMag = isOverMag(e.target);
+        const td = overMag
+            ? lastExampleTd
+            : e.target.closest('td.desc-td[data-example-src], td.desc-td[data-examples]');
+        if (td) {
+            lastExampleTd = td;
+            positionHoverMag(td);
+            hoverMag.classList.add('show');
+        } else if (!overMag) {
+            clearTimeout(hideTimer);
+            hideTimer = setTimeout(() => hoverMag.classList.remove('show'), 80);
+        }
+    });
+
+    /* Keep visible when moving from cell onto the button */
+    hoverMag.addEventListener('mouseenter', () => {
+        clearTimeout(hideTimer);
+        hoverMag.classList.add('show');
+    });
+    hoverMag.addEventListener('mouseleave', () => {
+        hideTimer = setTimeout(() => hoverMag.classList.remove('show'), 80);
+    });
+
+    /* Open the lightbox on click — use the sticky lastExampleTd */
+    hoverMag.addEventListener('click', () => {
+        const td = lastExampleTd;
+        if (!td) return;
+
+        const capHtml = td.querySelector('.example-cap')?.innerHTML || '';
+
+        // Try multi first
+        const raw = td.getAttribute('data-examples');
+        if (raw) {
+            try {
+                const list = JSON.parse(raw);  // data-render now writes real JSON
+                if (Array.isArray(list) && list.length) {
+                    openLightboxImages(list, capHtml);
+                    return;
+                }
+            } catch (err) {
+                console.warn('Bad data-examples:', raw, err);
+            }
+        }
+
+        // Fallback single
+        const src = td.getAttribute('data-example-src');
+        if (src) openLightboxImages([src], capHtml);
     });
 
 
-}); // DOMContentUnloaded
+    /* Reposition on scroll/resize */
+    window.addEventListener('scroll', () => { if (lastExampleTd) positionHoverMag(lastExampleTd); }, { passive: true });
+    window.addEventListener('resize', () => { if (lastExampleTd) positionHoverMag(lastExampleTd); });
+}); // end DOMContentLoaded
 
 // Scroll progress line
 function updateScrollProgress() {

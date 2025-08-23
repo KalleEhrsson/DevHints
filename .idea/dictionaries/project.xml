@@ -1,12 +1,38 @@
 <component name="ProjectDictionaryState">
   <dictionary name="project">
     <words>
+      <w>addcomponentmenu</w>
+      <w>assemblyiseditorassembly</w>
       <w>burstcompile</w>
+      <w>burstdiscard</w>
       <w>cheatography</w>
+      <w>contextmenuitemtitlemethod</w>
+      <w>contextmenutitle</w>
+      <w>deallocateonjobcompletion</w>
+      <w>defaultexecutionordern</w>
+      <w>disallowmultiplecomponent</w>
+      <w>executealways</w>
+      <w>executeineditmode</w>
+      <w>formerlyserializedasoldname</w>
+      <w>headertitle</w>
+      <w>helpurlurl</w>
+      <w>hideininspector</w>
       <w>hugeicons</w>
+      <w>imgs</w>
+      <w>initializeonloadmethod</w>
+      <w>inspectornamename</w>
+      <w>menuitemmymenu</w>
+      <w>movedfrom</w>
+      <w>nonreorderable</w>
       <w>noopener</w>
       <w>plusminus</w>
+      <w>requirecomponenttypeofx</w>
+      <w>runtimeinitializeonloadmethod</w>
+      <w>serializefield</w>
+      <w>serializereference</w>
+      <w>textareaminmax</w>
       <w>thiings</w>
+      <w>writeonly</w>
     </words>
   </dictionary>
 </component>

@@ -27,6 +27,7 @@ function allowCodeTags(s) {
  * @property {string=} description
  * @property {string=} descriptionHtml
  * @property {string=} requirements
+ * @property {string[]=} exampleImgs
  * @property {string=} exampleImg
  * @property {string=} exampleAlt
  * @property {string=} exampleNote
@@ -56,45 +57,37 @@ function renderRow(row) {
     const descCell = descriptionHtml || descriptionText;
     const docAttr = docLink ? ' data-doc-link="' + escHtml(docLink) + '"' : "";
 
-    const exampleImg  = (typeof r.exampleImg === "string" && r.exampleImg.trim()) ? r.exampleImg.trim() : "";
+    // Prefer array of exampleImgs, fallback to single exampleImg
+    const list = Array.isArray(r.exampleImgs) && r.exampleImgs.length
+        ? r.exampleImgs
+        : (r.exampleImg ? [r.exampleImg] : []);
+
+    const hasExample = list.length > 0;
+    const firstSrc = hasExample ? `/examples/${list[0]}` : "";
+
+    // Caption built from shared alt + note
     const exampleAlt  = allowCodeTags(r.exampleAlt || "");
     const exampleNote = allowCodeTags(r.exampleNote || "");
-    const longCaptionHtml =
-        (r.exampleLongHtml && r.exampleLongHtml.trim())
-            ? r.exampleLongHtml
-            : (exampleNote || exampleAlt || descriptionHtml || descriptionText);
+    const parts = [];
+    if (exampleAlt)  parts.push(`<div class="cap-alt">${exampleAlt}</div>`);
+    if (exampleNote) parts.push(`<div class="cap-note">${exampleNote}</div>`);
+    const longCaptionHtml = parts.length ? parts.join("") : (descriptionHtml || descriptionText);
 
-    let descWithIcon = descCell;
-    if (exampleImg) {
-        const src = "/examples/" + exampleImg;
-        descWithIcon = `
-      <button type="button" class="example-icon" data-src="${src}" aria-label="Open example">
-        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="2">
-          <circle cx="11" cy="11" r="8"/>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-        </svg>
-      </button>
-      <span class="desc-text">${descCell}</span>
-      <span class="example-cap" hidden>${longCaptionHtml}</span>`;
-    }
+    // Store the full list in a data attribute for lightbox carousel
+    const exampleDataAttr = hasExample
+        ? ` data-examples='${JSON.stringify(list.map(s => `/examples/${s}`))}'`
+        : "";
 
     return `
   <tr>
     <td><code class="copy-attr" data-type="${type}"${docAttr}>${code}</code></td>
-    <td class="desc-td">
-      ${exampleImg ? `
-        <button type="button" class="example-icon" data-src="/examples/${exampleImg}" aria-label="Open example">
-          <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="2">
-            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-          </svg>
-        </button>` : ``}
+    <td class="desc-td"${hasExample ? ` data-example-src="${firstSrc}"${exampleDataAttr}` : ""}>
       <span class="desc-text">${descCell}</span>
-      ${exampleImg ? `<span class="example-cap" hidden>${longCaptionHtml}</span>` : ``}
+      ${hasExample ? `<span class="example-cap" hidden>${longCaptionHtml}</span>` : ``}
     </td>
     <td>${requirements}</td>
   </tr>`;
 }
-
 
 /* Attribute table section */
 function renderAttributeTable(section) {

@@ -3,7 +3,11 @@
     {
       "id": "field",
       "title": "Field-Level Attributes",
-      "columns": ["Attribute", "Description", "Requirements"],
+      "columns": [
+        "Attribute",
+        "Description",
+        "Requirements"
+      ],
       "rows": [
         {
           "code": "[SerializeField]",
@@ -12,7 +16,13 @@
           "requirements": "Unity core",
           "type": "field",
           "copy": "[SerializeField]",
-          "tags": ["inspector","serialization"]
+          "tags": [
+            "inspector",
+            "serialization"
+          ],
+          "exampleImg": "serializefield.webp",
+          "exampleAlt": "Inspector showing a private field visible because of [SerializeField].",
+          "exampleNote": "Use for private variables you want editable without exposing as public."
         },
         {
           "code": "[HideInInspector]",
@@ -21,7 +31,13 @@
           "requirements": "Unity core",
           "type": "field",
           "copy": "[HideInInspector]",
-          "tags": ["inspector","ui"]
+          "tags": [
+            "inspector",
+            "ui"
+          ],
+          "exampleImg": "hideininspector.webp",
+          "exampleAlt": "Inspector where a normally visible field is hidden via [HideInInspector].",
+          "exampleNote": "Good for keeping data serialized but uncluttered in the Inspector."
         },
         {
           "code": "[NonSerialized]",
@@ -30,7 +46,13 @@
           "requirements": "Unity core",
           "type": "field",
           "copy": "[NonSerialized]",
-          "tags": ["inspector","serialization"]
+          "tags": [
+            "inspector",
+            "serialization"
+          ],
+          "exampleImg": "nonserialized.webp",
+          "exampleAlt": "Public field excluded from Unity’s serialization and not saved to scene/prefab.",
+          "exampleNote": "Still visible if public; value resets on domain reload and in builds."
         },
         {
           "code": "[FormerlySerializedAs(\"oldName\")]",
@@ -39,7 +61,13 @@
           "requirements": "Unity 2017.3+",
           "type": "field",
           "copy": "[FormerlySerializedAs(\"oldName\")]",
-          "tags": ["migration","serialization"]
+          "tags": [
+            "migration",
+            "serialization"
+          ],
+          "exampleImg": "formerlyserializedasoldname.webp",
+          "exampleAlt": "Inspector field: Remap serialized data from an old field name after renaming.",
+          "exampleNote": "Useful when remap serialized data from an old field name after renaming."
         },
         {
           "code": "[Header(\"Title\")]",
@@ -48,16 +76,28 @@
           "requirements": "Unity core",
           "type": "field",
           "copy": "[Header(\"Title\")]",
-          "tags": ["inspector","ui"]
+          "tags": [
+            "inspector",
+            "ui"
+          ],
+          "exampleImg": "headertitle.webp",
+          "exampleAlt": "Inspector field: Draw a bold header label above this field or group.",
+          "exampleNote": "Useful when draw a bold header label above this field or group."
         },
         {
           "code": "[Space] / [Space(n)]",
           "docLink": "https://docs.unity3d.com/ScriptReference/SpaceAttribute.html",
-          "description": "Insert vertical space (default 8ppx) before the next field.",
+          "description": "Insert vertical space before the next field.",
           "requirements": "Unity core",
           "type": "field",
           "copy": "[Space] / [Space(n)]",
-          "tags": ["inspector","ui"]
+          "tags": [
+            "inspector",
+            "ui"
+          ],
+          "exampleImg": "space.webp",
+          "exampleAlt": "Extra vertical spacing inserted before the next field block.",
+          "exampleNote": "Use <code>[Space(n)]</code> to fine‑tune spacing; plain <code>[Space]</code> uses a default gap."
         },
         {
           "code": "[Tooltip(\"…\")]",
@@ -66,7 +106,13 @@
           "requirements": "Unity core",
           "type": "field",
           "copy": "[Tooltip(\"…\")]",
-          "tags": ["inspector","ui"]
+          "tags": [
+            "inspector",
+            "ui"
+          ],
+          "exampleImg": "tooltip.webp",
+          "exampleAlt": "Inspector field: Show hover-popup help text for the field label in the Inspector.",
+          "exampleNote": "Useful when show hover-popup help text for the field label in the Inspector."
         },
         {
           "code": "[Range(min, max)]",
@@ -75,28 +121,42 @@
           "requirements": "Unity core",
           "type": "field",
           "copy": "[Range(min, max)]",
-          "tags": ["inspector","validation"],
-
-          "exampleImg": "range.webp",
+          "tags": [
+            "inspector",
+            "validation"
+          ],
+          "exampleImgs": ["range-code.webp", "range-inspector.webp"],
           "exampleAlt": "Inspector slider created by <code>[Range]</code> on a float field",
           "exampleNote": "Default slider styling in the built-in Inspector"
         },
         {
           "code": "[Min(value)]",
           "docLink": "https://docs.unity3d.com/ScriptReference/MinAttribute.html",
-          "description": "Clamp numeric values to a minimum (no slider).",
+          "description": "Clamp numeric values to a minimum.",
           "requirements": "Unity 2019.3+",
           "type": "field",
           "copy": "[Min(value)]",
-          "tags": ["inspector","validation"]
+          "tags": [
+            "inspector",
+            "validation"
+          ],
+          "exampleImg": "minvalue.webp",
+          "exampleAlt": "Inspector field: Clamp numeric values to a minimum (no slider).",
+          "exampleNote": "Useful when clamp numeric values to a minimum."
         },
         {
           "code": "[Max(value)]",
-          "description": "Clamp numeric values to a maximum (no slider).",
+          "description": "Clamp numeric values to a maximum.",
           "requirements": "Unity 2020.1+",
           "type": "field",
           "copy": "[Max(value)]",
-          "tags": ["inspector","validation"]
+          "tags": [
+            "inspector",
+            "validation"
+          ],
+          "exampleImg": "maxvalue.webp",
+          "exampleAlt": "Inspector field: Clamp numeric values to a maximum (no slider).",
+          "exampleNote": "Useful when clamp numeric values to a maximum."
         },
         {
           "code": "[TextArea(min, max)]",
@@ -105,16 +165,28 @@
           "requirements": "Unity core",
           "type": "field",
           "copy": "[TextArea(min, max)]",
-          "tags": ["inspector","ui"]
+          "tags": [
+            "inspector",
+            "ui"
+          ],
+          "exampleImg": "textareaminmax.webp",
+          "exampleAlt": "Inspector field: Render a multi-line text box between <code>min</code> and <code>max</code> lines.",
+          "exampleNote": "Useful when render a multi-line text box between <code>min</code> and <code>max</code> lines."
         },
         {
           "code": "[Multiline]",
           "docLink": "https://docs.unity3d.com/ScriptReference/MultilineAttribute.html",
-          "descriptionHtml": "For <code>Color</code>, toggle alpha slider and HDR picker.",
+          "descriptionHtml": "Attribute to make a <code>string</code> be edited with a multi-line textfield.",
           "requirements": "Unity 2017.1+",
           "type": "field",
           "copy": "[Multiline]",
-          "tags": ["inspector","ui"]
+          "tags": [
+            "inspector",
+            "ui"
+          ],
+          "exampleImg": "multiline.webp",
+          "exampleAlt": "String field shows multiple lines in the Inspector without a scrollbar.",
+          "exampleNote": "Unlike TextArea, height is fixed; good for short paragraphs."
         },
         {
           "code": "[Delayed]",
@@ -123,7 +195,13 @@
           "requirements": "Unity 2019.3+",
           "type": "field",
           "copy": "[Delayed]",
-          "tags": ["inspector","ui"]
+          "tags": [
+            "inspector",
+            "ui"
+          ],
+          "exampleImg": "delayed.webp",
+          "exampleAlt": "Value isn’t applied until focus leaves the field or Enter is pressed.",
+          "exampleNote": "Prevents spamming setters while typing—useful for expensive updates."
         },
         {
           "code": "[SerializeReference]",
@@ -132,7 +210,12 @@
           "requirements": "Unity 2019.3+",
           "type": "field",
           "copy": "[SerializeReference]",
-          "tags": ["serialization"]
+          "tags": [
+            "serialization"
+          ],
+          "exampleImg": "serializereference.webp",
+          "exampleAlt": "Field holds polymorphic types; Inspector lets you choose concrete implementations.",
+          "exampleNote": "Backed by managed reference serialization; avoid for value types/structs."
         },
         {
           "code": "[InspectorName(\"Name\")]",
@@ -141,7 +224,13 @@
           "requirements": "Unity 2018.1+",
           "type": "field",
           "copy": "[InspectorName(\"Name\")]",
-          "tags": ["inspector","ui"]
+          "tags": [
+            "inspector",
+            "ui"
+          ],
+          "exampleImg": "inspectornamename.webp",
+          "exampleAlt": "Inspector field: Override the label shown in the Inspector.",
+          "exampleNote": "Useful when override the label shown in the Inspector."
         },
         {
           "code": "[ContextMenuItem(\"Title\",\"Method\")]",
@@ -150,7 +239,13 @@
           "requirements": "Unity core",
           "type": "field",
           "copy": "[ContextMenuItem(\"Title\",\"Method\")]",
-          "tags": ["inspector","ui"]
+          "tags": [
+            "inspector",
+            "ui"
+          ],
+          "exampleImg": "contextmenuitemtitlemethod.webp",
+          "exampleAlt": "Inspector field: Add a small button next to the field that calls <code>Method</code>.",
+          "exampleNote": "Useful when add a small button next to the field that calls <code>Method</code>."
         },
         {
           "code": "[NonReorderable]",
@@ -159,14 +254,24 @@
           "requirements": "Unity 2020.1+",
           "type": "field",
           "copy": "[NonReorderable]",
-          "tags": ["inspector","ui"]
+          "tags": [
+            "inspector",
+            "ui"
+          ],
+          "exampleImg": "nonreorderable.webp",
+          "exampleAlt": "List field renders without drag handles to prevent element reordering.",
+          "exampleNote": "Use when index order has semantic meaning tied to code."
         }
       ]
     },
     {
       "id": "class",
       "title": "Component & Class-Level Attributes",
-      "columns": ["Attribute", "Description", "Requirements"],
+      "columns": [
+        "Attribute",
+        "Description",
+        "Requirements"
+      ],
       "rows": [
         {
           "code": "[AddComponentMenu(\"…\")]",
@@ -175,7 +280,13 @@
           "requirements": "Unity core",
           "type": "class",
           "copy": "[AddComponentMenu(\"…\")]",
-          "tags": ["component","editor"]
+          "tags": [
+            "component",
+            "editor"
+          ],
+          "exampleImg": "addcomponentmenu….webp",
+          "exampleAlt": "Component header: Place this component under a custom submenu.",
+          "exampleNote": "Useful when place this component under a custom submenu."
         },
         {
           "code": "[DisallowMultipleComponent]",
@@ -184,7 +295,13 @@
           "requirements": "Unity core",
           "type": "class",
           "copy": "[[DisallowMultipleComponent]",
-          "tags": ["component","validation"]
+          "tags": [
+            "component",
+            "validation"
+          ],
+          "exampleImg": "disallowmultiplecomponent.webp",
+          "exampleAlt": "Prevents adding more than one instance of this component per GameObject.",
+          "exampleNote": "Useful for managers or controllers that should be unique on an object."
         },
         {
           "code": "[RequireComponent(typeof(X))]",
@@ -193,7 +310,13 @@
           "requirements": "Unity core",
           "type": "class",
           "copy": "[RequireComponent(typeof(X))]",
-          "tags": ["component","validation"]
+          "tags": [
+            "component",
+            "validation"
+          ],
+          "exampleImg": "requirecomponenttypeofx.webp",
+          "exampleAlt": "Component header: Auto-add or enforce component X on the same GameObject.",
+          "exampleNote": "Useful when auto-add or enforce component X on the same GameObject."
         },
         {
           "code": "[ExecuteInEditMode]",
@@ -202,7 +325,13 @@
           "requirements": "Unity core",
           "type": "class",
           "copy": "[[ExecuteInEditMode]",
-          "tags": ["component","editor"]
+          "tags": [
+            "component",
+            "editor"
+          ],
+          "exampleImg": "executeineditmode.webp",
+          "exampleAlt": "MonoBehaviour methods run in Edit Mode without pressing Play.",
+          "exampleNote": "Prefer ExecuteAlways for newer projects; be mindful of Editor‑only code."
         },
         {
           "code": "[ExecuteAlways]",
@@ -211,7 +340,13 @@
           "requirements": "Unity 2018.1+",
           "type": "class",
           "copy": "[ExecuteAlways]",
-          "tags": ["component","editor"]
+          "tags": [
+            "component",
+            "editor"
+          ],
+          "exampleImg": "executealways.webp",
+          "exampleAlt": "Script executes in Edit Mode and when disabled or in prefab context.",
+          "exampleNote": "Guard runtime‑only logic with Application.isPlaying checks."
         },
         {
           "code": "[SelectionBase]",
@@ -220,7 +355,13 @@
           "requirements": "Unity core",
           "type": "class",
           "copy": "[SelectionBase]",
-          "tags": ["component","editor"]
+          "tags": [
+            "component",
+            "editor"
+          ],
+          "exampleImg": "selection.webp",
+          "exampleAlt": "Clicking a child in the Scene view selects the parent GameObject instead.",
+          "exampleNote": "Handy for complex hierarchies like props with many sub‑meshes."
         },
         {
           "code": "[HelpURL(\"url\")]",
@@ -229,7 +370,13 @@
           "requirements": "Unity core",
           "type": "class",
           "copy": "[HelpURL(\"url\")]",
-          "tags": ["component","editor"]
+          "tags": [
+            "component",
+            "editor"
+          ],
+          "exampleImg": "helpurlurl.webp",
+          "exampleAlt": "Component header: Add a “?” icon linking to a url.",
+          "exampleNote": "Useful when add a “?” icon linking to a url."
         },
         {
           "code": "[DefaultExecutionOrder(n)]",
@@ -238,7 +385,13 @@
           "requirements": "Unity 2017.2+",
           "type": "class",
           "copy": "[DefaultExecutionOrder(n)]",
-          "tags": ["component","editor"]
+          "tags": [
+            "component",
+            "editor"
+          ],
+          "exampleImg": "defaultexecutionordern.webp",
+          "exampleAlt": "Component header: Control script execution order.",
+          "exampleNote": "Useful when control script execution order."
         },
         {
           "code": "[AssemblyIsEditorAssembly]",
@@ -247,7 +400,13 @@
           "requirements": "Unity core",
           "type": "class",
           "copy": "[AssemblyIsEditorAssembly]",
-          "tags": ["build","editor"]
+          "tags": [
+            "build",
+            "editor"
+          ],
+          "exampleImg": "assemblyiseditorassembly.webp",
+          "exampleAlt": "Marks an assembly as Editor‑only so it’s excluded from player builds.",
+          "exampleNote": "Place Editor scripts under an Editor assembly to reduce build size."
         },
         {
           "code": "[MovedFrom(...)]",
@@ -256,14 +415,23 @@
           "requirements": "Unity 2019.3+",
           "type": "class",
           "copy": "[MovedFrom(...)]",
-          "tags": ["migration"]
+          "tags": [
+            "migration"
+          ],
+          "exampleImg": "movedfrom.webp",
+          "exampleAlt": "Signals that a type or namespace moved so API Updater can remap usages.",
+          "exampleNote": "Helps preserve serialized references after refactors or package splits."
         }
       ]
     },
     {
       "id": "method",
       "title": "Method-Level & Editor Attributes",
-      "columns": ["Attribute", "Description", "Requirements"],
+      "columns": [
+        "Attribute",
+        "Description",
+        "Requirements"
+      ],
       "rows": [
         {
           "code": "[ContextMenu(\"Title\")]",
@@ -272,7 +440,13 @@
           "requirements": "Unity core",
           "type": "method",
           "copy": "[ContextMenu(\"Title\")]",
-          "tags": ["method","editor"]
+          "tags": [
+            "method",
+            "editor"
+          ],
+          "exampleImg": "contextmenutitle.webp",
+          "exampleAlt": "Inspector/Editor method: Add a right-click menu to invoke this method in the Inspector.",
+          "exampleNote": "Useful when add a right-click menu to invoke this method in the Inspector."
         },
         {
           "code": "[MenuItem(\"MyMenu/Action\")]",
@@ -281,7 +455,13 @@
           "requirements": "Unity core",
           "type": "method",
           "copy": "[MenuItem(\"MyMenu/Action\")]",
-          "tags": ["method","editor"]
+          "tags": [
+            "method",
+            "editor"
+          ],
+          "exampleImg": "menuitemmymenu.webp",
+          "exampleAlt": "Inspector/Editor method: Add a top-bar menu item for this static method.",
+          "exampleNote": "Useful when add a top-bar menu item for this static method."
         },
         {
           "code": "[InitializeOnLoadMethod]",
@@ -290,7 +470,13 @@
           "requirements": "Unity 2017.1+",
           "type": "method",
           "copy": "[InitializeOnLoadMethod]",
-          "tags": ["method","editor"]
+          "tags": [
+            "method",
+            "editor"
+          ],
+          "exampleImg": "initializeonloadmethod.webp",
+          "exampleAlt": "Static method runs when the Editor loads or scripts recompile.",
+          "exampleNote": "Avoid heavy work; initialize caches or register callbacks here."
         },
         {
           "code": "[RuntimeInitializeOnLoadMethod]",
@@ -299,14 +485,24 @@
           "requirements": "Unity core",
           "type": "method",
           "copy": "[RuntimeInitializeOnLoadMethod]",
-          "tags": ["method","runtime"]
+          "tags": [
+            "method",
+            "runtime"
+          ],
+          "exampleImg": "runtimeinitializeonloadmethod.webp",
+          "exampleAlt": "Static method runs before the first scene loads at runtime.",
+          "exampleNote": "Specify load types to run at different app phases (BeforeSceneLoad, etc.)."
         }
       ]
     },
     {
       "id": "dots",
       "title": "DOTS & Native / Burst Attributes",
-      "columns": ["Attribute", "Description", "Requirements"],
+      "columns": [
+        "Attribute",
+        "Description",
+        "Requirements"
+      ],
       "rows": [
         {
           "code": "[BurstCompile]",
@@ -315,7 +511,13 @@
           "requirements": "com.unity.burst 1.0+, Jobs",
           "type": "dots",
           "copy": "[BurstCompile]",
-          "tags": ["dots","performance"]
+          "tags": [
+            "dots",
+            "performance"
+          ],
+          "exampleImg": "burstcompile.webp",
+          "exampleAlt": "Method or job is compiled with Burst for major performance gains.",
+          "exampleNote": "Use with value types and unmanaged data for best results."
         },
         {
           "code": "[BurstDiscard]",
@@ -324,7 +526,13 @@
           "requirements": "com.unity.burst",
           "type": "dots",
           "copy": "[BurstDiscard]",
-          "tags": ["dots","performance"]
+          "tags": [
+            "dots",
+            "performance"
+          ],
+          "exampleImg": "burstdiscard.webp",
+          "exampleAlt": "Excludes a method from Burst so managed or debug code can run.",
+          "exampleNote": "Wrap debug logging or conditional paths that Burst cannot compile."
         },
         {
           "code": "[WriteOnly]",
@@ -333,7 +541,13 @@
           "requirements": "com.unity.collections, Jobs",
           "type": "dots",
           "copy": "[WriteOnly]",
-          "tags": ["dots","safety"]
+          "tags": [
+            "dots",
+            "safety"
+          ],
+          "exampleImg": "writeonly.webp",
+          "exampleAlt": "Marks a NativeArray as write‑only to enable safety and performance checks.",
+          "exampleNote": "Prevents accidental reads; helps the job scheduler optimize."
         },
         {
           "code": "[ReadOnly]",
@@ -342,7 +556,13 @@
           "requirements": "com.unity.collections, Jobs",
           "type": "dots",
           "copy": "[ReadOnly]",
-          "tags": ["dots","safety"]
+          "tags": [
+            "dots",
+            "safety"
+          ],
+          "exampleImg": "readonly.webp",
+          "exampleAlt": "Marks a NativeArray as read‑only so jobs can safely share data.",
+          "exampleNote": "Avoids race conditions and unlocks better parallel scheduling."
         },
         {
           "code": "[DeallocateOnJobCompletion]",
@@ -351,7 +571,13 @@
           "requirements": "com.unity.collections, Jobs",
           "type": "dots",
           "copy": "[DeallocateOnJobCompletion]",
-          "tags": ["dots","safety"]
+          "tags": [
+            "dots",
+            "safety"
+          ],
+          "exampleImg": "deallocateonjobcompletion.webp",
+          "exampleAlt": "Automatically disposes a native container when its job finishes.",
+          "exampleNote": "Reduces manual cleanup but only for containers captured by the job."
         },
         {
           "code": "[NativeDisableParallelForRestriction]",
@@ -360,7 +586,13 @@
           "requirements": "com.unity.collections, Jobs",
           "type": "dots",
           "copy": "[NativeDisableParallelForRestriction]",
-          "tags": ["dots","safety"]
+          "tags": [
+            "dots",
+            "safety"
+          ],
+          "exampleImg": "nativedisableparallelforrestriction.webp",
+          "exampleAlt": "Allows parallel writes to the same data in a ParallelFor job.",
+          "exampleNote": "Use cautiously; you must ensure accesses are non‑overlapping."
         },
         {
           "code": "[NativeDisableUnsafePtrRestriction]",
@@ -369,7 +601,13 @@
           "requirements": "com.unity.collections, Jobs",
           "type": "dots",
           "copy": "[NativeDisableUnsafePtrRestriction]",
-          "tags": ["dots","safety"]
+          "tags": [
+            "dots",
+            "safety"
+          ],
+          "exampleImg": "nativedisableunsafeptrrestriction.webp",
+          "exampleAlt": "Disables safety checks on pointers used inside jobs.",
+          "exampleNote": "Necessary for some interop; validate indices to avoid memory corruption."
         },
         {
           "code": "[Preserve]",
@@ -378,7 +616,12 @@
           "requirements": "UnityEngine.Scripting",
           "type": "dots",
           "copy": "[Preserve]",
-          "tags": ["build"]
+          "tags": [
+            "build"
+          ],
+          "exampleImg": "preserve.webp",
+          "exampleAlt": "Prevents code and members from being stripped by IL2CPP/linker.",
+          "exampleNote": "Apply to reflection‑accessed types or methods to keep them in builds."
         }
       ]
     }
