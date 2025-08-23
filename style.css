@@ -148,14 +148,10 @@ html {
 }
 
 /* Center title absolutely, independent of left/right width */
-#siteTitle {
-    position: absolute;
-    left: 49.5%;
-    transform: translateX(-50%);
-    font-weight: 700;
-    font-size: 1.2rem;
-    color: var(--text-primary);
-    pointer-events: none; /* so clicks pass through, optional */
+#siteLogo {
+    margin-top: 15px;
+    height: 270px;
+    width: auto;
 }
 
 /* Right-side group */
