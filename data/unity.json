@@ -20,7 +20,10 @@
             "inspector",
             "serialization"
           ],
-          "exampleImg": "serializefield.webp",
+          "exampleImgs": [
+            "serializefield-code.webp",
+            "serializefield-inspector.webp"
+          ],
           "exampleAlt": "Inspector showing a private field visible because of [SerializeField].",
           "exampleNote": "Use for private variables you want editable without exposing as public."
         },
@@ -35,7 +38,10 @@
             "inspector",
             "ui"
           ],
-          "exampleImg": "hideininspector.webp",
+          "exampleImgs": [
+            "hideininspector-code.webp",
+            "hideininspector-inspector.webp"
+          ],
           "exampleAlt": "Inspector where a normally visible field is hidden via [HideInInspector].",
           "exampleNote": "Good for keeping data serialized but uncluttered in the Inspector."
         },
