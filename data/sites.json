@@ -54,6 +54,11 @@
       "title": "Snazzy Maps",
       "url": "https://snazzymaps.com/",
       "description": "Customize Google Maps styles."
+    },
+    {
+      "title": "Uiverse",
+      "url": "https://uiverse.io/",
+      "description": "Free collection of open-source UI components for developers, built with HTML & CSS."
     }
   ]
 }
