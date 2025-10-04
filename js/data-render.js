@@ -208,20 +208,21 @@ function renderStandaloneSitesSection(opts) {
     if (!normalizedSections.length) return '';
 
     const domId = nextSectionDomId(idSource);
-    const headerId = `${domId}-header`;
-    const contentId = `${domId}-content`;
     const dataKey = slugify(idSource);
     const introHtml = hasExplicitSections && descriptionText
         ? `<p class="section-sites-desc section-sites-intro">${allowCodeTags(descriptionText)}</p>`
         : '';
+    const descriptionHtml = !hasExplicitSections && descriptionText
+        ? `<p class="section-sites-desc">${allowCodeTags(descriptionText)}</p>`
+        : '';
 
     let out = '';
-    out += `<section class="collapsible-section" id="${escHtml(domId)}"${dataKey ? ` data-section-key="${escHtml(dataKey)}"` : ''}>`;
-    out +=   `<h2 class="section-header" id="${escHtml(headerId)}" role="button" tabindex="0" aria-expanded="true" aria-controls="${escHtml(contentId)}">`;
-    out +=     '<span class="toggle-icon">-</span>';
-    out +=     `<span class="section-title">${escHtml(titleText)}</span>`;
-    out +=   '</h2>';
-    out +=   `<div class="section-content expanded" id="${escHtml(contentId)}" role="region" aria-hidden="false" aria-labelledby="${escHtml(headerId)}">`;
+    out += `<section class="sites-section" id="${escHtml(domId)}"${dataKey ? ` data-section-key="${escHtml(dataKey)}"` : ''}>`;
+    out +=   '<div class="sites-section-header">';
+    out +=     `<h2 class="sites-section-title">${escHtml(titleText)}</h2>`;
+    out +=   '</div>';
+    out +=   '<div class="sites-section-body">';
+    out +=     descriptionHtml;
     out +=     introHtml;
 
     for (const section of normalizedSections) {
