@@ -7,6 +7,13 @@ function escHtml(s) {
     return d.innerHTML;
 }
 
+function decodeHtml(s) {
+    if (s == null || s === '') return '';
+    const d = document.createElement('textarea');
+    d.innerHTML = s;
+    return d.value;
+}
+
 /* Allow <code> tags in alt/caption text */
 function allowCodeTags(s) {
     const raw = s != null ? String(s) : "";
@@ -306,7 +313,8 @@ function hydrateEmbeddedSites(root) {
         }
 
         let parsed = [];
-        const raw = wrapper.getAttribute('data-sites');
+        const rawAttr = wrapper.getAttribute('data-sites') || '';
+        const raw = decodeHtml(rawAttr) || rawAttr;
         if (raw) {
             try {
                 parsed = JSON.parse(raw);
