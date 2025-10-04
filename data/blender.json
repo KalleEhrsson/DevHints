@@ -1,4 +1,56 @@
 {
+  "sitesTitle": "Blender Resources",
+  "sitesDescription": "Curated libraries for surfaces, shaders, and procedural maps you can drop into Blender projects.",
+  "sitesSections": [
+    {
+      "title": "Texture Libraries",
+      "description": "Seamless CC0 PBR textures with ready-made color, normal, and roughness passes.",
+      "sites": [
+        {
+          "title": "Poly Haven Textures",
+          "url": "https://polyhaven.com/textures",
+          "description": "Free CC0 texture sets with Blender download presets and resolution choices."
+        },
+        {
+          "title": "ambientCG",
+          "url": "https://ambientcg.com/list?type=Material",
+          "description": "Huge catalog of physically-based textures with consistent naming and maps."
+        }
+      ]
+    },
+    {
+      "title": "Material Libraries",
+      "description": "Drop-in shader packs and material nodes for speeding up lookdev.",
+      "sites": [
+        {
+          "title": "BlenderKit Materials",
+          "url": "https://www.blenderkit.com/asset-gallery?query=category_material",
+          "description": "Searchable online library that links directly into Blender's Asset Browser."
+        },
+        {
+          "title": "CG Bookcase",
+          "url": "https://www.cgbookcase.com/textures/",
+          "description": "Curated free PBR materials grouped by surface type with 1–8K downloads."
+        }
+      ]
+    },
+    {
+      "title": "Noise & Map Generators",
+      "description": "Procedural tools for height fields, masks, and noisy patterns.",
+      "sites": [
+        {
+          "title": "JSplacement",
+          "url": "https://windmillart.net/?p=jsplacement",
+          "description": "Generate sci-fi inspired displacement, normal, and spec maps in seconds."
+        },
+        {
+          "title": "NormalMap Online",
+          "url": "https://cpetry.github.io/NormalMap-Online/",
+          "description": "Convert grayscale masks into normal, displacement, and ambient occlusion maps."
+        }
+      ]
+    }
+  ],
   "sections": [
     {
       "id": "modeling-hotkeys",
