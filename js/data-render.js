@@ -134,8 +134,14 @@ function renderAttributeTable(section) {
 
 /* Utilities for Sites */
 function normalizeUrl(u) {
-    try { return /^https?:\/\//i.test(u) ? u : `https://${u}`; }
-    catch { return u; }
+    try {
+        const str = typeof u === "string" ? u.trim() : "";
+        if (!str) return null;
+        return /^https?:\/\//i.test(str) ? str : `https://${str}`;
+    }
+    catch {
+        return null;
+    }
 }
 function domainOf(url) {
     try { return new URL(url).hostname; } catch { return ""; }
@@ -159,6 +165,11 @@ function renderSitesIntoMount(mount, sites) {
     grid.innerHTML = '';
 
     sites.forEach(site => {
+        const href = normalizeUrl(site && site.url);
+        if (!href) {
+            return;
+        }
+        
         const node   = tpl.content.firstElementChild.cloneNode(true);
         const a      = node.querySelector('.site-link');
         const thumb  = node.querySelector('.thumb');
@@ -166,7 +177,6 @@ function renderSitesIntoMount(mount, sites) {
         const title  = node.querySelector('.title');
         const descEl = node.querySelector('.desc');
 
-        const href   = normalizeUrl(site.url || '');
         const domain = domainOf(href);
 
         a.href = href;
