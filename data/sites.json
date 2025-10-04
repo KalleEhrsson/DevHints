@@ -3,15 +3,9 @@
   "sitesDescription": "Curated tools and libraries for front-end styling, assets, and productivity.",
   "sitesSections": [
     {
-      "title": "CSS & Styling",
+      "title": "Styling",
       "description": "Generators and helpers that speed up visual polish.",
       "sites": [
-        {
-          "title": "CSS Loaders",
-          "url": "https://uiball.com/ldrs/",
-          "description": "Copy loading spinners in pure CSS.",
-          "tags": ["animation", "loading"]
-        },
         {
           "title": "UI Colors",
           "url": "https://uicolors.app/",
@@ -47,6 +41,12 @@
           "url": "https://uiverse.io/",
           "description": "Open-source UI elements built with HTML & CSS.",
           "tags": ["css", "components"]
+        },
+        {
+          "title": "CSS Loaders",
+          "url": "https://uiball.com/ldrs/",
+          "description": "Copy loading spinners in pure CSS.",
+          "tags": ["animation", "loading"]
         }
       ]
     },
