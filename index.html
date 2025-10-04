@@ -118,25 +118,25 @@
 
 <!-- Useful Sites -->
 <!-- Filled dynamically from /data/sites.json -->
+<template id="siteCardTpl">
+    <li class="site-card">
+        <a class="site-link" target="_blank" rel="noopener">
+            <div class="thumb">
+                <div class="thumb-overlay"></div>
+                <img class="thumb-icon" alt="" loading="lazy" decoding="async" />
+            </div>
+            <div class="info">
+                <div class="title-line">
+                    <h3 class="title"></h3>
+                </div>
+                <p class="desc"></p>
+                <div class="tags"></div>
+            </div>
+        </a>
+    </li>
+</template>
 <div id="sitesSection" class="content-section" style="display:none;">
     <ul id="siteGrid" class="site-grid"></ul>
-    <template id="siteCardTpl">
-        <li class="site-card">
-            <a class="site-link" target="_blank" rel="noopener">
-                <div class="thumb">
-                    <div class="thumb-overlay"></div>
-                    <img class="thumb-icon" alt="" loading="lazy" decoding="async" />
-                </div>
-                <div class="info">
-                    <div class="title-line">
-                        <h3 class="title"></h3>
-                    </div>
-                    <p class="desc"></p>
-                    <div class="tags"></div>
-                </div>
-            </a>
-        </li>
-    </template>
 </div>
 
 <!-- BACK TO TOP -->
