@@ -55,7 +55,9 @@ function nextSectionDomId(base) {
  * @property {string=} html // when present, section renders custom HTML instead of a table
  * @property {string[]=} columns
  * @property {Row[]=} rows
- * @property {boolean=} exampleOpen 
+ * @property {boolean=} exampleOpen
+ * @property {Array<Object>=} sites // optional resource cards rendered under the section
+ * @property {string=} siteTitle // optional heading for section-specific sites
  */
 
 /* Attribute row */
@@ -131,6 +133,7 @@ function renderAttributeTable(section) {
 
     const columns = Array.isArray(s.columns) ? s.columns : ['Attribute','Description','Requirements'];
     const rows = Array.isArray(s.rows) ? s.rows : [];
+    const hasSites = Array.isArray(s.sites) && s.sites.length;
 
     let thead = '<thead><tr>';
     for (let i = 0; i < columns.length; i++) thead += '<th>' + escHtml(columns[i]) + '</th>';
@@ -148,8 +151,57 @@ function renderAttributeTable(section) {
     out +=   '</h2>';
     out +=   `<div class="section-content expanded" id="${escHtml(contentId)}" role="region" aria-hidden="false" aria-labelledby="${escHtml(headerId)}">`;
     out +=     '<table>' + thead + tbody + '</table>';
+    if (hasSites) {
+        const siteHeading = escHtml(s.siteTitle || 'Related Resources');
+        const siteData = escHtml(JSON.stringify(s.sites));
+        out += `<div class="section-sites" data-sites="${siteData}">`;
+        out +=   `<h3 class="section-sites-title">${siteHeading}</h3>`;
+        out +=   '<ul class="site-grid"></ul>';
+        out += '</div>';
+    }
     out +=   '</div>';
     out += '</section>';
+    return out;
+}
+
+function renderStandaloneSitesSection(opts) {
+    const o = (opts && typeof opts === 'object') ? opts : {};
+    const list = Array.isArray(o.sites) ? o.sites : [];
+    if (!list.length) return '';
+
+    const titleText = typeof o.title === 'string' && o.title.trim() ? o.title.trim() : 'Useful Sites';
+    const idSource = typeof o.id === 'string' && o.id.trim() ? o.id : titleText;
+    const innerTitleText = typeof o.innerTitle === 'string' && o.innerTitle.trim() ? o.innerTitle.trim() : '';
+    const descriptionText = typeof o.description === 'string' && o.description.trim() ? o.description.trim() : '';
+
+    const domId = nextSectionDomId(idSource);
+    const headerId = `${domId}-header`;
+    const contentId = `${domId}-content`;
+    const dataKey = slugify(idSource);
+    const siteData = escHtml(JSON.stringify(list));
+
+    const innerTitleHtml = innerTitleText
+        ? `<h3 class="section-sites-title">${escHtml(innerTitleText)}</h3>`
+        : '';
+    const descriptionHtml = descriptionText
+        ? `<p class="section-sites-desc">${allowCodeTags(descriptionText)}</p>`
+        : '';
+
+    let out = '';
+    out += `<section class="collapsible-section" id="${escHtml(domId)}"${dataKey ? ` data-section-key="${escHtml(dataKey)}"` : ''}>`;
+    out +=   `<h2 class="section-header" id="${escHtml(headerId)}" role="button" tabindex="0" aria-expanded="true" aria-controls="${escHtml(contentId)}">`;
+    out +=     '<span class="toggle-icon">-</span>';
+    out +=     `<span class="section-title">${escHtml(titleText)}</span>`;
+    out +=   '</h2>';
+    out +=   `<div class="section-content expanded" id="${escHtml(contentId)}" role="region" aria-hidden="false" aria-labelledby="${escHtml(headerId)}">`;
+    out +=     `<div class="section-sites" data-sites="${siteData}">`;
+    out +=       innerTitleHtml;
+    out +=       descriptionHtml;
+    out +=       '<ul class="site-grid"></ul>';
+    out +=     '</div>';
+    out +=   '</div>';
+    out += '</section>';
+
     return out;
 }
 
@@ -177,40 +229,97 @@ function gradientFromString(str) {
     return `linear-gradient(180deg, ${c1}, ${c2})`;
 }
 
-/* Render Sites into the Sites section using the template in index.html */
-function renderSitesIntoMount(mount, sites) {
-    const grid = mount.querySelector('#siteGrid');
-    const tpl  = mount.querySelector('#siteCardTpl');
-    if (!grid || !tpl) return;
+function createSiteCardNode(site) {
+    const tpl = document.getElementById('siteCardTpl');
+    if (!tpl || !tpl.content || !tpl.content.firstElementChild) return null;
 
-    grid.innerHTML = '';
+    const href = normalizeUrl(site && site.url);
+    if (!href) {
+        return null;
+    }
 
-    sites.forEach(site => {
-        const href = normalizeUrl(site && site.url);
-        if (!href) {
-            return;
-        }
-        
-        const node   = tpl.content.firstElementChild.cloneNode(true);
-        const a      = node.querySelector('.site-link');
-        const thumb  = node.querySelector('.thumb');
-        const icon   = node.querySelector('.thumb-icon');
-        const title  = node.querySelector('.title');
-        const descEl = node.querySelector('.desc');
+    const node   = tpl.content.firstElementChild.cloneNode(true);
+    const a      = node.querySelector('.site-link');
+    const thumb  = node.querySelector('.thumb');
+    const icon   = node.querySelector('.thumb-icon');
+    const title  = node.querySelector('.title');
+    const descEl = node.querySelector('.desc');
+    const tagsEl = node.querySelector('.tags');
 
-        const domain = domainOf(href);
+    const domain = domainOf(href);
 
-        a.href = href;
-        title.textContent = site.title || domain || href;
-        descEl.textContent = site.description || '';
+    if (a) a.href = href;
+    if (title) title.textContent = site && site.title ? site.title : (domain || href);
+    if (descEl) descEl.textContent = site && site.description ? site.description : '';
 
-        thumb.style.background = gradientFromString(domain || href);
+    if (thumb) thumb.style.background = gradientFromString(domain || href);
+    if (icon) {
         icon.src = faviconFor(domain);
         icon.alt = domain || 'favicon';
         icon.addEventListener('load', () => icon.classList.add('loaded'));
         icon.addEventListener('error', () => icon.remove());
+    }
 
-        grid.appendChild(node);
+    if (tagsEl) {
+        if (site && Array.isArray(site.tags) && site.tags.length) {
+            tagsEl.innerHTML = site.tags
+                .map(tag => `<span class="tag">${escHtml(tag)}</span>`)
+                .join('');
+        } else {
+            tagsEl.remove();
+        }
+    }
+
+    return node;
+}
+
+function renderSiteGrid(grid, sites) {
+    if (!grid) return;
+
+    grid.innerHTML = '';
+
+    sites.forEach(site => {
+        const node = createSiteCardNode(site);
+        if (node) {
+            grid.appendChild(node);
+        }
+    });
+}
+
+/* Render Sites into the Sites section using the template in index.html */
+function renderSitesIntoMount(mount, sites) {
+    const grid = mount.querySelector('.site-grid');
+    if (!grid) return;
+
+    renderSiteGrid(grid, sites);
+}
+
+function hydrateEmbeddedSites(root) {
+    if (!root) return;
+
+    const wrappers = root.querySelectorAll('.section-sites[data-sites]');
+    wrappers.forEach(wrapper => {
+        const grid = wrapper.querySelector('.site-grid');
+        if (!grid) {
+            wrapper.removeAttribute('data-sites');
+            return;
+        }
+
+        let parsed = [];
+        const raw = wrapper.getAttribute('data-sites');
+        if (raw) {
+            try {
+                parsed = JSON.parse(raw);
+            } catch (e) {
+                console.warn('Could not parse section sites JSON', e);
+            }
+        }
+
+        if (Array.isArray(parsed) && parsed.length) {
+            renderSiteGrid(grid, parsed);
+        }
+
+        wrapper.removeAttribute('data-sites');
     });
 }
 
@@ -263,10 +372,15 @@ async function renderJsonInto(mountId, jsonPath, eventName) {
         return;
     }
 
-    /* Sites shape */
-    if (data && Array.isArray(data.sites)) {
-        // keep outer structure; the template lives in index.html
-        renderSitesIntoMount(mount, data.sites);
+    const siteList = (data && Array.isArray(data.sites)) ? data.sites : null;
+    const sections = (data && Array.isArray(data.sections)) ? data.sections : null;
+    const hasSections = Array.isArray(sections) && sections.length;
+    const hasSitesOnly = !hasSections && Array.isArray(siteList);
+
+    /* Sites-only shape */
+    if (hasSitesOnly) {
+        const sites = siteList || [];
+        renderSitesIntoMount(mount, sites);
 
         const evName = eventName || 'sites:rendered';
         mount.dispatchEvent(new CustomEvent(evName, {
@@ -274,27 +388,46 @@ async function renderJsonInto(mountId, jsonPath, eventName) {
             detail: {
                 mountId,
                 jsonPath,
-                sites: data.sites.length
+                sites: sites.length
             }
         }));
         return;
     }
 
-    /* Attribute sections shape */
-    const sects = (data && Array.isArray(data.sections)) ? data.sections : [];
-    mount.innerHTML = sects.map(s => renderAttributeTable(s)).join('');
+    const sects = hasSections ? sections : [];
+    const globalSites = Array.isArray(siteList) ? siteList : [];
+    const includeGlobalSites = globalSites.length > 0;
+
+    let html = sects.map(s => renderAttributeTable(s)).join('');
+    if (includeGlobalSites) {
+        html += renderStandaloneSitesSection({
+            title: (typeof data.sitesTitle === 'string' && data.sitesTitle.trim()) ? data.sitesTitle.trim() : 'Useful Sites',
+            innerTitle: (typeof data.sitesInnerTitle === 'string' && data.sitesInnerTitle.trim()) ? data.sitesInnerTitle.trim() : '',
+            description: typeof data.sitesDescription === 'string' ? data.sitesDescription : '',
+            id: typeof data.sitesId === 'string' ? data.sitesId : '',
+            sites: globalSites
+        });
+    }
+
+    mount.innerHTML = html;
 
     preseedDocLinks(mount);
+    hydrateEmbeddedSites(mount);
 
     const evName = eventName || 'data:rendered';
+    const detail = {
+        mountId,
+        jsonPath,
+        sections: sects.length,
+        rows: mount.querySelectorAll('tbody tr').length
+    };
+    if (includeGlobalSites) {
+        detail.sites = mount.querySelectorAll('.site-grid li').length;
+    }
+
     mount.dispatchEvent(new CustomEvent(evName, {
         bubbles: true,
-        detail: {
-            mountId,
-            jsonPath,
-            sections: sects.length,
-            rows: mount.querySelectorAll('tbody tr').length
-        }
+        detail
     }));
 }
 

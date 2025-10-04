@@ -799,10 +799,10 @@ th, td {
 }
 
 /* Useful Sites cards */
-#siteGrid .site-link,
-#siteGrid .site-link:hover,
-#siteGrid .site-link:focus,
-#siteGrid .site-link:active {
+.site-grid .site-link,
+.site-grid .site-link:hover,
+.site-grid .site-link:focus,
+.site-grid .site-link:active {
     text-decoration: none;
 }
 
@@ -814,6 +814,26 @@ th, td {
     display: grid;
     gap: 16px;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+.section-sites {
+    margin-top: 24px;
+}
+
+.section-sites-title {
+    margin: 0;
+    font-size: clamp(1.05rem, 1.2vw + 1rem, 1.25rem);
+    font-weight: 600;
+}
+
+.section-sites-desc {
+    margin: 8px 0 0;
+    color: var(--text-muted);
+    font-size: clamp(.95rem, 1vw + .85rem, 1.05rem);
+}
+
+.section-sites .site-grid {
+    margin: 16px 0 0;
 }
 
 .site-card {
