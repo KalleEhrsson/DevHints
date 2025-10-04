@@ -4,10 +4,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const input = document.getElementById('searchInput');
     const clearButton = document.getElementById('clearSearch');
     const searchInput = document.getElementById('searchInput');
+    const searchAllToggle = document.getElementById('searchAllToggle');
     const defaultWidth = 100; // starting width in px
     const focusWidth = 200;   // width when focused with no text
     const maxWidth = 600;     // max growth width in px
-    
+
+
+    let savedSearchScope = null;
+    try { savedSearchScope = localStorage.getItem('search:all-tabs'); } catch {}
+    if (searchAllToggle && savedSearchScope !== null) {
+        searchAllToggle.checked = savedSearchScope === '1';
+    }
+
 
     /* PAGE TITLE */
     const pageTitle = document.getElementById("pageTitle");
@@ -30,6 +38,43 @@ document.addEventListener('DOMContentLoaded', () => {
     const themePath = document.getElementById('themePath');
 
     const body = document.body;
+
+    const sectionMeta = {
+        unity:  {
+            title: 'Unity Inspector & Scripting Attributes Cheat Sheet',
+            desc:  'A comprehensive list of built-in and common custom attributes you can use in Unity.',
+            short: 'Unity'
+        },
+        csharp: {
+            title: 'C# Tips & Tricks',
+            desc:  'Handy syntax, attributes, and coding patterns for C# developers.',
+            short: 'C#'
+        },
+        other:  {
+            title: 'Other Notes',
+            desc:  'Misc bits worth remembering.',
+            short: 'Other'
+        },
+        sites:  {
+            title: 'Useful Sites',
+            desc:  'A curated collection of websites and tools to speed up your workflow.',
+            short: 'Sites'
+        }
+    };
+
+    function sectionKeyForMount(mount) {
+        if (!mount) return '';
+        if (mount.dataset && mount.dataset.section) return mount.dataset.section;
+        const id = mount.id || '';
+        return id.replace(/Section$/, '');
+    }
+
+    function sectionShortName(key) {
+        if (!key) return 'section';
+        const meta = sectionMeta[key];
+        if (meta && meta.short) return meta.short;
+        return key.charAt(0).toUpperCase() + key.slice(1);
+    }
 
     // lock page height to the visible tab
     function activeSectionEl() {
@@ -112,35 +157,129 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* SEARCH */
     function applySearch() {
+        if (!input) return;
+
         const q = input.value.trim().toLowerCase();
-        const sec = activeSectionEl();
-        if (!sec) return;
+        const searchAll = !!(searchAllToggle && searchAllToggle.checked);
+        const sections = Array.from(document.querySelectorAll('.content-section'));
 
-        const groups = sec.querySelectorAll('section');
-        let anyVisibleOverall = false;
+        if (!sections.length) return;
 
-        groups.forEach(group => {
-            const table = group.querySelector('table');
+        if (!q) {
+            sections.forEach(section => {
+                section.querySelectorAll('tbody tr').forEach(row => row.style.display = '');
+                section.querySelectorAll('section').forEach(group => group.style.display = '');
+                section.querySelectorAll('.site-card').forEach(card => card.style.display = '');
+            });
 
-            if (table) {
-                let anyRowVisible = false;
-                table.querySelectorAll('tbody tr').forEach(row => {
-                    const show = !q || row.textContent.toLowerCase().includes(q);
-                    row.style.display = show ? '' : 'none';
-                    if (show) anyRowVisible = true;
+            sidebarItems.forEach(li => {
+                li.classList.remove('has-search-hit');
+                li.removeAttribute('data-hit-count');
+            });
+
+            footer.textContent = originalFooterText;
+            return;
+        }
+
+        const stats = sections.map(section => {
+            const key = sectionKeyForMount(section);
+            let matches = 0;
+
+            const groups = section.querySelectorAll('section');
+
+            if (groups.length) {
+                groups.forEach(group => {
+                    const table = group.querySelector('table');
+                    let groupMatches = 0;
+
+                    if (table) {
+                        table.querySelectorAll('tbody tr').forEach(row => {
+                            const show = row.textContent.toLowerCase().includes(q);
+                            row.style.display = show ? '' : 'none';
+                            if (show) groupMatches++;
+                        });
+                    } else {
+                        const showGroup = group.textContent.toLowerCase().includes(q);
+                        groupMatches = showGroup ? 1 : 0;
+                    }
+
+                    group.style.display = groupMatches > 0 ? '' : 'none';
+                    matches += groupMatches;
                 });
-                group.style.display = anyRowVisible ? '' : 'none';
-                if (anyRowVisible) anyVisibleOverall = true;
             } else {
-                const show = !q || group.textContent.toLowerCase().includes(q);
-                group.style.display = show ? '' : 'none';
-                if (show) anyVisibleOverall = true;
+                const cards = section.querySelectorAll('.site-card');
+
+                if (cards.length) {
+                    cards.forEach(card => {
+                        const show = card.textContent.toLowerCase().includes(q);
+                        card.style.display = show ? '' : 'none';
+                        if (show) matches++;
+                    });
+                } else {
+                    const match = section.textContent.toLowerCase().includes(q);
+                    matches += match ? 1 : 0;
+                }
+            }
+
+            return { key, matches, element: section };
+        });
+
+        const activeMount = activeSectionEl();
+        const activeKey = sectionKeyForMount(activeMount);
+        const activeStat = stats.find(stat => stat.key === activeKey) || { matches: 0 };
+
+        const totalMatches = searchAll
+            ? stats.reduce((sum, stat) => sum + stat.matches, 0)
+            : activeStat.matches;
+
+        const sectionsWithHits = searchAll
+            ? stats.filter(stat => stat.matches > 0)
+            : (activeStat.matches > 0 ? [activeStat] : []);
+
+        sidebarItems.forEach(li => {
+            const key = li.dataset.section;
+            if (!key) return;
+
+            const stat = stats.find(s => s.key === key);
+            const hasHits = !!(searchAll && stat && stat.matches > 0);
+
+            if (hasHits) {
+                li.classList.add('has-search-hit');
+                li.setAttribute('data-hit-count', stat.matches);
+            } else {
+                li.classList.remove('has-search-hit');
+                li.removeAttribute('data-hit-count');
             }
         });
 
-        footer.textContent = (q && !anyVisibleOverall)
-            ? 'No results found related to your search.'
-            : originalFooterText;
+        if (searchAll && sectionsWithHits.length && !sectionsWithHits.some(stat => stat.key === activeKey)) {
+            const firstKey = sectionsWithHits[0]?.key;
+            if (firstKey && typeof showSection === 'function') {
+                showSection(firstKey);
+
+                const items = Array.from(sidebarItems);
+                items.forEach(li => li.classList.remove('active'));
+
+                const activeLi = items.find(li => li.dataset.section === firstKey);
+                if (activeLi) {
+                    activeLi.classList.add('active');
+                    try { localStorage.setItem('activeSidebar', activeLi.textContent.trim()); } catch {}
+                }
+            }
+        }
+
+        if (!totalMatches) {
+            footer.textContent = 'No results found related to your search.';
+            return;
+        }
+
+        if (searchAll && sectionsWithHits.length > 1) {
+            footer.textContent = `Found ${totalMatches} matches across ${sectionsWithHits.length} sections. Badges mark each tab with hits.`;
+        } else {
+            const targetKey = searchAll ? sectionsWithHits[0]?.key : activeKey;
+            const sectionName = sectionShortName(targetKey);
+            footer.textContent = `Found ${totalMatches} matches in the ${sectionName} section.`;
+        }
     }
 
     /* Clear + unfocus */
@@ -209,6 +348,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     input.addEventListener('input', () => clearButton.style.display = input.value ? 'block' : 'none');
 
+    if (searchAllToggle) {
+        searchAllToggle.addEventListener('change', () => {
+            try { localStorage.setItem('search:all-tabs', searchAllToggle.checked ? '1' : '0'); } catch {}
+            applySearch();
+        });
+    }
+
     // Load saved active item from localStorage
     const savedActive = localStorage.getItem('activeSidebar');
     if (savedActive) {
@@ -263,36 +409,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Change page header
-    const headerCopy = {
-        unity:  {
-            title: 'Unity Inspector & Scripting Attributes Cheat Sheet',
-            desc:  'A comprehensive list of built-in and common custom attributes you can use in Unity.',
-            short: 'Unity'
-        },
-        csharp: {
-            title: 'C# Tips & Tricks',
-            desc:  'Handy syntax, attributes, and coding patterns for C# developers.',
-            short: 'C#'
-        },
-        other:  {
-            title: 'Other Notes',
-            desc:  'Misc bits worth remembering.',
-            short: 'Other'
-        },
-        sites:  {
-            title: 'Useful Sites',
-            desc:  'A curated collection of websites and tools to speed up your workflow.',
-            short: 'Sites'
-        }
-    };
-
     function showSection(sectionKey) {
         document.querySelectorAll('.content-section').forEach(sec => sec.style.display = 'none');
 
         const secEl = document.getElementById(sectionKey + 'Section');
         if (secEl) secEl.style.display = 'block';
 
-        const copy = headerCopy[sectionKey];
+        const copy = sectionMeta[sectionKey];
         if (copy) {
             pageTitle.textContent = copy.title;
             pageDesc.textContent  = copy.desc;
