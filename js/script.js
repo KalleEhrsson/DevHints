@@ -50,6 +50,11 @@ document.addEventListener('DOMContentLoaded', () => {
             desc:  'Handy syntax, attributes, and coding patterns for C# developers.',
             short: 'C#'
         },
+        blender: {
+            title: 'Blender Modeling & Rendering Cheats',
+            desc:  'Favorite hotkeys, modifier workflows, and lighting setups for Blender artists.',
+            short: 'Blender'
+        },
         other:  {
             title: 'Other Notes',
             desc:  'Misc bits worth remembering.',
@@ -763,6 +768,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('unitySection') ?.addEventListener('unity:rendered',  restoreAllCollapseStates);
     document.getElementById('csharpSection')?.addEventListener('csharp:rendered', restoreAllCollapseStates);
     document.getElementById('otherSection') ?.addEventListener('other:rendered',  restoreAllCollapseStates);
+    document.getElementById('blenderSection') ?.addEventListener('other:rendered',  restoreAllCollapseStates);
 
     /* Initial restore */
     restoreAllCollapseStates();

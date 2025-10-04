@@ -826,11 +826,13 @@ th, td {
     font-weight: 600;
 }
 
+
 .section-sites-desc {
     margin: 8px 0 0;
     color: var(--text-muted);
     font-size: clamp(.95rem, 1vw + .85rem, 1.05rem);
 }
+
 
 .section-sites .site-grid {
     margin: 16px 0 0;

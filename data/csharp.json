@@ -18,6 +18,19 @@
       "id": "interop",
       "title": "C# Language & Interop Attributes",
       "columns": ["Attribute", "Description", "Requirements"],
+      "siteTitle": "C# Resources",
+      "sites": [
+        {
+          "title": "C# Attribute Reference",
+          "url": "https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/attributes/",
+          "description": "Overview of built-in C# attribute types and usage guidelines."
+        },
+        {
+          "title": ".NET Documentation",
+          "url": "https://learn.microsoft.com/en-us/dotnet/",
+          "description": "Official .NET docs covering runtime libraries, APIs, and tooling."
+        }
+      ],
       "rows": [
         {
           "code": "[Serializable]",

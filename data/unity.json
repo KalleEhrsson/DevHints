@@ -22,6 +22,19 @@
         "Description",
         "Requirements"
       ],
+      "siteTitle": "Unity Resources",
+      "sites": [
+        {
+          "title": "Unity Scripting API",
+          "url": "https://docs.unity3d.com/ScriptReference/",
+          "description": "Official API reference for Unity scripting attributes and components."
+        },
+        {
+          "title": "Unity Learn",
+          "url": "https://learn.unity.com/",
+          "description": "Self-paced tutorials and guided learning paths for Unity developers."
+        }
+      ],
       "rows": [
         {
           "code": "[SerializeField]",

@@ -444,7 +444,8 @@ const dataSources = [
     { mountId: 'unitySection',  jsonPath: 'data/unity.json',  eventName: 'unity:rendered'  },
     { mountId: 'csharpSection', jsonPath: 'data/csharp.json', eventName: 'csharp:rendered' },
     { mountId: 'otherSection',  jsonPath: 'data/other.json',  eventName: 'other:rendered'  },
-    { mountId: 'sitesSection',  jsonPath: 'data/sites.json',  eventName: 'sites:rendered'  }
+    { mountId: 'sitesSection',  jsonPath: 'data/sites.json',  eventName: 'sites:rendered'  },
+    { mountId: 'blenderSection', jsonPath: 'data/blender.json', eventName: 'blender:rendered' }
 ];
 
 /* Kick off after DOM ready */
