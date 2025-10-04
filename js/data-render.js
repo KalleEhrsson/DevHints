@@ -7,6 +7,10 @@ function escHtml(s) {
     return d.innerHTML;
 }
 
+function escAttr(s) {
+    return escHtml(s).replace(/"/g, '&quot;');
+}
+
 function decodeHtml(s) {
     if (s == null || s === '') return '';
     const d = document.createElement('textarea');
@@ -159,12 +163,10 @@ function renderAttributeTable(section) {
     out +=   `<div class="section-content expanded" id="${escHtml(contentId)}" role="region" aria-hidden="false" aria-labelledby="${escHtml(headerId)}">`;
     out +=     '<table>' + thead + tbody + '</table>';
     if (hasSites) {
-        const siteHeading = escHtml(s.siteTitle || 'Related Resources');
-        const siteData = escHtml(JSON.stringify(s.sites));
-        out += `<div class="section-sites" data-sites="${siteData}">`;
-        out +=   `<h3 class="section-sites-title">${siteHeading}</h3>`;
-        out +=   '<ul class="site-grid"></ul>';
-        out += '</div>';
+        out += buildSiteCollectionBlock({
+            sites: s.sites,
+            title: typeof s.siteTitle === 'string' && s.siteTitle.trim() ? s.siteTitle : 'Related Resources'
+        });
     }
     out +=   '</div>';
     out += '</section>';
@@ -223,24 +225,41 @@ function renderStandaloneSitesSection(opts) {
     out +=     introHtml;
 
     for (const section of normalizedSections) {
-        const siteData = escHtml(JSON.stringify(section.sites));
-        const secTitleHtml = section.title
-            ? `<h3 class="section-sites-title">${escHtml(section.title)}</h3>`
-            : '';
-        const secDescHtml = section.description && section.description.trim()
-            ? `<p class="section-sites-desc">${allowCodeTags(section.description)}</p>`
-            : '';
-
-        out += `<div class="section-sites" data-sites="${siteData}">`;
-        out +=   secTitleHtml;
-        out +=   secDescHtml;
-        out +=   '<ul class="site-grid"></ul>';
-        out += '</div>';
+        out += buildSiteCollectionBlock({
+            sites: section.sites,
+            title: section.title,
+            description: section.description
+        });
     }
 
     out +=   '</div>';
     out += '</section>';
     return out;
+}
+
+function buildSiteCollectionBlock(options) {
+    const opts = (options && typeof options === 'object') ? options : {};
+    const rawSites = Array.isArray(opts.sites) ? opts.sites : [];
+    const sites = rawSites.filter(site => site && typeof site === 'object');
+    if (!sites.length) return '';
+
+    const titleText = typeof opts.title === 'string' ? opts.title.trim() : '';
+    const descriptionRaw = typeof opts.description === 'string' ? opts.description : '';
+    const hasDescription = descriptionRaw.trim().length > 0;
+    const descClassExtra = typeof opts.descriptionClass === 'string' && opts.descriptionClass.trim()
+        ? ' ' + opts.descriptionClass.trim()
+        : '';
+
+    const headingHtml = titleText
+        ? `<h3 class="section-sites-title">${escHtml(titleText)}</h3>`
+        : '';
+    const descriptionHtml = hasDescription
+        ? `<p class="section-sites-desc${descClassExtra}">${allowCodeTags(descriptionRaw)}</p>`
+        : '';
+
+    const siteData = escAttr(JSON.stringify(sites));
+
+    return `<div class="section-sites" data-sites="${siteData}">${headingHtml}${descriptionHtml}<ul class="site-grid"></ul></div>`;
 }
 
 /* Utilities for Sites */
