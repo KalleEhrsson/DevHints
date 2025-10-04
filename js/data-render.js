@@ -63,7 +63,7 @@ function renderRow(row) {
         : (r.exampleImg ? [r.exampleImg] : []);
 
     const hasExample = list.length > 0;
-    const firstSrc = hasExample ? `/examples/${list[0]}` : "";
+    const firstSrc = hasExample ? `examples/${list[0]}` : "";
 
     // Caption built from shared alt + note
     const exampleAlt  = allowCodeTags(r.exampleAlt || "");
@@ -75,7 +75,7 @@ function renderRow(row) {
 
     // Store the full list in a data attribute for lightbox carousel
     const exampleDataAttr = hasExample
-        ? ` data-examples='${JSON.stringify(list.map(s => `/examples/${s}`))}'`
+        ? ` data-examples='${JSON.stringify(list.map(s => `examples/${s}`))}'`
         : "";
 
     return `
@@ -277,10 +277,10 @@ async function renderAll(sources) {
 
 /* Configure mounts and JSON paths */
 const dataSources = [
-    { mountId: 'unitySection',  jsonPath: '/data/unity.json',  eventName: 'unity:rendered'  },
-    { mountId: 'csharpSection', jsonPath: '/data/csharp.json', eventName: 'csharp:rendered' },
-    { mountId: 'otherSection',  jsonPath: '/data/other.json',  eventName: 'other:rendered'  },
-    { mountId: 'sitesSection',  jsonPath: '/data/sites.json',  eventName: 'sites:rendered'  }
+    { mountId: 'unitySection',  jsonPath: 'data/unity.json',  eventName: 'unity:rendered'  },
+    { mountId: 'csharpSection', jsonPath: 'data/csharp.json', eventName: 'csharp:rendered' },
+    { mountId: 'otherSection',  jsonPath: 'data/other.json',  eventName: 'other:rendered'  },
+    { mountId: 'sitesSection',  jsonPath: 'data/sites.json',  eventName: 'sites:rendered'  }
 ];
 
 /* Kick off after DOM ready */
