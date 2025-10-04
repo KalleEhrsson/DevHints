@@ -18,6 +18,21 @@ function allowCodeTags(s) {
         .replaceAll("&lt;/code&gt;", "</code>");
 }
 
+function slugify(str) {
+    return (str == null ? '' : String(str))
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+}
+
+let sectionIdSeq = 0;
+
+function nextSectionDomId(base) {
+    const slug = slugify(base) || 'section';
+    sectionIdSeq += 1;
+    return `${slug}-${sectionIdSeq}`;
+}
+
 /* Row model */
 /**
  * @typedef {Object} Row
@@ -93,15 +108,21 @@ function renderRow(row) {
 function renderAttributeTable(section) {
     const s = (section && typeof section === 'object') ? section : {};
     const title = escHtml(s.title || '');
+    const idSource = (typeof s.id === 'string' && s.id.trim()) ? s.id : (s.title || 'section');
+    const domId = nextSectionDomId(idSource);
+    const headerId = `${domId}-header`;
+    const contentId = `${domId}-content`;
+    const dataKey = slugify(idSource);
+    const sectionAttrs = `class="collapsible-section" id="${escHtml(domId)}"${dataKey ? ` data-section-key="${escHtml(dataKey)}"` : ''}`;
 
     if (typeof s.html === 'string' && s.html.trim()) {
         let out = '';
-        out += '<section>';
-        out +=   '<h2 class="section-header">';
+        out += `<section ${sectionAttrs}>`;
+        out +=   `<h2 class="section-header" id="${escHtml(headerId)}" role="button" tabindex="0" aria-expanded="true" aria-controls="${escHtml(contentId)}">`;
         out +=     '<span class="toggle-icon">-</span>';
         out +=     '<span class="section-title">' + title + '</span>';
         out +=   '</h2>';
-        out +=   '<div class="section-content expanded">';
+        out +=   `<div class="section-content expanded" id="${escHtml(contentId)}" role="region" aria-hidden="false" aria-labelledby="${escHtml(headerId)}">`;
         out +=     s.html;
         out +=   '</div>';
         out += '</section>';
@@ -120,12 +141,12 @@ function renderAttributeTable(section) {
     tbody += '</tbody>';
 
     let out = '';
-    out += '<section>';
-    out +=   '<h2 class="section-header">';
+    out += `<section ${sectionAttrs}>`;
+    out +=   `<h2 class="section-header" id="${escHtml(headerId)}" role="button" tabindex="0" aria-expanded="true" aria-controls="${escHtml(contentId)}">`;
     out +=     '<span class="toggle-icon">-</span>';
     out +=     '<span class="section-title">' + title + '</span>';
     out +=   '</h2>';
-    out +=   '<div class="section-content expanded">';
+    out +=   `<div class="section-content expanded" id="${escHtml(contentId)}" role="region" aria-hidden="false" aria-labelledby="${escHtml(headerId)}">`;
     out +=     '<table>' + thead + tbody + '</table>';
     out +=   '</div>';
     out += '</section>';

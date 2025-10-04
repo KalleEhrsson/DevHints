@@ -105,19 +105,30 @@ document.addEventListener('DOMContentLoaded', () => {
         try { localStorage.setItem(keyForHeader(header), expanded ? '1' : '0'); } catch {}
     }
 
+    function setSectionExpanded(header, expand, {persist = false, recalc = false} = {}) {
+        if (!header) return;
+        const content = header.nextElementSibling;
+        if (!content) return;
+        const icon = header.querySelector('.toggle-icon');
+
+        const shouldExpand = !!expand;
+        content.classList.toggle('expanded', shouldExpand);
+        content.setAttribute('aria-hidden', shouldExpand ? 'false' : 'true');
+        header.setAttribute('aria-expanded', shouldExpand ? 'true' : 'false');
+        if (icon) icon.textContent = shouldExpand ? '-' : '+';
+
+        if (persist) saveCollapseState(header, shouldExpand);
+        if (recalc && typeof recalcPageHeight === 'function') recalcPageHeight();
+    }
+
     function restoreAllCollapseStates() {
         document.querySelectorAll('.content-section').forEach(mount => {
             mount.querySelectorAll('.section-header').forEach(header => {
-                const content = header.nextElementSibling;
-                const icon    = header.querySelector('.toggle-icon');
-                if (!content) return;
-
                 const key     = keyForHeader(header);
                 const stored  = localStorage.getItem(key);
                 const expand  = stored === null ? true : stored === '1';
 
-                content.classList.toggle('expanded', expand);
-                if (icon) icon.textContent = expand ? '-' : '+';
+                setSectionExpanded(header, expand);
             });
         });
         if (typeof recalcPageHeight === 'function') recalcPageHeight();
@@ -546,21 +557,34 @@ document.addEventListener('DOMContentLoaded', () => {
     
     
     /* Expand or collapse sections and persist the state */
-    document.addEventListener('click', (e) => {
-        const target = $closest(e.target,'.section-header .section-title, .section-header .toggle-icon');
-        if (!target) return;
+    function headerClickTargetsDocLink(eventTarget) {
+        return !!$closest(eventTarget, '.doc-icon-link');
+    }
 
-        const header  = target.closest('.section-header');
-        const content = header?.nextElementSibling;
-        const icon    = header?.querySelector('.toggle-icon');
+    document.addEventListener('click', (e) => {
+        const header = $closest(e.target, '.section-header');
+        if (!header) return;
+        if (headerClickTargetsDocLink(e.target)) return;
+
+        const content = header.nextElementSibling;
         if (!content) return;
 
-        const expanded = content.classList.toggle('expanded');
-        if (icon) icon.textContent = expanded ? '-' : '+';
+        const expanded = !content.classList.contains('expanded');
+        setSectionExpanded(header, expanded, {persist: true, recalc: true});
+    });
 
-        saveCollapseState(header, expanded);
+    document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Enter' && e.key !== ' ') return;
+        const header = $closest(e.target, '.section-header');
+        if (!header) return;
+        if (headerClickTargetsDocLink(e.target)) return;
 
-        if (typeof recalcPageHeight === 'function') recalcPageHeight();
+        const content = header.nextElementSibling;
+        if (!content) return;
+
+        e.preventDefault();
+        const expanded = !content.classList.contains('expanded');
+        setSectionExpanded(header, expanded, {persist: true, recalc: true});
     });
 
 

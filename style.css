@@ -641,7 +641,7 @@ th, td {
     align-items: center;
     gap: 0.5rem;
     font-size: 1.2rem;
-    cursor: default;
+    cursor: pointer;
 }
 
 .section-header .section-title,
@@ -663,14 +663,89 @@ th, td {
     overflow: hidden;
     max-height: 0;
     transition: max-height 0.4s ease, padding 0.4s ease;
-    padding: 0 1rem;
-    margin-bottom: 2rem;
+    padding: 0;
 }
 
 /* Expanded state */
 .section-content.expanded {
-    max-height: 1000px;
-    padding: 1rem;
+    max-height: 1200px;
+}
+
+.collapsible-section {
+    margin: 14px 0;
+    border-radius: 14px;
+    background: color-mix(in oklab, var(--bg-secondary) 92%, black 8%);
+    border: 1px solid color-mix(in oklab, var(--border-muted) 80%, white 20%);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    overflow: hidden;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.light-theme .collapsible-section {
+    background: color-mix(in oklab, var(--bg-secondary) 92%, white 8%);
+    border-color: color-mix(in oklab, var(--border-muted) 70%, white 30%);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.65);
+}
+
+.collapsible-section:hover,
+.collapsible-section:focus-within {
+    border-color: color-mix(in oklab, var(--border-muted) 60%, var(--accent) 40%);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.light-theme .collapsible-section:hover,
+.light-theme .collapsible-section:focus-within {
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+
+.collapsible-section .section-header {
+    padding: 12px 14px;
+    background: transparent;
+    font-weight: 600;
+    letter-spacing: 0;
+    border-bottom: 1px solid color-mix(in oklab, var(--border-muted) 70%, transparent 30%);
+}
+
+.collapsible-section .section-header:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.collapsible-section .toggle-icon {
+    width: 22px;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    border-radius: 8px;
+    opacity: 0.85;
+}
+
+.collapsible-section .section-content {
+    padding: 0 14px;
+    background: color-mix(in oklab, var(--bg-secondary) 95%, black 5%);
+}
+
+.light-theme .collapsible-section .section-content {
+    background: color-mix(in oklab, var(--bg-secondary) 96%, white 4%);
+}
+
+.collapsible-section .section-content.expanded {
+    padding: 10px 14px 14px;
+    border-top: 1px solid color-mix(in oklab, var(--border-muted) 65%, transparent 35%);
+}
+
+.collapsible-section .section-header .doc-icon-link,
+.collapsible-section .section-header .doc-link {
+    margin-left: auto;
+    opacity: 0.6;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    transform: translateY(0);
+}
+
+.collapsible-section .section-header .doc-icon-link:hover,
+.collapsible-section .section-header .doc-link:hover {
+    opacity: 1;
+    transform: translateY(-1px);
 }
 
 /* The question mark icon link (separate) */
@@ -871,57 +946,6 @@ th, td {
     min-height: 2.8em;
 }
     
-    /* "Other" tab polish */
-    #otherSection section {
-        margin: 14px 0;
-        border-radius: 14px;
-        background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
-        box-shadow: 0 6px 16px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.04);
-        border: 1px solid rgba(255,255,255,0.08);
-        overflow: hidden;
-    }
-
-    #otherSection .section-header {
-        display: flex;
-        align-items: center;
-        gap: .5rem;
-        padding: 12px 14px;
-        background: transparent;
-    }
-
-    #otherSection .section-header .section-title {
-        font-weight: 600;
-        letter-spacing: 0;
-    }
-
-    #otherSection .toggle-icon {
-        width: 22px;
-        height: 22px;
-        line-height: 22px;
-        text-align: center;
-        border-radius: 8px;
-        opacity: .8;
-        user-select: none;
-    }
-
-    #otherSection .section-content {
-        padding: 10px 14px 14px;
-    }
-
-    /* Put the docs ? on the header, right-aligned, subtle */
-    #otherSection .section-header .doc-icon-link,
-    #otherSection .section-header .doc-link {
-        margin-left: auto;
-        opacity: .6;
-        transition: opacity .2s ease, transform .2s ease;
-        transform: translateY(0);
-    }
-    #otherSection .section-header .doc-icon-link:hover,
-    #otherSection .section-header .doc-link:hover {
-        opacity: 1;
-        transform: translateY(-1px);
-    }
-
     /* Code block aesthetics */
     #otherSection pre {
         margin: 10px 0 0;
@@ -936,12 +960,6 @@ th, td {
         font-size: 0.92rem;
         line-height: 1.4;
         white-space: pre;
-    }
-
-    /* Small glow on hover for the whole card */
-    #otherSection section:hover {
-        box-shadow: 0 10px 24px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.06);
-        border-color: rgba(255,255,255,0.12);
     }
 
     /* Hide the native disclosure marker across engines */
