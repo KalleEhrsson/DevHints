@@ -139,7 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (typeof recalcPageHeight === 'function') recalcPageHeight();
     }
 
-    function recalcPageHeight() {
+    function recalcPageHeight({scrollTop = false} = {}) {
         const header = document.getElementById('appHeader');
         const footer = document.querySelector('footer');
         const sec = activeSectionEl();
@@ -162,7 +162,9 @@ document.addEventListener('DOMContentLoaded', () => {
             progress.style.backgroundPosition = '0% 50%';
         }
 
-        window.scrollTo(0, 0);
+        if (scrollTop) {
+            window.scrollTo(0, 0);
+        }
     }
 
     /* safe closest helper in case it was not added earlier */
