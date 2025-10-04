@@ -164,6 +164,47 @@ function renderAttributeTable(section) {
     return out;
 }
 
+function renderStandaloneSitesSection(opts) {
+    const o = (opts && typeof opts === 'object') ? opts : {};
+    const list = Array.isArray(o.sites) ? o.sites : [];
+    if (!list.length) return '';
+
+    const titleText = typeof o.title === 'string' && o.title.trim() ? o.title.trim() : 'Useful Sites';
+    const idSource = typeof o.id === 'string' && o.id.trim() ? o.id : titleText;
+    const innerTitleText = typeof o.innerTitle === 'string' && o.innerTitle.trim() ? o.innerTitle.trim() : '';
+    const descriptionText = typeof o.description === 'string' && o.description.trim() ? o.description.trim() : '';
+
+    const domId = nextSectionDomId(idSource);
+    const headerId = `${domId}-header`;
+    const contentId = `${domId}-content`;
+    const dataKey = slugify(idSource);
+    const siteData = escHtml(JSON.stringify(list));
+
+    const innerTitleHtml = innerTitleText
+        ? `<h3 class="section-sites-title">${escHtml(innerTitleText)}</h3>`
+        : '';
+    const descriptionHtml = descriptionText
+        ? `<p class="section-sites-desc">${allowCodeTags(descriptionText)}</p>`
+        : '';
+
+    let out = '';
+    out += `<section class="collapsible-section" id="${escHtml(domId)}"${dataKey ? ` data-section-key="${escHtml(dataKey)}"` : ''}>`;
+    out +=   `<h2 class="section-header" id="${escHtml(headerId)}" role="button" tabindex="0" aria-expanded="true" aria-controls="${escHtml(contentId)}">`;
+    out +=     '<span class="toggle-icon">-</span>';
+    out +=     `<span class="section-title">${escHtml(titleText)}</span>`;
+    out +=   '</h2>';
+    out +=   `<div class="section-content expanded" id="${escHtml(contentId)}" role="region" aria-hidden="false" aria-labelledby="${escHtml(headerId)}">`;
+    out +=     `<div class="section-sites" data-sites="${siteData}">`;
+    out +=       innerTitleHtml;
+    out +=       descriptionHtml;
+    out +=       '<ul class="site-grid"></ul>';
+    out +=     '</div>';
+    out +=   '</div>';
+    out += '</section>';
+
+    return out;
+}
+
 /* Utilities for Sites */
 function normalizeUrl(u) {
     try {
@@ -331,10 +372,15 @@ async function renderJsonInto(mountId, jsonPath, eventName) {
         return;
     }
 
-    /* Sites shape */
-    if (data && Array.isArray(data.sites)) {
-        // keep outer structure; the template lives in index.html
-        renderSitesIntoMount(mount, data.sites);
+    const siteList = (data && Array.isArray(data.sites)) ? data.sites : null;
+    const sections = (data && Array.isArray(data.sections)) ? data.sections : null;
+    const hasSections = Array.isArray(sections) && sections.length;
+    const hasSitesOnly = !hasSections && Array.isArray(siteList);
+
+    /* Sites-only shape */
+    if (hasSitesOnly) {
+        const sites = siteList || [];
+        renderSitesIntoMount(mount, sites);
 
         const evName = eventName || 'sites:rendered';
         mount.dispatchEvent(new CustomEvent(evName, {
@@ -342,28 +388,46 @@ async function renderJsonInto(mountId, jsonPath, eventName) {
             detail: {
                 mountId,
                 jsonPath,
-                sites: data.sites.length
+                sites: sites.length
             }
         }));
         return;
     }
 
-    /* Attribute sections shape */
-    const sects = (data && Array.isArray(data.sections)) ? data.sections : [];
-    mount.innerHTML = sects.map(s => renderAttributeTable(s)).join('');
+    const sects = hasSections ? sections : [];
+    const globalSites = Array.isArray(siteList) ? siteList : [];
+    const includeGlobalSites = globalSites.length > 0;
+
+    let html = sects.map(s => renderAttributeTable(s)).join('');
+    if (includeGlobalSites) {
+        html += renderStandaloneSitesSection({
+            title: (typeof data.sitesTitle === 'string' && data.sitesTitle.trim()) ? data.sitesTitle.trim() : 'Useful Sites',
+            innerTitle: (typeof data.sitesInnerTitle === 'string' && data.sitesInnerTitle.trim()) ? data.sitesInnerTitle.trim() : '',
+            description: typeof data.sitesDescription === 'string' ? data.sitesDescription : '',
+            id: typeof data.sitesId === 'string' ? data.sitesId : '',
+            sites: globalSites
+        });
+    }
+
+    mount.innerHTML = html;
 
     preseedDocLinks(mount);
     hydrateEmbeddedSites(mount);
 
     const evName = eventName || 'data:rendered';
+    const detail = {
+        mountId,
+        jsonPath,
+        sections: sects.length,
+        rows: mount.querySelectorAll('tbody tr').length
+    };
+    if (includeGlobalSites) {
+        detail.sites = mount.querySelectorAll('.site-grid li').length;
+    }
+
     mount.dispatchEvent(new CustomEvent(evName, {
         bubbles: true,
-        detail: {
-            mountId,
-            jsonPath,
-            sections: sects.length,
-            rows: mount.querySelectorAll('tbody tr').length
-        }
+        detail
     }));
 }
 
