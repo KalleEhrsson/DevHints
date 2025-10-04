@@ -1,64 +1,108 @@
 {
-  "sites": [
+  "sitesTitle": "Useful Sites",
+  "sitesDescription": "Curated tools and libraries for front-end styling, assets, and productivity.",
+  "sitesSections": [
     {
-      "title": "CSS Loaders",
-      "url": "https://uiball.com/ldrs/",
-      "description": "Copy loading spinners in pure CSS."
+      "title": "CSS & Styling",
+      "description": "Generators and helpers that speed up visual polish.",
+      "sites": [
+        {
+          "title": "CSS Loaders",
+          "url": "https://uiball.com/ldrs/",
+          "description": "Copy loading spinners in pure CSS.",
+          "tags": ["animation", "loading"]
+        },
+        {
+          "title": "UI Colors",
+          "url": "https://uicolors.app/",
+          "description": "Generate and export Tailwind color palettes.",
+          "tags": ["palette", "tailwind"]
+        },
+        {
+          "title": "Text Behind Image",
+          "url": "https://textbehindimage.com/",
+          "description": "Create masked headlines behind hero imagery.",
+          "tags": ["typography", "effects"]
+        },
+        {
+          "title": "Snazzy Maps",
+          "url": "https://snazzymaps.com/",
+          "description": "Customize Google Maps styles and export JSON themes.",
+          "tags": ["maps", "theme"]
+        }
+      ]
     },
     {
-      "title": "UI Colors",
-      "url": "https://uicolors.app/",
-      "description": "Generate and export Tailwind color palettes."
+      "title": "UI Components",
+      "description": "Ready-made building blocks for rapid prototyping.",
+      "sites": [
+        {
+          "title": "ReactBits",
+          "url": "https://www.reactbits.dev/",
+          "description": "Grab ready React components and interaction patterns.",
+          "tags": ["react", "components"]
+        },
+        {
+          "title": "Uiverse",
+          "url": "https://uiverse.io/",
+          "description": "Open-source UI elements built with HTML & CSS.",
+          "tags": ["css", "components"]
+        }
+      ]
     },
     {
-      "title": "ReactBits",
-      "url": "https://www.reactbits.dev/",
-      "description": "Grab ready React components and patterns."
+      "title": "Icons & Assets",
+      "description": "Visual asset libraries to round out your interface.",
+      "sites": [
+        {
+          "title": "Hugeicons",
+          "url": "https://hugeicons.com/icons?style=Stroke&type=Rounded",
+          "description": "Rounded stroke icon system with consistent weights.",
+          "tags": ["icons", "stroke"]
+        },
+        {
+          "title": "Thiings 3D",
+          "url": "https://www.thiings.co/things",
+          "description": "Download transparent 3D PNG renders for hero scenes.",
+          "tags": ["3d", "illustration"]
+        }
+      ]
     },
     {
-      "title": "Thiings 3D",
-      "url": "https://www.thiings.co/things",
-      "description": "Download transparent 3D PNG renders."
+      "title": "Image Editing & AI",
+      "description": "Quick tools for cleanup and generating visuals.",
+      "sites": [
+        {
+          "title": "Remove Photos",
+          "url": "https://remove.photos/",
+          "description": "Erase unwanted objects or blemishes from photos.",
+          "tags": ["cleanup", "photo"]
+        },
+        {
+          "title": "Napkin AI",
+          "url": "https://app.napkin.ai/page/create",
+          "description": "Turn short prompts into concept images instantly.",
+          "tags": ["ai", "generator"]
+        }
+      ]
     },
     {
-      "title": "Text Behind Image",
-      "url": "https://textbehindimage.com/",
-      "description": "Create masked headlines behind images."
-    },
-    {
-      "title": "Hugeicons",
-      "url": "https://hugeicons.com/icons?style=Stroke&type=Rounded",
-      "description": "Pro icon set with rounded stroke."
-    },
-    {
-      "title": "Remove Photos",
-      "url": "https://remove.photos/",
-      "description": "Remove objects and blemishes online."
-    },
-    {
-      "title": "Napkin AI",
-      "url": "https://app.napkin.ai/page/create",
-      "description": "Turn text prompts into images."
-    },
-    {
-      "title": "Cheatography",
-      "url": "https://cheatography.com/",
-      "description": "Search and download cheat sheets."
-    },
-    {
-      "title": "Stirling PDF",
-      "url": "https://stirlingpdf.io/",
-      "description": "Edit, split, and merge PDFs in the browser."
-    },
-    {
-      "title": "Snazzy Maps",
-      "url": "https://snazzymaps.com/",
-      "description": "Customize Google Maps styles."
-    },
-    {
-      "title": "Uiverse",
-      "url": "https://uiverse.io/",
-      "description": "Free collection of open-source UI components for developers, built with HTML & CSS."
+      "title": "Productivity & Reference",
+      "description": "Keep workflows organized and knowledge handy.",
+      "sites": [
+        {
+          "title": "Cheatography",
+          "url": "https://cheatography.com/",
+          "description": "Search and download printable cheat sheets across topics.",
+          "tags": ["cheatsheet", "reference"]
+        },
+        {
+          "title": "Stirling PDF",
+          "url": "https://stirlingpdf.io/",
+          "description": "Edit, split, and merge PDFs straight in the browser.",
+          "tags": ["pdf", "utility"]
+        }
+      ]
     }
   ]
 }
