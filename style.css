@@ -833,6 +833,10 @@ th, td {
     font-size: clamp(.95rem, 1vw + .85rem, 1.05rem);
 }
 
+.section-sites-intro {
+    margin-top: 12px;
+}
+
 
 .section-sites .site-grid {
     margin: 16px 0 0;

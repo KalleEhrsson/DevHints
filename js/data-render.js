@@ -167,24 +167,43 @@ function renderAttributeTable(section) {
 function renderStandaloneSitesSection(opts) {
     const o = (opts && typeof opts === 'object') ? opts : {};
     const list = Array.isArray(o.sites) ? o.sites : [];
-    if (!list.length) return '';
+    const sectionsRaw = Array.isArray(o.sections) ? o.sections : [];
+
+    const normalizedSections = [];
+    for (const section of sectionsRaw) {
+        if (!section || typeof section !== 'object') continue;
+        const secSites = Array.isArray(section.sites) ? section.sites : [];
+        if (!secSites.length) continue;
+
+        normalizedSections.push({
+            title: typeof section.title === 'string' && section.title.trim() ? section.title.trim() : '',
+            description: typeof section.description === 'string' ? section.description : '',
+            sites: secSites
+        });
+    }
 
     const titleText = typeof o.title === 'string' && o.title.trim() ? o.title.trim() : 'Useful Sites';
     const idSource = typeof o.id === 'string' && o.id.trim() ? o.id : titleText;
     const innerTitleText = typeof o.innerTitle === 'string' && o.innerTitle.trim() ? o.innerTitle.trim() : '';
     const descriptionText = typeof o.description === 'string' && o.description.trim() ? o.description.trim() : '';
 
+    const hasExplicitSections = normalizedSections.length > 0;
+    if (Array.isArray(list) && list.length) {
+        normalizedSections.push({
+            title: innerTitleText,
+            description: hasExplicitSections ? '' : descriptionText,
+            sites: list
+        });
+    }
+
+    if (!normalizedSections.length) return '';
+
     const domId = nextSectionDomId(idSource);
     const headerId = `${domId}-header`;
     const contentId = `${domId}-content`;
     const dataKey = slugify(idSource);
-    const siteData = escHtml(JSON.stringify(list));
-
-    const innerTitleHtml = innerTitleText
-        ? `<h3 class="section-sites-title">${escHtml(innerTitleText)}</h3>`
-        : '';
-    const descriptionHtml = descriptionText
-        ? `<p class="section-sites-desc">${allowCodeTags(descriptionText)}</p>`
+    const introHtml = hasExplicitSections && descriptionText
+        ? `<p class="section-sites-desc section-sites-intro">${allowCodeTags(descriptionText)}</p>`
         : '';
 
     let out = '';
@@ -194,14 +213,26 @@ function renderStandaloneSitesSection(opts) {
     out +=     `<span class="section-title">${escHtml(titleText)}</span>`;
     out +=   '</h2>';
     out +=   `<div class="section-content expanded" id="${escHtml(contentId)}" role="region" aria-hidden="false" aria-labelledby="${escHtml(headerId)}">`;
-    out +=     `<div class="section-sites" data-sites="${siteData}">`;
-    out +=       innerTitleHtml;
-    out +=       descriptionHtml;
-    out +=       '<ul class="site-grid"></ul>';
-    out +=     '</div>';
+    out +=     introHtml;
+
+    for (const section of normalizedSections) {
+        const siteData = escHtml(JSON.stringify(section.sites));
+        const secTitleHtml = section.title
+            ? `<h3 class="section-sites-title">${escHtml(section.title)}</h3>`
+            : '';
+        const secDescHtml = section.description && section.description.trim()
+            ? `<p class="section-sites-desc">${allowCodeTags(section.description)}</p>`
+            : '';
+
+        out += `<div class="section-sites" data-sites="${siteData}">`;
+        out +=   secTitleHtml;
+        out +=   secDescHtml;
+        out +=   '<ul class="site-grid"></ul>';
+        out += '</div>';
+    }
+
     out +=   '</div>';
     out += '</section>';
-
     return out;
 }
 
@@ -373,6 +404,7 @@ async function renderJsonInto(mountId, jsonPath, eventName) {
     }
 
     const siteList = (data && Array.isArray(data.sites)) ? data.sites : null;
+    const siteSections = (data && Array.isArray(data.sitesSections)) ? data.sitesSections : null;
     const sections = (data && Array.isArray(data.sections)) ? data.sections : null;
     const hasSections = Array.isArray(sections) && sections.length;
     const hasSitesOnly = !hasSections && Array.isArray(siteList);
@@ -396,7 +428,8 @@ async function renderJsonInto(mountId, jsonPath, eventName) {
 
     const sects = hasSections ? sections : [];
     const globalSites = Array.isArray(siteList) ? siteList : [];
-    const includeGlobalSites = globalSites.length > 0;
+    const globalSiteSections = Array.isArray(siteSections) ? siteSections : [];
+    const includeGlobalSites = globalSites.length > 0 || globalSiteSections.length > 0;
 
     let html = sects.map(s => renderAttributeTable(s)).join('');
     if (includeGlobalSites) {
@@ -405,7 +438,8 @@ async function renderJsonInto(mountId, jsonPath, eventName) {
             innerTitle: (typeof data.sitesInnerTitle === 'string' && data.sitesInnerTitle.trim()) ? data.sitesInnerTitle.trim() : '',
             description: typeof data.sitesDescription === 'string' ? data.sitesDescription : '',
             id: typeof data.sitesId === 'string' ? data.sitesId : '',
-            sites: globalSites
+            sites: globalSites,
+            sections: globalSiteSections
         });
     }
 
