@@ -7,6 +7,17 @@ function escHtml(s) {
     return d.innerHTML;
 }
 
+function escAttr(s) {
+    return escHtml(s).replace(/"/g, '&quot;');
+}
+
+function decodeHtml(s) {
+    if (s == null || s === '') return '';
+    const d = document.createElement('textarea');
+    d.innerHTML = s;
+    return d.value;
+}
+
 /* Allow <code> tags in alt/caption text */
 function allowCodeTags(s) {
     const raw = s != null ? String(s) : "";
@@ -16,6 +27,21 @@ function allowCodeTags(s) {
     return escaped
         .replaceAll("&lt;code&gt;", "<code>")
         .replaceAll("&lt;/code&gt;", "</code>");
+}
+
+function slugify(str) {
+    return (str == null ? '' : String(str))
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+}
+
+let sectionIdSeq = 0;
+
+function nextSectionDomId(base) {
+    const slug = slugify(base) || 'section';
+    sectionIdSeq += 1;
+    return `${slug}-${sectionIdSeq}`;
 }
 
 /* Row model */
@@ -40,7 +66,9 @@ function allowCodeTags(s) {
  * @property {string=} html // when present, section renders custom HTML instead of a table
  * @property {string[]=} columns
  * @property {Row[]=} rows
- * @property {boolean=} exampleOpen 
+ * @property {boolean=} exampleOpen
+ * @property {Array<Object>=} sites // optional resource cards rendered under the section
+ * @property {string=} siteTitle // optional heading for section-specific sites
  */
 
 /* Attribute row */
@@ -63,7 +91,7 @@ function renderRow(row) {
         : (r.exampleImg ? [r.exampleImg] : []);
 
     const hasExample = list.length > 0;
-    const firstSrc = hasExample ? `/examples/${list[0]}` : "";
+    const firstSrc = hasExample ? `examples/${list[0]}` : "";
 
     // Caption built from shared alt + note
     const exampleAlt  = allowCodeTags(r.exampleAlt || "");
@@ -75,7 +103,7 @@ function renderRow(row) {
 
     // Store the full list in a data attribute for lightbox carousel
     const exampleDataAttr = hasExample
-        ? ` data-examples='${JSON.stringify(list.map(s => `/examples/${s}`))}'`
+        ? ` data-examples='${JSON.stringify(list.map(s => `examples/${s}`))}'`
         : "";
 
     return `
@@ -93,15 +121,21 @@ function renderRow(row) {
 function renderAttributeTable(section) {
     const s = (section && typeof section === 'object') ? section : {};
     const title = escHtml(s.title || '');
+    const idSource = (typeof s.id === 'string' && s.id.trim()) ? s.id : (s.title || 'section');
+    const domId = nextSectionDomId(idSource);
+    const headerId = `${domId}-header`;
+    const contentId = `${domId}-content`;
+    const dataKey = slugify(idSource);
+    const sectionAttrs = `class="collapsible-section" id="${escHtml(domId)}"${dataKey ? ` data-section-key="${escHtml(dataKey)}"` : ''}`;
 
     if (typeof s.html === 'string' && s.html.trim()) {
         let out = '';
-        out += '<section>';
-        out +=   '<h2 class="section-header">';
+        out += `<section ${sectionAttrs}>`;
+        out +=   `<h2 class="section-header" id="${escHtml(headerId)}" role="button" tabindex="0" aria-expanded="true" aria-controls="${escHtml(contentId)}">`;
         out +=     '<span class="toggle-icon">-</span>';
         out +=     '<span class="section-title">' + title + '</span>';
         out +=   '</h2>';
-        out +=   '<div class="section-content expanded">';
+        out +=   `<div class="section-content expanded" id="${escHtml(contentId)}" role="region" aria-hidden="false" aria-labelledby="${escHtml(headerId)}">`;
         out +=     s.html;
         out +=   '</div>';
         out += '</section>';
@@ -110,6 +144,7 @@ function renderAttributeTable(section) {
 
     const columns = Array.isArray(s.columns) ? s.columns : ['Attribute','Description','Requirements'];
     const rows = Array.isArray(s.rows) ? s.rows : [];
+    const hasSites = Array.isArray(s.sites) && s.sites.length;
 
     let thead = '<thead><tr>';
     for (let i = 0; i < columns.length; i++) thead += '<th>' + escHtml(columns[i]) + '</th>';
@@ -120,22 +155,124 @@ function renderAttributeTable(section) {
     tbody += '</tbody>';
 
     let out = '';
-    out += '<section>';
-    out +=   '<h2 class="section-header">';
+    out += `<section ${sectionAttrs}>`;
+    out +=   `<h2 class="section-header" id="${escHtml(headerId)}" role="button" tabindex="0" aria-expanded="true" aria-controls="${escHtml(contentId)}">`;
     out +=     '<span class="toggle-icon">-</span>';
     out +=     '<span class="section-title">' + title + '</span>';
     out +=   '</h2>';
-    out +=   '<div class="section-content expanded">';
+    out +=   `<div class="section-content expanded" id="${escHtml(contentId)}" role="region" aria-hidden="false" aria-labelledby="${escHtml(headerId)}">`;
     out +=     '<table>' + thead + tbody + '</table>';
+    if (hasSites) {
+        out += buildSiteCollectionBlock({
+            sites: s.sites,
+            title: typeof s.siteTitle === 'string' && s.siteTitle.trim() ? s.siteTitle : 'Related Resources'
+        });
+    }
     out +=   '</div>';
     out += '</section>';
     return out;
 }
 
+function renderStandaloneSitesSection(opts) {
+    const o = (opts && typeof opts === 'object') ? opts : {};
+    const list = Array.isArray(o.sites) ? o.sites : [];
+    const sectionsRaw = Array.isArray(o.sections) ? o.sections : [];
+
+    const normalizedSections = [];
+    for (const section of sectionsRaw) {
+        if (!section || typeof section !== 'object') continue;
+        const secSites = Array.isArray(section.sites) ? section.sites : [];
+        if (!secSites.length) continue;
+
+        normalizedSections.push({
+            title: typeof section.title === 'string' && section.title.trim() ? section.title.trim() : '',
+            description: typeof section.description === 'string' ? section.description : '',
+            sites: secSites
+        });
+    }
+
+    const titleText = typeof o.title === 'string' && o.title.trim() ? o.title.trim() : 'Useful Sites';
+    const idSource = typeof o.id === 'string' && o.id.trim() ? o.id : titleText;
+    const innerTitleText = typeof o.innerTitle === 'string' && o.innerTitle.trim() ? o.innerTitle.trim() : '';
+    const descriptionText = typeof o.description === 'string' && o.description.trim() ? o.description.trim() : '';
+
+    const hasExplicitSections = normalizedSections.length > 0;
+    if (Array.isArray(list) && list.length) {
+        normalizedSections.push({
+            title: innerTitleText,
+            description: hasExplicitSections ? '' : descriptionText,
+            sites: list
+        });
+    }
+
+    if (!normalizedSections.length) return '';
+
+    const domId = nextSectionDomId(idSource);
+    const dataKey = slugify(idSource);
+    const introHtml = hasExplicitSections && descriptionText
+        ? `<p class="section-sites-desc section-sites-intro">${allowCodeTags(descriptionText)}</p>`
+        : '';
+    const descriptionHtml = !hasExplicitSections && descriptionText
+        ? `<p class="section-sites-desc">${allowCodeTags(descriptionText)}</p>`
+        : '';
+
+    let out = '';
+    out += `<section class="sites-section" id="${escHtml(domId)}"${dataKey ? ` data-section-key="${escHtml(dataKey)}"` : ''}>`;
+    out +=   '<div class="sites-section-header">';
+    out +=     `<h2 class="sites-section-title">${escHtml(titleText)}</h2>`;
+    out +=   '</div>';
+    out +=   '<div class="sites-section-body">';
+    out +=     descriptionHtml;
+    out +=     introHtml;
+
+    for (const section of normalizedSections) {
+        out += buildSiteCollectionBlock({
+            sites: section.sites,
+            title: section.title,
+            description: section.description
+        });
+    }
+
+    out +=   '</div>';
+    out += '</section>';
+    return out;
+}
+
+function buildSiteCollectionBlock(options) {
+    const opts = (options && typeof options === 'object') ? options : {};
+    const rawSites = Array.isArray(opts.sites) ? opts.sites : [];
+    const sites = rawSites.filter(site => site && typeof site === 'object');
+    if (!sites.length) return '';
+
+    const titleText = typeof opts.title === 'string' ? opts.title.trim() : '';
+    const descriptionRaw = typeof opts.description === 'string' ? opts.description : '';
+    const hasDescription = descriptionRaw.trim().length > 0;
+    const descClassExtra = typeof opts.descriptionClass === 'string' && opts.descriptionClass.trim()
+        ? ' ' + opts.descriptionClass.trim()
+        : '';
+
+    const headingHtml = titleText
+        ? `<h3 class="section-sites-title">${escHtml(titleText)}</h3>`
+        : '';
+    const descriptionHtml = hasDescription
+        ? `<p class="section-sites-desc${descClassExtra}">${allowCodeTags(descriptionRaw)}</p>`
+        : '';
+
+    const siteData = escAttr(JSON.stringify(sites));
+
+    return `<div class="section-sites" data-sites="${siteData}">${headingHtml}${descriptionHtml}<ul class="site-grid"></ul></div>`;
+}
+
 /* Utilities for Sites */
 function normalizeUrl(u) {
-    try { return /^https?:\/\//i.test(u) ? u : `https://${u}`; }
-    catch { return u; }
+    try {
+        const str = typeof u === "string" ? u.trim() : "";
+        if (!str) return null;
+        return /^https?:\/\//i.test(str) ? str : `https://${str}`;
+    }
+    catch {
+        return null;
+    }
 }
 function domainOf(url) {
     try { return new URL(url).hostname; } catch { return ""; }
@@ -150,36 +287,98 @@ function gradientFromString(str) {
     return `linear-gradient(180deg, ${c1}, ${c2})`;
 }
 
-/* Render Sites into the Sites section using the template in index.html */
-function renderSitesIntoMount(mount, sites) {
-    const grid = mount.querySelector('#siteGrid');
-    const tpl  = mount.querySelector('#siteCardTpl');
-    if (!grid || !tpl) return;
+function createSiteCardNode(site) {
+    const tpl = document.getElementById('siteCardTpl');
+    if (!tpl || !tpl.content || !tpl.content.firstElementChild) return null;
 
-    grid.innerHTML = '';
+    const href = normalizeUrl(site && site.url);
+    if (!href) {
+        return null;
+    }
 
-    sites.forEach(site => {
-        const node   = tpl.content.firstElementChild.cloneNode(true);
-        const a      = node.querySelector('.site-link');
-        const thumb  = node.querySelector('.thumb');
-        const icon   = node.querySelector('.thumb-icon');
-        const title  = node.querySelector('.title');
-        const descEl = node.querySelector('.desc');
+    const node   = tpl.content.firstElementChild.cloneNode(true);
+    const a      = node.querySelector('.site-link');
+    const thumb  = node.querySelector('.thumb');
+    const icon   = node.querySelector('.thumb-icon');
+    const title  = node.querySelector('.title');
+    const descEl = node.querySelector('.desc');
+    const tagsEl = node.querySelector('.tags');
 
-        const href   = normalizeUrl(site.url || '');
-        const domain = domainOf(href);
+    const domain = domainOf(href);
 
-        a.href = href;
-        title.textContent = site.title || domain || href;
-        descEl.textContent = site.description || '';
+    if (a) a.href = href;
+    if (title) title.textContent = site && site.title ? site.title : (domain || href);
+    if (descEl) descEl.textContent = site && site.description ? site.description : '';
 
-        thumb.style.background = gradientFromString(domain || href);
+    if (thumb) thumb.style.background = gradientFromString(domain || href);
+    if (icon) {
         icon.src = faviconFor(domain);
         icon.alt = domain || 'favicon';
         icon.addEventListener('load', () => icon.classList.add('loaded'));
         icon.addEventListener('error', () => icon.remove());
+    }
 
-        grid.appendChild(node);
+    if (tagsEl) {
+        if (site && Array.isArray(site.tags) && site.tags.length) {
+            tagsEl.innerHTML = site.tags
+                .map(tag => `<span class="tag">${escHtml(tag)}</span>`)
+                .join('');
+        } else {
+            tagsEl.remove();
+        }
+    }
+
+    return node;
+}
+
+function renderSiteGrid(grid, sites) {
+    if (!grid) return;
+
+    grid.innerHTML = '';
+
+    sites.forEach(site => {
+        const node = createSiteCardNode(site);
+        if (node) {
+            grid.appendChild(node);
+        }
+    });
+}
+
+/* Render Sites into the Sites section using the template in index.html */
+function renderSitesIntoMount(mount, sites) {
+    const grid = mount.querySelector('.site-grid');
+    if (!grid) return;
+
+    renderSiteGrid(grid, sites);
+}
+
+function hydrateEmbeddedSites(root) {
+    if (!root) return;
+
+    const wrappers = root.querySelectorAll('.section-sites[data-sites]');
+    wrappers.forEach(wrapper => {
+        const grid = wrapper.querySelector('.site-grid');
+        if (!grid) {
+            wrapper.removeAttribute('data-sites');
+            return;
+        }
+
+        let parsed = [];
+        const rawAttr = wrapper.getAttribute('data-sites') || '';
+        const raw = decodeHtml(rawAttr) || rawAttr;
+        if (raw) {
+            try {
+                parsed = JSON.parse(raw);
+            } catch (e) {
+                console.warn('Could not parse section sites JSON', e);
+            }
+        }
+
+        if (Array.isArray(parsed) && parsed.length) {
+            renderSiteGrid(grid, parsed);
+        }
+
+        wrapper.removeAttribute('data-sites');
     });
 }
 
@@ -232,10 +431,16 @@ async function renderJsonInto(mountId, jsonPath, eventName) {
         return;
     }
 
-    /* Sites shape */
-    if (data && Array.isArray(data.sites)) {
-        // keep outer structure; the template lives in index.html
-        renderSitesIntoMount(mount, data.sites);
+    const siteList = (data && Array.isArray(data.sites)) ? data.sites : null;
+    const siteSections = (data && Array.isArray(data.sitesSections)) ? data.sitesSections : null;
+    const sections = (data && Array.isArray(data.sections)) ? data.sections : null;
+    const hasSections = Array.isArray(sections) && sections.length;
+    const hasSitesOnly = !hasSections && Array.isArray(siteList);
+
+    /* Sites-only shape */
+    if (hasSitesOnly) {
+        const sites = siteList || [];
+        renderSitesIntoMount(mount, sites);
 
         const evName = eventName || 'sites:rendered';
         mount.dispatchEvent(new CustomEvent(evName, {
@@ -243,27 +448,48 @@ async function renderJsonInto(mountId, jsonPath, eventName) {
             detail: {
                 mountId,
                 jsonPath,
-                sites: data.sites.length
+                sites: sites.length
             }
         }));
         return;
     }
 
-    /* Attribute sections shape */
-    const sects = (data && Array.isArray(data.sections)) ? data.sections : [];
-    mount.innerHTML = sects.map(s => renderAttributeTable(s)).join('');
+    const sects = hasSections ? sections : [];
+    const globalSites = Array.isArray(siteList) ? siteList : [];
+    const globalSiteSections = Array.isArray(siteSections) ? siteSections : [];
+    const includeGlobalSites = globalSites.length > 0 || globalSiteSections.length > 0;
+
+    let html = sects.map(s => renderAttributeTable(s)).join('');
+    if (includeGlobalSites) {
+        html += renderStandaloneSitesSection({
+            title: (typeof data.sitesTitle === 'string' && data.sitesTitle.trim()) ? data.sitesTitle.trim() : 'Useful Sites',
+            innerTitle: (typeof data.sitesInnerTitle === 'string' && data.sitesInnerTitle.trim()) ? data.sitesInnerTitle.trim() : '',
+            description: typeof data.sitesDescription === 'string' ? data.sitesDescription : '',
+            id: typeof data.sitesId === 'string' ? data.sitesId : '',
+            sites: globalSites,
+            sections: globalSiteSections
+        });
+    }
+
+    mount.innerHTML = html;
 
     preseedDocLinks(mount);
+    hydrateEmbeddedSites(mount);
 
     const evName = eventName || 'data:rendered';
+    const detail = {
+        mountId,
+        jsonPath,
+        sections: sects.length,
+        rows: mount.querySelectorAll('tbody tr').length
+    };
+    if (includeGlobalSites) {
+        detail.sites = mount.querySelectorAll('.site-grid li').length;
+    }
+
     mount.dispatchEvent(new CustomEvent(evName, {
         bubbles: true,
-        detail: {
-            mountId,
-            jsonPath,
-            sections: sects.length,
-            rows: mount.querySelectorAll('tbody tr').length
-        }
+        detail
     }));
 }
 
@@ -277,10 +503,11 @@ async function renderAll(sources) {
 
 /* Configure mounts and JSON paths */
 const dataSources = [
-    { mountId: 'unitySection',  jsonPath: '/data/unity.json',  eventName: 'unity:rendered'  },
-    { mountId: 'csharpSection', jsonPath: '/data/csharp.json', eventName: 'csharp:rendered' },
-    { mountId: 'otherSection',  jsonPath: '/data/other.json',  eventName: 'other:rendered'  },
-    { mountId: 'sitesSection',  jsonPath: '/data/sites.json',  eventName: 'sites:rendered'  }
+    { mountId: 'unitySection',  jsonPath: 'data/unity.json',  eventName: 'unity:rendered'  },
+    { mountId: 'csharpSection', jsonPath: 'data/csharp.json', eventName: 'csharp:rendered' },
+    { mountId: 'otherSection',  jsonPath: 'data/other.json',  eventName: 'other:rendered'  },
+    { mountId: 'sitesSection',  jsonPath: 'data/sites.json',  eventName: 'sites:rendered'  },
+    { mountId: 'blenderSection', jsonPath: 'data/blender.json', eventName: 'blender:rendered' }
 ];
 
 /* Kick off after DOM ready */

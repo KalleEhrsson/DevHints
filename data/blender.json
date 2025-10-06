@@ -1,0 +1,116 @@
+{
+  "sitesTitle": "Blender Resources",
+  "sitesDescription": "Curated libraries for surfaces, shaders, and procedural maps you can drop into Blender projects.",
+  "sitesSections": [
+    {
+      "title": "Texture Libraries",
+      "description": "Seamless CC0 PBR textures with ready-made color, normal, and roughness passes.",
+      "sites": [
+        {
+          "title": "Poly Haven Textures",
+          "url": "https://polyhaven.com/textures",
+          "description": "Free CC0 texture sets with Blender download presets and resolution choices."
+        },
+        {
+          "title": "ambientCG",
+          "url": "https://ambientcg.com/list?type=Material",
+          "description": "Huge catalog of physically-based textures with consistent naming and maps."
+        }
+      ]
+    },
+    {
+      "title": "Material Libraries",
+      "description": "Drop-in shader packs and material nodes for speeding up lookdev.",
+      "sites": [
+        {
+          "title": "BlenderKit Materials",
+          "url": "https://www.blenderkit.com/asset-gallery?query=category_material",
+          "description": "Searchable online library that links directly into Blender's Asset Browser."
+        },
+        {
+          "title": "CG Bookcase",
+          "url": "https://www.cgbookcase.com/textures/",
+          "description": "Curated free PBR materials grouped by surface type with 1–8K downloads."
+        }
+      ]
+    },
+    {
+      "title": "Noise & Map Generators",
+      "description": "Procedural tools for height fields, masks, and noisy patterns.",
+      "sites": [
+        {
+          "title": "JSplacement",
+          "url": "https://windmillart.net/?p=jsplacement",
+          "description": "Generate sci-fi inspired displacement, normal, and spec maps in seconds."
+        },
+        {
+          "title": "NormalMap Online",
+          "url": "https://cpetry.github.io/NormalMap-Online/",
+          "description": "Convert grayscale masks into normal, displacement, and ambient occlusion maps."
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "id": "modeling-hotkeys",
+      "title": "Modeling Hotkeys",
+      "columns": ["Hotkey", "Why it matters", "Mode"],
+      "rows": [
+        {
+          "code": "Ctrl + R",
+          "description": "Insert a loop cut aligned to the current edge flow, perfect for adding supporting geometry before a bevel.",
+          "requirements": "Edit Mode",
+          "exampleImgs": ["blender-loop-cut.png"],
+          "exampleAlt": "Viewport showing a highlighted loop cut ready to confirm.",
+          "exampleNote": "After the first confirm you can move the loop and roll the wheel to add multiples."
+        },
+        {
+          "code": "Ctrl + B",
+          "description": "Bevel the selected edges or vertices with adjustable segments and profile.",
+          "requirements": "Edit Mode",
+          "exampleImgs": ["blender-loop-cut.png"],
+          "exampleAlt": "Edges smoothed by the bevel tool with profile controls visible.",
+          "exampleNote": "Use the mouse wheel for segment count and <code>Shift</code> to slow bevel width adjustments."
+        },
+        {
+          "code": "Alt + S",
+          "description": "Shrink/fatten along vertex normals—ideal for adjusting thickness after a solidify modifier.",
+          "requirements": "Edit Mode",
+          "exampleAlt": "Inset mesh being pushed outward evenly along normals.",
+          "exampleNote": "Tap <code>E</code> right after to toggle even mode for tubes and cables."
+        }
+      ]
+    },
+    {
+      "id": "modifiers-booleans",
+      "title": "Modifiers & Booleans",
+      "columns": ["Operator", "Usage", "Notes"],
+      "rows": [
+        {
+          "code": "Ctrl + A → Apply All Transform",
+          "description": "Apply scale/rotation before boolean or array modifiers to avoid skewed results.",
+          "requirements": "Object Mode",
+          "exampleImgs": ["blender-modifier-stack.png"],
+          "exampleAlt": "Modifier stack showing boolean, bevel, and weighted normal modifiers.",
+          "exampleNote": "Keep the Weighted Normal modifier after your boolean + bevel combo to clean shading."
+        },
+        {
+          "code": "Boolean Modifier",
+          "descriptionHtml": "Set the boolean object to <code>Fast</code> solver for simple cuts; switch to <code>Exact</code> when non-manifold edges appear.",
+          "requirements": "Object Mode",
+          "exampleImgs": ["blender-modifier-stack.png"],
+          "exampleAlt": "Boolean modifier configured above a bevel modifier for clean chamfers.",
+          "exampleNote": "Stack booleans above the bevel so new edges inherit the same chamfer width."
+        },
+        {
+          "code": "Ctrl + Shift + B",
+          "description": "Vertex bevel—great for rounding boolean corners before applying modifiers.",
+          "requirements": "Edit Mode",
+          "exampleAlt": "Vertex selected with small supporting bevel applied.",
+          "exampleNote": "Use custom profiles for perfect fillets that match your bevel modifier."
+        }
+      ]
+    }
+  ]
+}

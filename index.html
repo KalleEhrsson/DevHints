@@ -2,8 +2,9 @@
 <!--suppress ALL -->
 <html lang="en">
 <head>
-    <meta charset="utf-8"/>
     <title>Dev Hints</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XZB7242W45"></script>
@@ -25,8 +26,8 @@
 
 <link rel="icon" type="image/png" href="favicon.png">
 
-<div id="overlay"></div>
 <body class="dark-theme">
+<div id="overlay"></div>
 <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TSGW7JQ4"
                   height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
@@ -44,6 +45,10 @@
             <input id="searchInput" placeholder="Search Tips..." type="text" autocomplete="off" spellcheck="false"/>
             <button aria-label="Clear search" id="clearSearch">✕</button>
         </div>
+        <label class="search-toggle" for="searchAllToggle">
+            <input id="searchAllToggle" type="checkbox" />
+            <span>Search all tabs</span>
+        </label>
     </div>
         
     <!-- Centered site title -->
@@ -81,6 +86,7 @@
     <ul>
         <li data-section="unity">Unity</li>
         <li data-section="csharp">C#</li>
+        <li data-section="blender">Blender</li>
         <li data-section="other">Other</li>
         <li data-section="sites">Maybe Useful Sites</li>
     </ul>
@@ -102,31 +108,35 @@
     <!-- Filled dynamically from /data/csharp.json -->
 </div>
 
+<!-- Blender -->
+<div id="blenderSection" class="content-section" style="display:none;" data-section="blender"></div>
+<!-- Filled dynamically from /data/blender.json -->
+
 <!-- Other -->
 <div id="otherSection" class="content-section" style="display:none;"></div>
 <!-- Filled dynamically from /data/other.json -->
 
 <!-- Useful Sites -->
 <!-- Filled dynamically from /data/sites.json -->
+<template id="siteCardTpl">
+    <li class="site-card">
+        <a class="site-link" target="_blank" rel="noopener">
+            <div class="thumb">
+                <div class="thumb-overlay"></div>
+                <img class="thumb-icon" alt="" loading="lazy" decoding="async" />
+            </div>
+            <div class="info">
+                <div class="title-line">
+                    <h3 class="title"></h3>
+                </div>
+                <p class="desc"></p>
+                <div class="tags"></div>
+            </div>
+        </a>
+    </li>
+</template>
 <div id="sitesSection" class="content-section" style="display:none;">
     <ul id="siteGrid" class="site-grid"></ul>
-    <template id="siteCardTpl">
-        <li class="site-card">
-            <a class="site-link" target="_blank" rel="noopener">
-                <div class="thumb">
-                    <div class="thumb-overlay"></div>
-                    <img class="thumb-icon" alt="" loading="lazy" decoding="async" />
-                </div>
-                <div class="info">
-                    <div class="title-line">
-                        <h3 class="title"></h3>
-                    </div>
-                    <p class="desc"></p>
-                    <div class="tags"></div>
-                </div>
-            </a>
-        </li>
-    </template>
 </div>
 
 <!-- BACK TO TOP -->
@@ -145,8 +155,8 @@
 
 <link rel="stylesheet" href="style.css">
 
-<script src="/js/script.js"></script>
-<script src="/js/data-render.js" defer></script>
+<script src="js/script.js"></script>
+<script src="js/data-render.js" defer></script>
 
 </body>
 </html>
