@@ -7,7 +7,47 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchAllToggle = document.getElementById('searchAllToggle');
     const defaultWidth = 100; // starting width in px
     const focusWidth = 200;   // width when focused with no text
-    const maxWidth = 600;     // max growth width in px
+    const hardMaxWidth = 250;     // max growth width in px
+
+    const headerLeft = document.getElementById('headerLeft');
+    const siteTitleMount = document.getElementById('siteTitle');
+    const searchToggleLabel = document.querySelector('#headerLeft .search-toggle');
+
+    let desiredSearchWidth = defaultWidth;
+
+    function numeric(value) {
+        const parsed = typeof value === 'string' ? parseFloat(value) : value;
+        return Number.isFinite(parsed) ? parsed : 0;
+    }
+
+    function availableSearchWidth() {
+        if (!headerLeft || !siteTitleMount) return hardMaxWidth;
+
+        const titleRect = siteTitleMount.getBoundingClientRect();
+        const leftRect = headerLeft.getBoundingClientRect();
+        const toggleRect = searchToggleLabel ? searchToggleLabel.getBoundingClientRect() : { width: 0 };
+
+        if (!titleRect || !leftRect) return hardMaxWidth;
+
+        const styles = window.getComputedStyle(headerLeft);
+        const gap = numeric(styles.columnGap || styles.gap || 0);
+        const safePadding = 16; // breathing room before the logo
+
+        const available = titleRect.left - leftRect.left - toggleRect.width - gap - safePadding;
+        return Math.max(available, 0);
+    }
+
+    function clampSearchWidth(desired) {
+        const base = Math.min(desired, hardMaxWidth);
+        const available = availableSearchWidth();
+        if (available <= 0) return base;
+        return Math.min(base, available);
+    }
+
+    function setSearchWidth(desired) {
+        desiredSearchWidth = desired;
+        searchInput.style.width = `${Math.max(0, clampSearchWidth(desired))}px`;
+    }
 
 
     let savedSearchScope = null;
@@ -333,13 +373,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // Expand on input
     searchInput.addEventListener('input', () => {
         if (searchInput.value.length > 0) {
-            searchInput.style.width = Math.max(
+            const desiredWidth = Math.max(
                 focusWidth,
-                Math.min((searchInput.value.length + 2) * 10, maxWidth)
-            ) + 'px';
+                Math.min((searchInput.value.length + 2) * 10, hardMaxWidth)
+            );
+            setSearchWidth(desiredWidth);
             clearButton.style.display = 'block';
         } else {
-            searchInput.style.width = focusWidth + 'px';
+            setSearchWidth(focusWidth);
             clearButton.style.display = 'none';
         }
     });
@@ -354,14 +395,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // Collapse when cleared
     clearButton.addEventListener('click', () => {
         searchInput.value = '';
-        searchInput.style.width = defaultWidth + 'px';
+        setSearchWidth(focusWidth);
         clearButton.style.display = 'none';
         searchInput.focus();
     });
 
     // Collapse when unfocused
     searchInput.addEventListener('blur', () => {
-        searchInput.style.width = defaultWidth + 'px';
+        setSearchWidth(defaultWidth);
     });
 
     input.addEventListener('input', () => clearButton.style.display = input.value ? 'block' : 'none');
@@ -372,6 +413,12 @@ document.addEventListener('DOMContentLoaded', () => {
             applySearch();
         });
     }
+
+    setSearchWidth(defaultWidth);
+
+    window.addEventListener('resize', () => {
+        setSearchWidth(desiredSearchWidth);
+    });
 
     // Load saved active item from localStorage
     const savedActive = localStorage.getItem('activeSidebar');
