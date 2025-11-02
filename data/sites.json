@@ -103,6 +103,36 @@
           "tags": ["pdf", "utility"]
         }
       ]
+    },
+    {
+      "title": "Layout & Shape Tools",
+      "description": "Visual generators for CSS layouts, grids, and creative geometry like borders and clip paths.",
+      "sites": [
+        {
+          "title": "FlexboxLabs",
+          "url": "https://flexboxlabs.netlify.app/",
+          "description": "Play with CSS Flexbox layouts visually and learn how each property changes alignment.",
+          "tags": ["flexbox", "css", "layout"]
+        },
+        {
+          "title": "CSS Grid Generator",
+          "url": "https://cssgridgenerator.io/",
+          "description": "Create responsive CSS Grid templates and export the code instantly.",
+          "tags": ["grid", "css", "layout"]
+        },
+        {
+          "title": "Fancy Border Radius",
+          "url": "https://9elements.github.io/fancy-border-radius/",
+          "description": "Generate smooth and complex border-radius shapes with visual controls.",
+          "tags": ["border", "shape", "css"]
+        },
+        {
+          "title": "Clippy",
+          "url": "https://bennettfeely.com/clippy/",
+          "description": "Design and export CSS clip-path shapes interactively.",
+          "tags": ["clip-path", "shape", "css"]
+        }
+      ]
     }
   ]
 }
