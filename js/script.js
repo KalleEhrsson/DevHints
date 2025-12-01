@@ -1004,7 +1004,7 @@ document.addEventListener('DOMContentLoaded', () => {
             hoverMag.classList.add('show');
         } else if (!overMag) {
             clearTimeout(hideTimer);
-            hideTimer = setTimeout(() => hoverMag.classList.remove('show'), 80);
+            hideTimer = setTimeout(() => hoverMag.classList.remove('show'), 200);
         }
     });
 
