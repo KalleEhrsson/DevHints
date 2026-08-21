@@ -47,6 +47,12 @@
           "url": "https://uiball.com/ldrs/",
           "description": "Copy loading spinners in pure CSS.",
           "tags": ["animation", "loading"]
+        },
+        {
+          "title": "Designmotion UX Patterns",
+          "url": "https://designmotionhq.com/patterns",
+          "description": "Explore practical UX patterns with concise design breakdowns.",
+          "tags": ["ux", "patterns", "design"]
         }
       ]
     },
