@@ -53,6 +53,12 @@
           "url": "https://designmotionhq.com/patterns",
           "description": "Explore practical UX patterns with concise design breakdowns.",
           "tags": ["ux", "patterns", "design"]
+        },
+        {
+          "title": "Bklit UI",
+          "url": "https://bklit.com/",
+          "description": "Browse chart and data visualization components for shadcn/ui.",
+          "tags": ["charts", "shadcn/ui"]
         }
       ]
     },
