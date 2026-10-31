@@ -1,0 +1,51 @@
+---
+title: "Modeling Hotkeys"
+description: "Mesh modeling shortcuts in the Blender default keymap."
+---
+
+Mesh modeling shortcuts in the Blender default keymap.
+
+**Reference baseline:** Blender 4.5 LTS manual, using the default Blender keymap. Customized and Industry Compatible keymaps can differ.
+
+
+## Loop Cut
+
+Insert a loop cut aligned to the current edge flow, perfect for adding supporting geometry before a bevel.
+
+```text
+Ctrl + R
+```
+
+**Requirements:** Blender default keymap; mesh Edit Mode.
+
+[Primary documentation](https://docs.blender.org/manual/en/4.5/modeling/meshes/editing/edge/loopcut_slide.html)
+
+Scroll the mouse wheel during the initial cut-selection stage to choose the number of cuts. Confirm once to enter edge sliding, then position and confirm the loop.
+
+## Bevel Edges
+
+Bevel selected edges with adjustable segments and profile. Use vertex bevel for vertices.
+
+```text
+Ctrl + B
+```
+
+**Requirements:** Blender default keymap; mesh Edit Mode; suitable selected geometry.
+
+[Primary documentation](https://docs.blender.org/manual/en/4.5/modeling/meshes/editing/edge/bevel.html)
+
+Use the mouse wheel for segment count and `Shift` for precise width adjustments.
+
+## Shrink Fatten
+
+Move selected vertices along their normals, useful for adjusting the thickness of mesh geometry.
+
+```text
+Alt + S
+```
+
+**Requirements:** Blender default keymap; mesh Edit Mode.
+
+[Primary documentation](https://docs.blender.org/manual/en/4.5/modeling/meshes/editing/mesh/transform/shrink-fatten.html)
+
+Toggle Even Thickness with `S`, or hold `Alt` while adjusting. The toggle is not `E`.

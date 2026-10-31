@@ -1,0 +1,31 @@
+---
+title: Your next line, a little easier.
+description: A practical reference for Unity, C#, Blender and the tools around them.
+template: splash
+hero:
+  title: Your next line, a little easier.
+  tagline: A personal reference shelf for Unity, C#, Blender and everyday development. Find the syntax, check the requirements, get back to building.
+  image:
+    html: '<img src="/developer.png" width="1536" height="1024" alt="" fetchpriority="high" />'
+  actions:
+    - text: Browse Unity
+      link: /unity/
+      icon: right-arrow
+    - text: Explore resources
+      link: /resources/
+      variant: minimal
+---
+
+import { CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+## Pick a topic
+
+Short references, practical examples and useful links. Start with what you need.
+
+<CardGrid>
+  <LinkCard title="Unity" description="Inspector attributes, components, editor scripting and DOTS." href="/unity/" />
+  <LinkCard title="C#" description="Language and interop attributes, with syntax close at hand." href="/csharp/language-interop-attributes/" />
+  <LinkCard title="Blender" description="Modeling hotkeys, modifiers and boolean workflows." href="/blender/modeling-hotkeys/" />
+  <LinkCard title="Tooling" description="Formatting directives for Rider, ReSharper and Visual Studio." href="/tooling/resharper-formatter-directives/" />
+  <LinkCard title="Resources" description="A curated shelf of documentation, tools and asset libraries." href="/resources/" />
+</CardGrid>

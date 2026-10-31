@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.astro/
+.netlify/
+.playwright-mcp/
+output/playwright/
+.env
+.env.*
+!.env.example
+desktop.ini

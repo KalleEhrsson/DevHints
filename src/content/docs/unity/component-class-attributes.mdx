@@ -1,0 +1,142 @@
+---
+title: "Component & Class Attributes"
+description: "Component behavior, execution and type migration in Unity."
+---
+
+Component behavior, execution and type migration in Unity.
+
+**Reference baseline:** Unity 6.0 API; Burst entries use the Burst 1.8 manual. Namespaces and placement are requirements, not claims about the first supported Unity version.
+
+Attribute fragments belong on the declaration described by their requirements; alternatives are shown separately.
+
+## AddComponentMenu
+
+Place this component under a custom submenu.
+
+```csharp
+[AddComponentMenu("DevHints/Example")]
+```
+
+**Requirements:** UnityEngine; MonoBehaviour-derived class.
+
+[Primary documentation](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/AddComponentMenu.html)
+
+## DisallowMultipleComponent
+
+Prevent duplicates of this component on one GameObject.
+
+```csharp
+[DisallowMultipleComponent]
+```
+
+**Requirements:** UnityEngine; MonoBehaviour-derived class.
+
+[Primary documentation](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/DisallowMultipleComponent.html)
+
+Useful for managers or controllers that should be unique on an object.
+
+## RequireComponent
+
+Automatically add the required component when this component is added to a GameObject. Dependencies are checked at addition time; changing the attribute does not retrofit existing instances.
+
+```csharp
+[RequireComponent(typeof(Rigidbody))]
+```
+
+**Requirements:** UnityEngine; MonoBehaviour-derived class; Component type.
+
+[Primary documentation](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/RequireComponent.html)
+
+## ExecuteInEditMode
+
+Run this `MonoBehaviour` in Edit mode.
+
+```csharp
+[ExecuteInEditMode]
+```
+
+**Requirements:** UnityEngine; MonoBehaviour-derived class.
+
+[Primary documentation](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/ExecuteInEditMode.html)
+
+Prefer `ExecuteAlways` for code that explicitly handles Prefab Mode. Keep editor-only APIs separate from player code.
+
+## ExecuteAlways
+
+Run MonoBehaviour callbacks in Edit Mode and Prefab Mode as well as during normal play. Callback frequency outside the playing world differs from Play Mode.
+
+```csharp
+[ExecuteAlways]
+```
+
+**Requirements:** UnityEngine; MonoBehaviour-derived class.
+
+[Primary documentation](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/ExecuteAlways.html)
+
+Guard runtime-only behavior with `Application.IsPlaying(gameObject)` so editing a prefab does not run playing-world logic. This attribute does not guarantee that disabled behaviours execute.
+
+## SelectionBase
+
+Scene-view clicks on children select this GameObject
+
+```csharp
+[SelectionBase]
+```
+
+**Requirements:** UnityEngine; class attached to a GameObject.
+
+[Primary documentation](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/SelectionBaseAttribute.html)
+
+Handy for complex hierarchies like props with many sub-meshes.
+
+## HelpURL
+
+Link the component Inspector’s help icon to a URL.
+
+```csharp
+[HelpURL("https://example.com/component-help")]
+```
+
+**Requirements:** UnityEngine; class; documentation URL string.
+
+[Primary documentation](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/HelpURLAttribute.html)
+
+## DefaultExecutionOrder
+
+Control script execution order.
+
+```csharp
+[DefaultExecutionOrder(-100)]
+```
+
+**Requirements:** UnityEngine; MonoBehaviour-derived class; constant integer order.
+
+[Primary documentation](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/DefaultExecutionOrder.html)
+
+## AssemblyIsEditorAssembly
+
+Mark an assembly so Unity considers its classes to be editor classes. This attribute targets the assembly, not an individual class.
+
+```csharp
+[assembly: AssemblyIsEditorAssembly]
+```
+
+**Requirements:** UnityEngine; assembly target.
+
+[Primary documentation](https://github.com/Unity-Technologies/UnityCsReference/blob/6000.0/Runtime/Export/Scripting/Attributes.cs)
+
+Do not treat this marker alone as a general guarantee about player-build inclusion; editor assembly and compilation settings still matter.
+
+## MovedFrom
+
+Record a type’s previous namespace to help preserve serialized references after a move. The simple constructor takes the old namespace; more detailed constructors can identify the old assembly and class.
+
+```csharp
+[MovedFrom("Old.Namespace")]
+```
+
+**Requirements:** UnityEngine.Scripting.APIUpdating; supported type declaration.
+
+[Primary documentation](https://github.com/Unity-Technologies/UnityCsReference/blob/6000.0/Runtime/Export/Scripting/APIUpdating/UpdatedFromAttribute.cs)
+
+Serialization migration and API updating have different limits. The API updater does not generally repair arbitrary class-name or assembly moves; check the documented constructor behavior before relying on it.

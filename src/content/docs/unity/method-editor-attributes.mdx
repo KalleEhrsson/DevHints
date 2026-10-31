@@ -1,0 +1,65 @@
+---
+title: "Method & Editor Attributes"
+description: "Context menus, editor initialization and runtime startup."
+---
+
+Context menus, editor initialization and runtime startup.
+
+**Reference baseline:** Unity 6.0 API; Burst entries use the Burst 1.8 manual. Namespaces and placement are requirements, not claims about the first supported Unity version.
+
+Attribute fragments belong on the declaration described by their requirements; alternatives are shown separately.
+
+## ContextMenu
+
+Add a right-click menu to invoke this method in the Inspector.
+
+```csharp
+[ContextMenu("Title")]
+```
+
+**Requirements:** UnityEngine; non-static instance method.
+
+[Primary documentation](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/ContextMenu.html)
+
+## MenuItem
+
+Add a top-bar menu item for this static method.
+
+```csharp
+[MenuItem("MyMenu/Action")]
+```
+
+**Requirements:** UnityEditor; static method in editor-only code.
+
+[Primary documentation](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/MenuItem.html)
+
+## InitializeOnLoadMethod
+
+Editor: run this static method when the Editor loads.
+
+```csharp
+[InitializeOnLoadMethod]
+```
+
+**Requirements:** UnityEditor; static method in editor-only code.
+
+[Primary documentation](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/InitializeOnLoadMethodAttribute.html)
+
+Avoid heavy work; initialize caches or register callbacks here.
+
+## RuntimeInitializeOnLoadMethod
+
+Run a static method during player startup. The parameterless attribute defaults to `AfterSceneLoad`; use an explicit load type for another phase.
+
+```csharp
+[RuntimeInitializeOnLoadMethod]
+
+// Alternative: explicitly run before scene loading.
+[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+```
+
+**Requirements:** UnityEngine; static method.
+
+[Primary documentation](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/RuntimeInitializeOnLoadMethodAttribute.html)
+
+Apply one of these alternatives to a method, rather than stacking both attributes.

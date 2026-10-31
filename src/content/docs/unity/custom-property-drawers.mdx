@@ -1,0 +1,54 @@
+---
+title: "Custom Property Drawers"
+description: "The existing float-only IMGUI range drawer example, with editor-only placement."
+---
+
+Define a `PropertyAttribute` and a `PropertyDrawer` to create a custom Inspector widget. This example uses **IMGUI** and supports a `float` field.
+
+The attribute and component are runtime types. The drawer and `UnityEditor` import must stay editor-only, here behind `UNITY_EDITOR`. If you split the classes into files, put the drawer in an Editor folder or editor-only assembly.
+
+```csharp
+using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
+// 1) Create the attribute
+public class MyRange : PropertyAttribute
+{
+    public float min, max;
+    public MyRange(float min, float max)
+    {
+        this.min = min;
+        this.max = max;
+    }
+}
+
+// 2) Create the drawer
+#if UNITY_EDITOR
+[CustomPropertyDrawer(typeof(MyRange))]
+public class MyRangeDrawer : PropertyDrawer
+{
+    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+    {
+        var range = (MyRange)attribute;
+        property.floatValue = EditorGUI.Slider(
+            position,
+            label,
+            property.floatValue,
+            range.min,
+            range.max
+        );
+    }
+}
+#endif
+
+// 3) Use it
+public class Example : MonoBehaviour
+{
+    [MyRange(0f, 1f)]
+    public float blend;
+}
+```
+
+`OnGUI` remains useful for IMGUI inspectors. UI Toolkit inspectors use a different entry point; see the [PropertyDrawer documentation](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/PropertyDrawer.html) before choosing the implementation for your Inspector.

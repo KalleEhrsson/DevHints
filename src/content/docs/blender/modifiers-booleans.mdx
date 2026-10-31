@@ -1,0 +1,51 @@
+---
+title: "Modifiers & Booleans"
+description: "Transforms, boolean solvers and bevel workflows in Blender."
+---
+
+Transforms, boolean solvers and bevel workflows in Blender.
+
+**Reference baseline:** Blender 4.5 LTS manual, using the default Blender keymap. Customized and Industry Compatible keymaps can differ.
+
+
+## Apply Transforms
+
+Apply transforms before a boolean or array workflow when unapplied transforms cause skewed results. All Transforms includes location, rotation and scale. Choose Rotation & Scale instead when you only intend to normalize those.
+
+```text
+Ctrl + A → All Transforms
+```
+
+**Requirements:** Blender default keymap; Object Mode; selected object.
+
+[Primary documentation](https://docs.blender.org/manual/en/4.5/scene_layout/object/editing/apply.html)
+
+A Weighted Normal modifier can follow a boolean and bevel stack for shading cleanup; inspect the result for your geometry.
+
+## Boolean Modifier
+
+Choose a solver for the geometry. Blender 4.5 offers Float, Exact and Manifold. Exact handles more overlapping cases than Float, but does not guarantee success with non-manifold geometry. Manifold requires manifold inputs.
+
+```text
+Add Modifier → Generate → Boolean
+```
+
+**Requirements:** Blender; mesh object; appropriate operand and modifier settings.
+
+[Primary documentation](https://docs.blender.org/manual/en/4.5/modeling/modifiers/generate/booleans.html)
+
+Place booleans above a bevel when you want new boolean edges to receive the bevel treatment.
+
+## Bevel Vertices
+
+Bevel selected vertices, useful for rounding corners in a boolean modeling workflow.
+
+```text
+Ctrl + Shift + B
+```
+
+**Requirements:** Blender default keymap; mesh Edit Mode; selected vertices.
+
+[Primary documentation](https://docs.blender.org/manual/en/4.5/modeling/meshes/editing/vertex/bevel_vertices.html)
+
+Use custom profiles when you need a particular bevel shape; the result still depends on the geometry and settings.
