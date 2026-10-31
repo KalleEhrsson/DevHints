@@ -22,6 +22,10 @@ Chrome/Playwright against `astro preview`, not the development server:
 
 ## Deployment
 
-Preview deployment verification remains in progress. Production promotion is excluded; the original published deployment must stay locked.
+- Migration commit `91ffcb3c722ec2271c582e5b42e0f63796d3c2f7` deployed successfully as Netlify branch deploy `6ae664dfc59ce91c7516a4b9`, state `ready`, branch `preview`.
+- [Live review](https://preview--devhints.netlify.app): all 13 routes return 200 on direct load; the unchanged Google verification file returns 200; an unknown route returns the new 404 page with HTTP 404.
+- Hosted Pagefind UI finds the same five representative subjects and their heading links. The deployed reference page shows native code blocks and successful copy confirmation, without original screenshots. Google tracking is absent from all topic HTML.
+- `production` remains at baseline `1009957c50be6856d93559fc98f75f2e2955c4d7`. Netlify’s published deploy remains `6add377e780a52b7259d165a`, locked, and the public production homepage still serves the legacy renderer. GitHub default/Netlify production branch are `production`; only `preview` is enabled for branch deploys.
+- Documentation-only follow-up commits can change the preview head without changing the verified application content. Production promotion, merge and publishing unlock require separate explicit approval after preview review.
 
 Unity/C# examples were reviewed against documentation, not executed in Unity or a standalone C# project. Blender operations were checked against the Blender 4.5 manual, not run in Blender. External resource URLs were retained; third-party availability and terms are not certified.
