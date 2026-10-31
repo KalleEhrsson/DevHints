@@ -27,7 +27,7 @@ Edit Markdown/MDX under `src/content/docs/`. There is no JSON renderer or second
 
 Each reference entry has a short explanation, a fenced code block (`csharp` or `text`), concrete namespace/package/declaration requirements and primary documentation. Code blocks automatically receive Starlight highlighting and copy controls. Label fragments and alternatives; do not present package-specific APIs as Unity core. Record a documentation baseline rather than guessing historical minimum versions. Request approval for substantive technical rewrites or removal of existing entries.
 
-Resources live on `/resources/`, grouped by subject. Preserve useful descriptions and verify changed external links. This migration retained their original URLs; it does not certify third-party availability, pricing or asset licenses.
+Resources live on `/resources/`, grouped by subject. Resource visits open a new tab with `target="_blank"` and `rel="noopener noreferrer"`. Preserve useful descriptions and verify changed external links. This migration retained their original URLs; it does not certify third-party availability, pricing or asset licenses.
 
 Accepted design: DevHints wordmark, blue accent, bounded documentation column, native sidebar/TOC and responsive controls. The homepage uses a new original AI-generated developer illustration. Original DevHints screenshots are retired at the user’s request; use native code examples. No analytics or Tag Manager. `public/googlec132ae438df8900d.html` must remain accessible and unchanged.
 

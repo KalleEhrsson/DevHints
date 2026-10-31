@@ -19,6 +19,7 @@ Chrome/Playwright against `astro preview`, not the development server:
 - Actual Pagefind queries `SerializeField`, `DllImport`, `Shrink Fatten`, `formatter` and `Poly Haven` find Unity, C#, Blender, tooling and resource pages. Results include working heading destinations such as `#serializefield`, `#dllimport`, `#shrink-fatten` and `#poly-haven-textures`.
 - Keyboard checks cover sidebar navigation, mobile menu and theme selection, mobile contents navigation, search opening/result activation/Escape, and single-line/multiline copy. Focus-visible outlines are present. Clipboard output preserves multiline code, with normal Windows CRLF line endings.
 - Auto theme responds to emulated system light/dark changes. On the native mobile splash homepage, theme selection is reached through a topic page’s menu and persists when returning home.
+- Resource-link follow-up: all 26 original resource URLs use `target="_blank"` with `noopener noreferrer`, enforced against built HTML. A normal Chrome click on React Bits opened and selected a separate tab while the Resources tab kept its original URL. Browser settings can override foreground-tab selection.
 
 ## Deployment
 

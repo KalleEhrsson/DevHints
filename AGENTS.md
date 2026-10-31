@@ -8,6 +8,7 @@
 - Preserve heading anchors, existing entries and meaningful notes. Supply explanation, copyable syntax, requirements and primary sources. Confirm technical claims against primary documentation; seek approval for substantive rewrites/removals.
 - Approved baselines: Unity 6.0, Burst 1.8, Microsoft API docs and Blender 4.5 LTS default keymap. These are review baselines, not minimum-version claims.
 - Use native code examples instead of original DevHints screenshots. Keep the new hero illustration and blue wordmark. No analytics or Tag Manager; preserve the Google verification file.
+- Resource visits open a new tab with `target="_blank"` and `rel="noopener noreferrer"`. Normal-click tab focus follows the browser's settings.
 
 ## Verification and delivery
 

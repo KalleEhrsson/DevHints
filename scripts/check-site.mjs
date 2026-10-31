@@ -58,6 +58,13 @@ assert.equal(references.length, 49, 'Expected 49 reference entries');
 assert.equal(destinations.length, 75, 'Expected 49 references plus 26 resources');
 assert.equal(new Set(destinations.map(m => m[1])).size, 75, 'Duplicate destination');
 for (const m of destinations) checkTarget(m[1], origin);
+const resourceUrls = [...ledger.matchAll(/\[Resource\]\(([^)]+)\)/g)].map(m => m[1]);
+assert.equal(resourceUrls.length, 26, 'Expected 26 original resource URLs');
+const resourceLinks = [...html.get(checkTarget('/resources/', origin)).matchAll(/<a\b([^>]+)>/g)].map(m => m[1]);
+for (const url of resourceUrls) {
+  assert(resourceLinks.some(attrs => decode(attrs.match(/\bhref="([^"]+)"/)?.[1] || '') === url
+    && /\btarget="_blank"/.test(attrs) && /\brel="[^"]*\bnoopener\b/.test(attrs)), `Resource must open a safe new tab: ${url}`);
+}
 for (const [, entry, destination] of references) {
   const file = checkTarget(destination, origin);
   const id = new URL(destination, origin).hash.slice(1);
