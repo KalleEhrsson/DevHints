@@ -61,6 +61,10 @@ for (const m of destinations) checkTarget(m[1], origin);
 const resourceUrls = [...ledger.matchAll(/\[Resource\]\(([^)]+)\)/g)].map(m => m[1]);
 assert.equal(resourceUrls.length, 26, 'Expected 26 original resource URLs');
 const resourceLinks = [...html.get(checkTarget('/resources/', origin)).matchAll(/<a\b([^>]+)>/g)].map(m => m[1]);
+const resourcesPage = html.get(checkTarget('/resources/', origin));
+assert.equal((resourcesPage.match(/class="resource-row"/g) || []).length, 26, 'Expected 26 resource rows');
+assert.equal((resourcesPage.match(/src="\/resource-icons\//g) || []).length, 25, 'Expected 25 locally hosted favicons');
+assert.equal((resourcesPage.match(/class="resource-favicon-fallback"/g) || []).length, 1, 'Expected one unavailable-icon fallback');
 for (const url of resourceUrls) {
   assert(resourceLinks.some(attrs => decode(attrs.match(/\bhref="([^"]+)"/)?.[1] || '') === url
     && /\btarget="_blank"/.test(attrs) && /\brel="[^"]*\bnoopener\b/.test(attrs)), `Resource must open a safe new tab: ${url}`);

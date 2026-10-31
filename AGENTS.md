@@ -9,6 +9,7 @@
 - Approved baselines: Unity 6.0, Burst 1.8, Microsoft API docs and Blender 4.5 LTS default keymap. These are review baselines, not minimum-version claims.
 - Use native code examples instead of original DevHints screenshots. Keep the new hero illustration and blue wordmark. No analytics or Tag Manager; preserve the Google verification file.
 - Resource visits open a new tab with `target="_blank"` and `rel="noopener noreferrer"`. Normal-click tab focus follows the browser's settings.
+- The approved Resources layout uses category sections and compact rows, with local PNG favicons in `public/resource-icons/`. Preserve all resource IDs, descriptions and URLs. Do not add borders, backing or rounding to the icons. Use a letter fallback where no original favicon is available; record sources in `docs/resource-icons.md`.
 
 ## Verification and delivery
 

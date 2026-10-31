@@ -20,6 +20,7 @@ Chrome/Playwright against `astro preview`, not the development server:
 - Keyboard checks cover sidebar navigation, mobile menu and theme selection, mobile contents navigation, search opening/result activation/Escape, and single-line/multiline copy. Focus-visible outlines are present. Clipboard output preserves multiline code, with normal Windows CRLF line endings.
 - Auto theme responds to emulated system light/dark changes. On the native mobile splash homepage, theme selection is reached through a topic page’s menu and persists when returning home.
 - Resource-link follow-up: all 26 original resource URLs use `target="_blank"` with `noopener noreferrer`, enforced against built HTML. A normal Chrome click on React Bits opened and selected a separate tab while the Resources tab kept its original URL. Browser settings can override foreground-tab selection.
+- Approved Resources revision: 26 compact rows under 10 category headings, with 25 local PNG favicons and a JSplacement letter fallback. All icons load at 1440px/390px in light/dark themes; no icon borders, backing or corner rounding are added. No remote images, clipped row text or page overflow were found. Native category navigation, row focus outlines, keyboard activation and the visit arrow work. All 26 resource titles return their stable heading destinations in built Pagefind search; the decorative fallback is excluded from indexing.
 
 ## Deployment
 
