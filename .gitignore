@@ -1,0 +1,17 @@
+node_modules/
+dist/
+.astro/
+.netlify/
+
+.playwright-mcp/
+.playwright/
+output/playwright/
+playwright-report/
+test-results/
+blob-report/
+*.log
+
+.env
+.env.*
+!.env.example
+desktop.ini
