@@ -1,0 +1,251 @@
+---
+title: "Field Attributes"
+description: "Serialization, field labels and Inspector editing in Unity."
+---
+
+Serialization, field labels and Inspector editing in Unity.
+
+**Reference baseline:** Unity 6.0 API; Burst entries use the Burst 1.8 manual. Namespaces and placement are requirements, not claims about the first supported Unity version.
+
+Attribute fragments belong on the declaration described by their requirements; alternatives are shown separately.
+
+## SerializeField
+
+Serialize a private field so it appears in the Inspector.
+
+```csharp
+[SerializeField]
+```
+
+**Requirements:** UnityEngine; serializable instance field.
+
+[Primary documentation](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/SerializeField.html)
+
+Use for private variables you want editable without exposing as public.
+
+A private field can stay editable without becoming part of the public API:
+
+```csharp
+using UnityEngine;
+
+public class InspectorExample : MonoBehaviour
+{
+    [SerializeField] private int serializeField;
+}
+```
+
+The normal Inspector displays this supported private field and saves its value.
+
+## HideInInspector
+
+Hide a public or serialized field from the Inspector.
+
+```csharp
+[HideInInspector]
+```
+
+**Requirements:** UnityEngine; serialized field.
+
+[Primary documentation](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/HideInInspector.html)
+
+Good for keeping data serialized but uncluttered in the Inspector.
+
+## NonSerialized
+
+Exclude a field from Unity serialization and the normal Inspector.
+
+```csharp
+[NonSerialized]
+```
+
+**Requirements:** System; field target; Unity serialization rules.
+
+[Primary documentation](https://learn.microsoft.com/en-us/dotnet/api/system.nonserializedattribute)
+
+The field is not saved to a scene or prefab. A public field does not remain visible in the normal Inspector merely because it is public.
+
+## FormerlySerializedAs
+
+Remap serialized data from an old field name after renaming.
+
+```csharp
+[FormerlySerializedAs("oldName")]
+```
+
+**Requirements:** UnityEngine.Serialization; serialized field.
+
+[Primary documentation](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Serialization.FormerlySerializedAsAttribute.html)
+
+## Header
+
+Draw a bold header label above this field or group.
+
+```csharp
+[Header("Title")]
+```
+
+**Requirements:** UnityEngine; Inspector field.
+
+[Primary documentation](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/HeaderAttribute.html)
+
+## Space
+
+Insert vertical space before the next field.
+
+```csharp
+[Space]
+
+// Alternative: specify the gap in pixels.
+[Space(12)]
+```
+
+**Requirements:** UnityEngine; Inspector field.
+
+[Primary documentation](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/SpaceAttribute.html)
+
+Plain `[Space]` uses the default gap; use the numeric constructor to fine-tune spacing.
+
+## Tooltip
+
+Show hover-popup help text for the field label in the Inspector.
+
+```csharp
+[Tooltip("Movement speed in units per second.")]
+```
+
+**Requirements:** UnityEngine; Inspector field.
+
+[Primary documentation](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/TooltipAttribute.html)
+
+## Range
+
+Draw an Inspector slider for an `int` or `float` between constant bounds. This constrains Inspector editing; it does not clamp assignments made by your runtime code.
+
+```csharp
+[Range(0f, 1f)]
+```
+
+**Requirements:** UnityEngine; int or float Inspector field; constant bounds.
+
+[Primary documentation](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/RangeAttribute.html)
+
+Uses the built-in Inspector slider styling.
+
+## Min
+
+Set a minimum for numeric Inspector editing, without a slider. Runtime code can still assign a smaller value.
+
+```csharp
+[Min(0f)]
+```
+
+**Requirements:** UnityEngine; int or float Inspector field; constant minimum.
+
+[Primary documentation](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/MinAttribute.html)
+
+## Max
+
+The original reference intended an upper limit without a slider, but `MaxAttribute` is not a documented Unity core attribute. Its behavior depends on a specific custom or package implementation.
+
+```csharp
+// Requires an identified custom or package MaxAttribute implementation.
+[Max(100f)]
+```
+
+**Requirements:** Not established as a Unity core API; custom or package implementation required.
+
+[Unity core attribute declarations](https://github.com/Unity-Technologies/UnityCsReference/blob/6000.0/Runtime/Export/PropertyDrawer/PropertyAttribute.cs)
+
+Do not paste this into a plain Unity project expecting a built-in attribute. The official Post Processing package has its own [Max declaration](https://github.com/Unity-Technologies/FPSSample/blob/master/Packages/com.unity.postprocessing/PostProcessing/Runtime/Attributes/MaxAttribute.cs); that is package-specific evidence, not a general Inspector guarantee.
+
+## TextArea
+
+Draw a multiline string field with minimum and maximum visible line counts. These bounds control the text area height, not the maximum text length.
+
+```csharp
+[TextArea(3, 6)]
+```
+
+**Requirements:** UnityEngine; string Inspector field; integer line bounds.
+
+[Primary documentation](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/TextAreaAttribute.html)
+
+## Multiline
+
+Attribute to make a `string` be edited with a multi-line textfield.
+
+```csharp
+[Multiline]
+```
+
+**Requirements:** UnityEngine; string Inspector field.
+
+[Primary documentation](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/MultilineAttribute.html)
+
+Unlike TextArea, height is fixed; good for short paragraphs.
+
+## Delayed
+
+Delay committing an `int`, `float` or `string` Inspector edit until Enter is pressed or the field loses focus.
+
+```csharp
+[Delayed]
+```
+
+**Requirements:** UnityEngine; int, float or string Inspector field.
+
+[Primary documentation](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/DelayedAttribute.html)
+
+Avoids applying intermediate values while typing, useful for expensive editor updates.
+
+## SerializeReference
+
+Serialize a managed reference to a supported serializable class, including polymorphic values behind abstract class or interface fields. The concrete object must satisfy Unity managed-reference serialization rules.
+
+```csharp
+[SerializeReference]
+```
+
+**Requirements:** UnityEngine; managed reference to a supported serializable class.
+
+[Primary documentation](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/SerializeReference.html)
+
+Not for value types or structs. This attribute alone does not promise an Inspector UI for choosing concrete implementations.
+
+## InspectorName
+
+Override the Inspector display name of an enum value. This is not a general field-label renaming attribute.
+
+```csharp
+[InspectorName("Name")]
+```
+
+**Requirements:** UnityEngine; enum value declaration.
+
+[Primary documentation](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/InspectorNameAttribute.html)
+
+## ContextMenuItem
+
+Add a command to a field’s Inspector context menu that invokes the named non-static method. It does not add a button beside the field.
+
+```csharp
+[ContextMenuItem("Reset", "ResetValue")]
+```
+
+**Requirements:** UnityEngine; field plus a named instance method.
+
+[Primary documentation](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/ContextMenuItemAttribute.html)
+
+## NonReorderable
+
+Prevent list reordering UI on a `List`.
+
+```csharp
+[NonReorderable]
+```
+
+**Requirements:** UnityEngine; array or list Inspector field.
+
+[Primary documentation](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/NonReorderableAttribute.html)
+
+Use when index order has semantic meaning tied to code.

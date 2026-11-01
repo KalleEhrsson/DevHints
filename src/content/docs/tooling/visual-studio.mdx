@@ -1,0 +1,18 @@
+---
+title: "Visual Studio"
+description: "Region markers organize C# code; they do not disable formatting."
+---
+
+Visual Studio does not treat ReSharper’s formatter-off comments as native formatting controls. A `#region` names a collapsible code region; **it does not protect its contents from formatting**.
+
+```csharp
+#region DoNotFormat
+var  tempHack  =   "manually     preserved";
+// Add comments or notes here
+#endregion
+```
+
+Use this snippet for organization and folding only. The name `DoNotFormat` has no special formatting behavior.
+
+- [C# region directives](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/preprocessor-directives#defining-regions)
+- [Visual Studio C# formatting settings](https://learn.microsoft.com/en-us/visualstudio/ide/reference/options-text-editor-csharp-formatting?view=vs-2022)

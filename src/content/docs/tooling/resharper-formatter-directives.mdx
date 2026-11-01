@@ -1,0 +1,17 @@
+---
+title: "ReSharper Formatter Directives"
+description: "Preserve intentional C# formatting with Rider and ReSharper formatter markers."
+---
+
+Tell Rider or Visual Studio with ReSharper to skip formatting between these C# markers:
+
+```csharp
+// @formatter:off
+var  weirdlyFormatted   =   "leave   me    alone!";
+// @formatter:on
+```
+
+Check the formatter-marker configuration in the relevant language’s formatting settings. Setting names, defaults and language support can vary by product and version; do not assume this C# example defines CSS behavior.
+
+- [Rider: configure code formatting rules](https://www.jetbrains.com/help/rider/Configure_Code_Formatting_Rules.html)
+- [ReSharper: code style settings](https://www.jetbrains.com/help/resharper/Settings_Code_Style.html)

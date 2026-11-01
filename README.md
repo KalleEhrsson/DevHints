@@ -1,83 +1,45 @@
-# 🚀 DevHints  
-![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white) 
-![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white) 
-![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black) 
-![Netlify](https://img.shields.io/badge/Netlify-00C7B7?style=for-the-badge&logo=netlify&logoColor=white) 
-![Rider](https://img.shields.io/badge/Rider-000000?style=for-the-badge&logo=jetbrains&logoColor=white)
+# DevHints
 
----
+A personal reference library for Unity, C#, Blender and development tools. Built with static [Astro](https://astro.build/) and [Starlight](https://starlight.astro.build/), using native Pagefind search, code highlighting/copy controls and system/light/dark themes.
 
-A growing collection of **Unity tips, C# tricks, and useful developer resources**.  
-Think of it as a personal but shareable cheat-sheet that keeps evolving as I learn more.
+- [Production](https://devhints.kftech.se): the existing published site stays locked during review.
+- [Migration preview](https://preview--devhints.netlify.app): branch deployment from `preview`.
+- [Migration checklist](docs/migration-checklist.md): all 49 references, three articles and 26 resources, with primary sources and approved corrections.
+- [Verification](docs/verification.md): scope and results of local/browser/deployment checks.
 
----
+## Local development
 
-## 📑 Table of Contents
-- [🌐 Live Preview](#-live-preview)  
-- [🧑‍💻 Features](#-features)  
-- [📂 Current Sections](#-current-sections)  
-- [🚧 Roadmap / Ideas](#-roadmap--ideas)  
-- [🌟 Why I Built This](#-why-i-built-this)  
-- [🤝 Contributing](#-contributing)  
-- [📜 License](#-license)  
+Use Node 24.22.1 or a newer Node 24 release. `.nvmrc` and Netlify select Node 24; `package-lock.json` pins the installed dependency tree.
 
----
+```sh
+npm ci
+npm run dev
+npm run check
+npm run build
+npm run preview
+```
 
-## 🌐 Live Preview
-👉 Visit [DevHints](https://devhints.netlify.app/)  online
-Browse insights right in your browser.
+`dev` normally serves port 4321. `preview` serves the built `dist` output, including the Pagefind index. Production search is generated during the build; use `preview` to verify it. `build` also checks expected routes, all recorded migration destinations, local HTML/CSS asset and link targets, native code-copy controls, tracking removal and the Google verification file.
 
----
+## Authoring
 
-## 🧑‍💻 Features
+Edit Markdown/MDX under `src/content/docs/`. There is no JSON renderer or second content source. `astro.config.mjs` owns the explicit sidebar; add a sidebar entry when adding a page. Keep reference heading names stable because they become searchable deep links.
 
-- ✨ Quick Unity & C# tips  
-- 🔗 Collection of useful websites for developers  
-- 📚 Expanding resource—new tips and links will be added over time  
-- 🖥️ Simple and lightweight: runs locally in any browser  
+Each reference entry has a short explanation, a fenced code block (`csharp` or `text`), concrete namespace/package/declaration requirements and primary documentation. Code blocks automatically receive Starlight highlighting and copy controls. Label fragments and alternatives; do not present package-specific APIs as Unity core. Record a documentation baseline rather than guessing historical minimum versions. Request approval for substantive technical rewrites or removal of existing entries.
 
----
+Resources live on `/resources/` as compact category rows with names, descriptions and local favicons. Resource visits open a new tab with `target="_blank"` and `rel="noopener noreferrer"`. Keep heading anchors stable and use the contents menu for category jumps. Icon provenance and the JSplacement fallback are recorded in [resource-icons.md](docs/resource-icons.md); PNG assets live in `public/resource-icons/`, with no added icon backing, border or rounding. Preserve useful descriptions and verify changed external links. This migration retained their original URLs; it does not certify third-party availability, pricing or asset licenses.
 
-## 📂 Current Sections
-- Unity Tips  
-- C# Tricks  
-- Useful Sites  
+Accepted design: DevHints wordmark, blue accent, bounded documentation column, native sidebar/TOC and responsive controls. The homepage uses a new original AI-generated developer illustration. Original DevHints screenshots are retired at the user’s request; use native code examples. No analytics or Tag Manager. `public/googlec132ae438df8900d.html` must remain accessible and unchanged.
 
-*(More sections will be added over time!)*
+## Preview and production
 
----
+GitHub’s default branch is `production`; local `production` tracks `origin/production`. Netlify production builds target that branch. Only `preview` is enabled for branch deployments. The migration is developed and reviewed there.
 
-## 🚧 Roadmap / Ideas
+1. Make a scoped change on `preview`; run `npm run check` and `npm run build`, then check relevant browser behavior.
+2. Commit the completed change and push `preview` to update [the review deployment](https://preview--devhints.netlify.app).
+3. Verify the deployed branch/commit and direct page loads. Confirm the existing published production deploy remains locked.
+4. Promote only after separate explicit user approval. Do not merge into `production`, unlock publishing or run a production deploy as part of preview review.
 
-### 🔹 Short-term
-- Add a **tag filter system**  
-- Include **screenshots/code snippets** for clarity  
-- Improve **mobile layout** and responsiveness  
-- Add **search across all sections**
+`netlify.toml` sets `npm run build`, `dist` and Node 24. Static topic URLs have their own generated HTML; no SPA fallback or server adapter is required.
 
-### 🔹 Long-term
-- Implement **search suggestions/autocomplete**  
-- Add **favorites system** (save/star tips locally)  
-- Enable **offline mode (PWA)** for browsing without internet  
-- Support **multiple languages** (start with English + Swedish)  
-- Add **versioning** for Unity/C# tips (e.g., Unity 6 vs Unity 5)  
-
----
-
-## 🌟 Why I Built This
-
-I wanted a personal reference library of Unity and C# tricks that I could access quickly, but also share with others. Over time, this will grow into a more complete developer resource.
-
----
-
-## 🤝 Contributing
-
-Suggestions and improvements are always welcome!  
-Feel free to fork the repo, open an issue, or create a pull request with new tips/resources.
-
----
-
-## 📜 License
-
-This project is licensed under the MIT License.  
-Use, share, and contribute freely.
+The layout takes structural inspiration from [HCSTech Docs](https://docs.hcstech.se/); branding, artwork and content are DevHints’ own. Favorites, tag filters, PWA/offline support, localization, restored screenshots and new tutorials are outside this migration.

@@ -1,0 +1,122 @@
+---
+title: "DOTS, Native & Burst"
+description: "Burst compilation, native-container access and managed stripping."
+---
+
+Burst compilation, native-container access and managed stripping.
+
+**Reference baseline:** Unity 6.0 API; Burst entries use the Burst 1.8 manual. Namespaces and placement are requirements, not claims about the first supported Unity version.
+
+Attribute fragments belong on the declaration described by their requirements; alternatives are shown separately.
+
+## BurstCompile
+
+Compile supported jobs or supported static entry points with Burst. A static entry point and its containing type need the appropriate `[BurstCompile]` annotations; using the Jobs system is not a universal requirement.
+
+```csharp
+[BurstCompile]
+```
+
+**Requirements:** com.unity.burst; Unity.Burst; supported job or static entry point.
+
+[Primary documentation](https://docs.unity3d.com/Packages/com.unity.burst@1.8/manual/compilation-burstcompile.html)
+
+Use Burst-supported value types and unmanaged data. Managed operations are restricted.
+
+## BurstDiscard
+
+Discard calls to a marked method from Burst-compiled code, while keeping the managed execution path.
+
+```csharp
+[BurstDiscard]
+```
+
+**Requirements:** com.unity.burst; Unity.Burst; supported void method.
+
+[Primary documentation](https://docs.unity3d.com/Packages/com.unity.burst@1.8/manual/compilation-burstdiscard.html)
+
+Useful for debug logging or a managed-only path. The marked method must return `void`.
+
+## WriteOnly
+
+DOTS: mark a `NativeArray` as write-only.
+
+```csharp
+[WriteOnly]
+```
+
+**Requirements:** Unity.Collections; native-container field in a job.
+
+[Primary documentation](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Unity.Collections.WriteOnlyAttribute.html)
+
+Declares write-only native-container access to the job safety system. Do not assume it guarantees a performance improvement.
+
+## ReadOnly
+
+DOTS: mark a `NativeArray` as read-only.
+
+```csharp
+[ReadOnly]
+```
+
+**Requirements:** Unity.Collections; native-container field in a job.
+
+[Primary documentation](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Unity.Collections.ReadOnlyAttribute.html)
+
+Allows read-only jobs to share a container for parallel scheduling. It does not make unrelated writes or arbitrary access patterns race-free.
+
+## DeallocateOnJobCompletion
+
+Deallocate a supporting native-container field, such as a `NativeArray`, when the job completes. Not every native collection supports this attribute.
+
+```csharp
+[DeallocateOnJobCompletion]
+```
+
+**Requirements:** Unity.Collections; job field of a container supporting deallocation-on-completion.
+
+[Primary documentation](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Unity.Collections.DeallocateOnJobCompletionAttribute.html)
+
+Applies to supported containers captured by the job, reducing manual cleanup for that case.
+
+## NativeDisableParallelForRestriction
+
+Relax the per-index write restriction on a native-container job field. This does not make overlapping parallel writes safe.
+
+```csharp
+[NativeDisableParallelForRestriction]
+```
+
+**Requirements:** Unity.Collections; native-container job field; caller-managed safe access.
+
+[Primary documentation](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Unity.Collections.NativeDisableParallelForRestrictionAttribute.html)
+
+You must ensure accesses are race-free, typically by keeping writes non-overlapping.
+
+## NativeDisableUnsafePtrRestriction
+
+Permit an otherwise restricted unsafe pointer field in a job. This does not add bounds, race or lifetime safety.
+
+```csharp
+[NativeDisableUnsafePtrRestriction]
+```
+
+**Requirements:** Unity.Collections.LowLevel.Unsafe; unsafe C# enabled; pointer job field.
+
+[Primary documentation](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Unity.Collections.LowLevel.Unsafe.NativeDisableUnsafePtrRestrictionAttribute.html)
+
+Enable unsafe C# and validate pointer lifetime and indices. Incorrect access can corrupt memory.
+
+## Preserve
+
+Prevent IL2CPP or managed stripping on this code.
+
+```csharp
+[Preserve]
+```
+
+**Requirements:** UnityEngine.Scripting; supported declaration target.
+
+[Primary documentation](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Scripting.PreserveAttribute.html)
+
+Useful for reflection-accessed types or methods. What is preserved depends on the declaration target; decorating a type does not automatically preserve every member.

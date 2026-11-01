@@ -1,0 +1,63 @@
+---
+title: "Language & Interop Attributes"
+description: "Serialization, deprecation, conditional calls and native interop in C#."
+---
+
+Serialization, deprecation, conditional calls and native interop in C#.
+
+**Reference baseline:** Microsoft API documentation; Unity serialization is called out separately where relevant.
+
+Attribute fragments belong on the declaration described by their requirements; alternatives are shown separately.
+
+## Serializable
+
+Mark a supported type as serializable for serializers that honor `SerializableAttribute`. Serialization behavior depends on the serializer.
+
+```csharp
+[Serializable]
+```
+
+**Requirements:** System; supported class or struct; serializer-specific rules.
+
+[Primary documentation](https://learn.microsoft.com/en-us/dotnet/api/system.serializableattribute)
+
+Unity’s [JsonUtility](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/JsonUtility.html) follows Unity serialization rules; this is not a promise of general .NET serializer behavior.
+
+## Obsolete
+
+Mark a declaration as obsolete. The message-only constructor produces a warning; the Boolean argument selects an error.
+
+```csharp
+[Obsolete("Use the replacement API.")]
+
+// Alternative: report an error instead of a warning.
+[Obsolete("Use the replacement API.", true)]
+```
+
+**Requirements:** System; supported declaration target.
+
+[Primary documentation](https://learn.microsoft.com/en-us/dotnet/api/system.obsoleteattribute)
+
+## Conditional
+
+Include calls to a `void` method only when the named compile-time symbol is defined. The attribute conditions calls; it does not simply remove the method itself.
+
+```csharp
+[Conditional("UNITY_EDITOR")]
+```
+
+**Requirements:** System.Diagnostics; void method; compile-time symbol.
+
+[Primary documentation](https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.conditionalattribute)
+
+## DllImport
+
+Declare a native function through P/Invoke on a `static extern` method. Replace the illustrative library name with a real native library that is available on the target platform.
+
+```csharp
+[DllImport("NativeLibrary")]
+```
+
+**Requirements:** System.Runtime.InteropServices; static extern method; target-compatible native library.
+
+[Primary documentation](https://learn.microsoft.com/en-us/dotnet/api/system.runtime.interopservices.dllimportattribute)
