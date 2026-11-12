@@ -22,6 +22,15 @@ Chrome/Playwright against `astro preview`, not the development server:
 - Resource-link follow-up: all 26 original resource URLs use `target="_blank"` with `noopener noreferrer`, enforced against built HTML. A normal Chrome click on React Bits opened and selected a separate tab while the Resources tab kept its original URL. Browser settings can override foreground-tab selection.
 - Approved Resources revision: 26 compact rows under 10 category headings, with 25 local PNG favicons and a JSplacement letter fallback. All icons load at 1440px/390px in light/dark themes; no icon borders, backing or corner rounding are added. No remote images, clipped row text or page overflow were found. Native category navigation, row focus outlines and keyboard activation work. The introductory paragraph and visit arrows were later removed at the user’s request. All 26 resource titles return their stable heading destinations in built Pagefind search; the decorative fallback is excluded from indexing.
 
+## Theme update, 2026-11-12
+
+- The approved combination is PRISM in light mode and MONO in dark mode. Palette sources: [PRISM](https://purist.design/colorbuilds/prism) and [MONO](https://purist.design/colorbuilds/mono). Layout, illustration, blue wordmark, content and resource icons are unchanged.
+- `npm run check` passed with zero errors, warnings or hints. `npm run build` passed all existing site assertions; the two previously recorded non-fatal build warnings remain.
+- Against local `astro preview`, Home, Field Attributes and Resources returned 200 at 1440px and 390px in both themes, with no horizontal overflow or broken images. Resource icons were loaded eagerly for the visual check only; their shipped lazy-loading behavior is unchanged.
+- Sampled body text, headings, homepage descriptions, primary buttons, resource links/descriptions and visible selected-sidebar text meet 4.5:1 contrast. The lowest sampled pair is navy text on the pink light-mode button at 4.75:1. This is targeted contrast verification, not a complete accessibility audit.
+- Desktop checks cover native theme selection and reload persistence, keyboard activation of the built Pagefind `SerializeField` heading result, single-line/multiline clipboard content and visible resource-row keyboard focus. Mobile checks cover menu navigation, theme selection, heading search, Escape and single-line clipboard content. Auto theme responds to emulated system light/dark changes.
+- Rendered review captures are local artifacts under ignored `output/playwright/selected-*`. Verification is local; this theme change has not been pushed or deployed. No Unity or Blender examples were executed for the theme change.
+
 ## Deployment
 
 - Migration commit `91ffcb3c722ec2271c582e5b42e0f63796d3c2f7` deployed successfully as Netlify branch deploy `6ae664dfc59ce91c7516a4b9`, state `ready`, branch `preview`.
