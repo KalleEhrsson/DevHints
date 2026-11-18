@@ -8,3 +8,8 @@ output/playwright/
 .env.*
 !.env.example
 desktop.ini
+.playwright/
+playwright-report/
+test-results/
+blob-report/
+*.log

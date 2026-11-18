@@ -27,6 +27,10 @@ release status. Historical local and migration evidence below keeps its scope.
   clipboard contents matched the displayed code, including normal Windows CRLF.
   Mobile menu navigation, theme selection, heading search and code copying passed.
   No browser console errors were reported during these checks.
+- Release-diff follow-up: preview retained five fewer generated-file/log ignore rules
+  than production. Restored those existing production rules before promotion;
+  git check-ignore confirms the five representative paths are excluded. This
+  changes repository hygiene only; application output is unchanged.
 - This is site and release-readiness evidence. Unity/C# and Blender examples were
   not executed, and external resource availability was not audited. Next action:
   obtain separate approval for the reviewed theme promotion while preserving the
