@@ -2,6 +2,36 @@
 
 The migration retains 49 references, three articles and 26 resources. See [migration-checklist.md](migration-checklist.md) for primary-documentation results and approved corrections.
 
+## Current hosted theme review, 18 November 2026
+
+This dated review supersedes the earlier publication descriptions for current
+release status. Historical local and migration evidence below keeps its scope.
+
+- The ready preview deploy `6af7970e366ef43e04bdd2e9` serves `1065302` on
+  [the preview branch](https://preview--devhints.netlify.app). Production remains
+  locked at `ab42bca`, deploy `6ae71011dd3bdea0689602a5`, which already includes
+  the Starlight migration and compact Resources layout. PRISM/MONO is pending
+  production promotion. No merge, push, unlock or publication occurred.
+- Fresh checks with the installed Node 24.22.3 runtime passed: Astro diagnostics
+  reported zero errors/warnings/hints; the production build and existing site
+  assertions passed for 13 routes, 49 references, three articles and 26 resources.
+  The two documented non-fatal build warnings remain.
+- Hosted HTTP checks returned 200 for all 13 topic/home routes and 404 for an
+  unknown route. Home, Field Attributes and Resources were checked at 1440 px and
+  390 px in light/dark themes without document overflow. Home/Resources images
+  loaded without failures; sampled desktop/mobile captures were visually reviewed.
+- Hosted Pagefind searches for SerializeField, DllImport, Shrink Fatten, formatter
+  and Poly Haven found the expected pages/heading destinations. Enter activated
+  the SerializeField heading result. Escape dismissed search.
+- Native theme selection and reload persistence passed. Single-line and multiline
+  clipboard contents matched the displayed code, including normal Windows CRLF.
+  Mobile menu navigation, theme selection, heading search and code copying passed.
+  No browser console errors were reported during these checks.
+- This is site and release-readiness evidence. Unity/C# and Blender examples were
+  not executed, and external resource availability was not audited. Next action:
+  obtain separate approval for the reviewed theme promotion while preserving the
+  production lock.
+
 ## Local checks, 2026-10-31
 
 - `npm run check`: passed, zero errors, warnings or hints.
