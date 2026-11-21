@@ -2,6 +2,15 @@
 
 The migration retains 49 references, three articles and 26 resources. See [migration-checklist.md](migration-checklist.md) for primary-documentation results and approved corrections.
 
+## STL Buddy resources, 21 November 2026
+
+- Reviewed all four public [tool-directory pages](https://stlbuddy.com/tools?page=0), listing 95 tools, and opened the five selected tool destinations. Added the supplied directory URL and SVG to STL, Model Splitter, Bolt Factory, Lithophane Maker, and 3D Print Cost Calculator under 3D Modeling & Printing. Descriptions distinguish account-required free exports, paid Model Splitter downloads, and the calculator's no-sign-up access.
+- Resources now has 32 rows, retaining all 26 migration destinations. The six additions share the original STL Buddy favicon as a local PNG; no layout, theme, dependency, or migration destination changed. Generated-site assertions cover their anchors and new-tab links, plus the updated row/icon counts.
+- With Node 24.22.3, `npm run check` passed with zero errors, warnings, or hints. `npm run build` passed, including generated-site assertions; the existing optional-i18n and 404-route warnings remain. An initial overlapping check/build attempt hit an Astro cache rename conflict; the subsequent build passed after content synchronization finished.
+- Playwright inspected the built site through `npm run preview` on port 4322. At 1440px and 390px in light/dark themes, all six rows and local icons loaded, links retained `target="_blank"` and `rel="noopener noreferrer"`, and the page had no horizontal overflow. All four section captures were visually inspected under ignored `output/playwright/stl-buddy-*`.
+- All six titles were found in built Pagefind results. The search UI returned Bolt Factory and activation reached `/resources/#stl-buddy-bolt-factory`; keyboard Tab reached SVG to STL with the existing 2px row focus outline.
+- Verification covers the DevHints entries and public source descriptions. No account was created, model uploaded, export purchased, or physical print tested. Existing code-copy behavior was not retested for this content-only addition. Hosted delivery is checked separately after the preview push; production promotion is outside this change.
+
 ## Mobile interaction fixes, 21 November 2026
 
 - Resource-row hover backgrounds now apply only when the primary input supports

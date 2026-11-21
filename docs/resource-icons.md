@@ -1,5 +1,7 @@
 # Resource favicons
 
+STL Buddy added 2026-11-21: its declared [favicon](https://stlbuddy.com/favicon.ico) was decoded and resized to a local 48px [PNG](../public/resource-icons/stl-buddy.png), shared by the directory and five individual tool entries.
+
 Retrieved 2026-10-31 from each resource site or the icon URL declared in its public page. Stored as local PNGs; visitors do not contact a favicon service. SVG/ICO sources were rasterized for local image use. The design adds no icon border, backing or corner rounding.
 
 | Resource | Declared icon source | Local asset |

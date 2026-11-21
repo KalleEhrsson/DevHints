@@ -62,9 +62,17 @@ const resourceUrls = [...ledger.matchAll(/\[Resource\]\(([^)]+)\)/g)].map(m => m
 assert.equal(resourceUrls.length, 26, 'Expected 26 original resource URLs');
 const resourceLinks = [...html.get(checkTarget('/resources/', origin)).matchAll(/<a\b([^>]+)>/g)].map(m => m[1]);
 const resourcesPage = html.get(checkTarget('/resources/', origin));
-assert.equal((resourcesPage.match(/class="resource-row"/g) || []).length, 26, 'Expected 26 resource rows');
-assert.equal((resourcesPage.match(/src="\/resource-icons\//g) || []).length, 25, 'Expected 25 locally hosted favicons');
+assert.equal((resourcesPage.match(/class="resource-row"/g) || []).length, 32, 'Expected 32 resource rows');
+assert.equal((resourcesPage.match(/src="\/resource-icons\//g) || []).length, 31, 'Expected 31 locally hosted favicon images');
 assert.equal((resourcesPage.match(/class="resource-favicon-fallback"/g) || []).length, 1, 'Expected one unavailable-icon fallback');
+for (const [id, route] of [
+  ['stl-buddy', 'tools?page=1'], ['stl-buddy-svg-to-stl', 'svg-to-stl'],
+  ['stl-buddy-model-splitter', 'model-splitter'], ['stl-buddy-bolt-factory', 'bolt-factory'],
+  ['stl-buddy-lithophane-maker', 'lithophane-maker'], ['stl-buddy-print-cost-calculator', '3d-calc'],
+]) {
+  checkTarget(`/resources/#${id}`, origin);
+  resourceUrls.push(`https://stlbuddy.com/${route}`);
+}
 for (const url of resourceUrls) {
   assert(resourceLinks.some(attrs => decode(attrs.match(/\bhref="([^"]+)"/)?.[1] || '') === url
     && /\btarget="_blank"/.test(attrs) && /\brel="[^"]*\bnoopener\b/.test(attrs)), `Resource must open a safe new tab: ${url}`);
@@ -84,4 +92,4 @@ assert(fs.existsSync(path.join(root, 'pagefind/pagefind.js')), 'Missing built se
 for (const retired of ['index.html', 'style.css', 'js/data-render.js', 'js/script.js', 'data/unity.json', 'data/csharp.json', 'data/blender.json', 'data/other.json', 'data/sites.json']) {
   assert(!fs.existsSync(retired), `Retired content source still present: ${retired}`);
 }
-console.log(`Verified ${routes.length} routes, 49 reference entries, 3 articles, 26 resources, local links/assets, code-copy controls, search assets and tracking removal.`);
+console.log(`Verified ${routes.length} routes, 49 reference entries, 3 articles, ${resourceUrls.length} resources, local links/assets, code-copy controls, search assets and tracking removal.`);
