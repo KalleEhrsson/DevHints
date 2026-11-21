@@ -17,8 +17,8 @@
 - Run `npm run check` and `npm run build`. The latter includes `scripts/check-site.mjs` and checks actual generated links/assets, recorded migration destinations and code-copy controls.
 - For relevant UI/content changes, inspect built output with `npm run preview`: desktop/mobile, light/dark, navigation, heading search, keyboard focus and code copying. Dev-server search is not production search evidence.
 - Keep documentation verification distinct from running examples in Unity/Blender. Update `docs/migration-checklist.md` when migration destinations change and record material verification boundaries in `docs/verification.md`.
-- Work on `preview`, which deploys to `https://preview--devhints.netlify.app`. `production` is GitHub’s default and Netlify’s production branch.
-- Keep the published production deploy locked during review. No production merge, promotion, unlock or production deployment without separate explicit approval.
+- Follow the Git and deployment workflow in the global Codex `AGENTS.md`. Project configuration: the preview URL is `https://preview--devhints.netlify.app`; `production` is GitHub’s default and Netlify’s production branch.
+- Keep the published production deploy locked during review.
 - Create a focused descriptive commit for completed changes, exact-stage only relevant files, and preserve unrelated work. Push only when authorized; the initial migration’s preview push is authorized.
 
 ## Useful tools
