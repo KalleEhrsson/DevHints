@@ -2,6 +2,37 @@
 
 The migration retains 49 references, three articles and 26 resources. See [migration-checklist.md](migration-checklist.md) for primary-documentation results and approved corrections.
 
+## Mobile interaction fixes, 21 November 2026
+
+- Resource-row hover backgrounds now apply only when the primary input supports
+  hover. The existing keyboard focus outline remains available on all devices.
+  Search-modal scrolling uses `overscroll-behavior: contain`; buttons use
+  `touch-action: manipulation`, which preserves scrolling and pinch zoom.
+- With Node 24.22.3, `npm run check` passed with zero errors, warnings or hints.
+  `npm run build` passed the existing generated-site assertions. The two
+  previously documented non-fatal build warnings remain.
+- Chromium/Playwright checked built output through Astro preview at 1440x1000
+  and 390x844, in light and dark themes. Desktop hover backgrounds appeared;
+  touch-emulated taps retained no resource-row hover background. Keyboard
+  navigation retained the 2px row outline. The four Resources captures were
+  visually inspected, with no horizontal page overflow.
+- Search results scrolled within the modal, and wheel input at the bottom did
+  not move the underlying page. Keyboard activation reached the SerializeField
+  heading; Escape closed search. The search input remained 16.8px with
+  `enterkeyhint="search"`, so neither needed an override.
+- Desktop and touch-emulated mobile sidebar navigation, menu controls and
+  single-line/multiline code copying passed. Clipboard content matched the
+  copy payload after normalizing Windows CRLF. Sampled buttons computed to
+  `touch-action: manipulation`; no page errors occurred in the theme checks.
+- Captures are ignored local artifacts under
+  `output/playwright/mobile-interactions-*`. This is local browser evidence,
+  not physical iPhone verification: Safari focus zoom, keyboard presentation,
+  pinch/double-tap gestures and touch overscroll remain unverified on hardware.
+  Native tap highlights are retained. No layout, content or dependency changed.
+- The published production deploy `6ae71011dd3bdea0689602a5` was confirmed locked
+  during this review. Delivery targets `preview`; production promotion remains
+  a separately approved action.
+
 ## Current hosted theme review, 18 November 2026
 
 This dated review supersedes the earlier publication descriptions for current

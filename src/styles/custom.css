@@ -41,6 +41,8 @@
   --devhints-action-text: #072d50;
 }
 ::selection { background: var(--devhints-action-bg); color: var(--devhints-action-text); }
+button { touch-action: manipulation; }
+site-search .dialog-frame { overscroll-behavior: contain; }
 .site-title img { height: 2.25rem; }
 h1, h2, h3 { letter-spacing: -.025em; }
 .hero { padding-block: 4rem 3.5rem; gap: 3rem; }
@@ -72,7 +74,7 @@ h1, h2, h3 { letter-spacing: -.025em; }
 .resource-row h3 { font-size: 1rem; letter-spacing: 0; line-height: 1.6; }
 .resource-row h3 a { color: var(--sl-color-text-accent); text-decoration: none; }
 .resource-row h3 a::after { content: ""; position: absolute; inset: 0; }
-.resource-row:hover { background: var(--sl-color-gray-6); }
+@media (hover: hover) { .resource-row:hover { background: var(--sl-color-gray-6); } }
 .resource-row h3 a:focus-visible { outline: none; }
 .resource-row:focus-within { outline: 2px solid var(--sl-color-accent); outline-offset: 3px; }
 .resource-row p { font-size: .9375rem; line-height: 1.65; color: var(--sl-color-gray-2); }
